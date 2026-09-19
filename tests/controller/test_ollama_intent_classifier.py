@@ -12,3 +12,16 @@ def test_ollama_should_classify_intent():
     )
 
     assert result.intent.value == "Manutenção"
+
+def test_ollama_should_classify_intent_qwen_3_consistency():
+
+    classifier = OllamaIntentClassifier(model=QWEN_3)
+
+    text = "Quando devo trocar o óleo?"
+
+    results = [
+        classifier.classify(text).intent.value
+        for _ in range(5)
+    ]
+
+    assert all(result == "Manutenção" for result in results)

@@ -30,6 +30,7 @@ def load_test_cases(
 def main():
 
     test_case = load_test_cases(csv_file_name="data/intents.csv")
+    test_case = load_test_cases(csv_file_name="data/generalization.csv")
 
     result_rule_based: IntentClassifierBenchmarkResult = (
         IntentClassifierBenchmark().evaluate(RuleBasedIntentClassifier(), test_case)
@@ -43,8 +44,8 @@ def main():
     )
     result_ollama.display("PT")
 
-    result_llama: IntentClassifierBenchmarkResult = IntentClassifierBenchmark().evaluate(OllamaIntentClassifier(model=LLAMA_3_2), test_case)
-    result_llama.display("PT")
+    # result_llama: IntentClassifierBenchmarkResult = IntentClassifierBenchmark().evaluate(OllamaIntentClassifier(model=LLAMA_3_2), test_case)
+    # result_llama.display("PT")
 
 
 if __name__ == "__main__":

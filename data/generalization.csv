@@ -1,0 +1,15 @@
+description,expected_intent
+Preciso fazer a troca do óleo do meu carro,Manutenção
+Devo substituir o filtro de combustível?,Manutenção
+Meu veículo começou a vibrar quando acelero,Problema
+Escuto um ruído metálico vindo do motor,Problema
+Qual será o valor para trocar os filtros?,Custo
+Quanto vou pagar na revisão?,Custo
+Que pressão devo colocar nos pneus?,Especificação
+Qual é a medida original dos pneus?,Especificação
+Com qual óleo o veículo deve ser abastecido?,Especificação
+A cada quantos quilômetros faço a revisão?,Revisão
+Quando chegará o momento da próxima revisão?,Revisão
+Boa noite,Outro
+Tudo bem?,Outro
+Quero fazer uma pergunta diferente,Outro
