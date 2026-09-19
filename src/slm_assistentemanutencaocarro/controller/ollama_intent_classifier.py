@@ -1,7 +1,7 @@
 import ollama
 from pydantic import ValidationError
 
-from slm_assistentemanutencaocarro.controller.classifier import (
+from slm_assistentemanutencaocarro.controller.intent_classifier import (
     IntentClassifier,
 )
 from slm_assistentemanutencaocarro.model.intent_classification import (
@@ -26,16 +26,41 @@ Retorne somente o JSON correspondente ao modelo solicitado.
 
 class OllamaIntentClassifier(IntentClassifier):
 
-    def __init__(
-        self,
-        model: str = "qwen3:1.7b",
-    ):
-        self.model = model
+    def __init__(self, model: str):
+        super().__init__(model)
+
+    def start_classifier(self) -> bool:
+        try:
+            ollama.chat(
+                model=self.get_model_name(),
+                think=False,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": "Oi",
+                    }
+                ],
+            )
+            return True
+        except Exception:
+            return False
+
+    def close_classifier(self) -> bool:
+        try:
+            ollama.chat(
+                model=self.model,
+                think=False,
+                messages=[],
+                keep_alive=0
+            )
+            return True
+        except Exception:
+            return False
 
     def classify(self, text: str) -> IntentClassification:
         try:
             response = ollama.chat(
-                model=self.model,
+                model=self.get_model_name(),
                 think=False,
                 messages=[
                     {
@@ -57,11 +82,7 @@ class OllamaIntentClassifier(IntentClassifier):
             return IntentClassification.model_validate_json(content)
 
         except (ValidationError, TypeError, ValueError) as exc:
-            raise RuntimeError(
-                "O modelo retornou uma classificação inválida."
-            ) from exc
+            raise RuntimeError("O modelo retornou uma classificação inválida.") from exc
 
         except Exception as exc:
-            raise RuntimeError(
-                "Falha ao executar classificação com Ollama."
-            ) from exc
+            raise RuntimeError("Falha ao executar classificação com Ollama.") from exc

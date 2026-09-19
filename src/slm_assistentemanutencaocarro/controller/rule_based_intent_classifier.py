@@ -1,4 +1,4 @@
-from slm_assistentemanutencaocarro.controller.classifier import IntentClassifier
+from slm_assistentemanutencaocarro.controller.intent_classifier import IntentClassifier
 from slm_assistentemanutencaocarro.model.intent import Intent
 from slm_assistentemanutencaocarro.model.intent_classification import (
     IntentClassification,
@@ -6,6 +6,15 @@ from slm_assistentemanutencaocarro.model.intent_classification import (
 
 
 class RuleBasedIntentClassifier(IntentClassifier):
+
+    def __init__(self, model: str = "rule_based"):
+        super().__init__(model)
+
+    def start_classifier(self) -> bool:
+        return True
+
+    def close_classifier(self) -> bool:
+        return False
 
     def classify(self, text: str) -> IntentClassification:
         text = text.lower()

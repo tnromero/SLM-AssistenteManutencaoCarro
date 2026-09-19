@@ -1,6 +1,6 @@
 import pytest
 
-from slm_assistentemanutencaocarro.controller.ruled_based_classifier import (
+from slm_assistentemanutencaocarro.controller.rule_based_intent_classifier import (
     RuleBasedIntentClassifier,
 )
 from slm_assistentemanutencaocarro.model.intent import Intent

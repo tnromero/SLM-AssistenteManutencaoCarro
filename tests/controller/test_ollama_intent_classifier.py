@@ -1,10 +1,11 @@
-from slm_assistentemanutencaocarro.controller.ollama_classifier import (
+from slm_assistentemanutencaocarro.config.models import QWEN_3
+from slm_assistentemanutencaocarro.controller.ollama_intent_classifier import (
     OllamaIntentClassifier,
 )
 
 
 def test_ollama_should_classify_intent():
-    classifier = OllamaIntentClassifier()
+    classifier = OllamaIntentClassifier(model=QWEN_3)
 
     result = classifier.classify(
         "Quando devo trocar o óleo?"

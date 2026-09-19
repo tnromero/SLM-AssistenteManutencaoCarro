@@ -1,38 +1,50 @@
 import csv
 
-from slm_assistentemanutencaocarro.controller.ruled_based_classifier import (
+from slm_assistentemanutencaocarro.config.models import QWEN_3, LLAMA_3_2
+from slm_assistentemanutencaocarro.controller.ollama_intent_classifier import (
+    OllamaIntentClassifier,
+)
+from slm_assistentemanutencaocarro.controller.rule_based_intent_classifier import (
     RuleBasedIntentClassifier,
+)
+from slm_assistentemanutencaocarro.benchmark.intent_classifier_benchmark import (
+    IntentClassifierBenchmark,
+)
+from slm_assistentemanutencaocarro.model.intent_classifier_benchmark_result import (
+    IntentClassifierBenchmarkResult,
 )
 
 
+def load_test_cases(
+    csv_file_name: str, enconding_file: str = "utf-8", delimiter=","
+) -> list[dict[str, str]]:
+
+    test_cases: list[dict[str, str]]
+    with open(csv_file_name, encoding=enconding_file) as file:
+        reader = csv.DictReader(file, delimiter=delimiter)
+        test_cases = list(reader)
+
+    return test_cases
+
+
 def main():
-    classifier = RuleBasedIntentClassifier()
 
-    total = 0
-    correct = 0
+    test_case = load_test_cases(csv_file_name="data/intents.csv")
 
-    with open("data/intents.csv", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
+    result_rule_based: IntentClassifierBenchmarkResult = (
+        IntentClassifierBenchmark().evaluate(RuleBasedIntentClassifier(), test_case)
+    )
+    result_rule_based.display("PT")
 
-        for row in reader:
-            result = classifier.classify(row["description"])
+    result_ollama: IntentClassifierBenchmarkResult = (
+        IntentClassifierBenchmark().evaluate(
+            OllamaIntentClassifier(model=QWEN_3), test_case
+        )
+    )
+    result_ollama.display("PT")
 
-            total += 1
-
-            if result.intent.value == row["expected_intent"]:
-                correct += 1
-            else:
-                print(
-                    f"ERRO: {row['description']}"
-                    f" | esperado={row['expected_intent']}"
-                    f" | obtido={result.intent.value}"
-                )
-
-    accuracy = correct / total * 100
-
-    print()
-    print(f"Acurácia: {accuracy:.2f}%")
-    print(f"Acertos: {correct}/{total}")
+    result_llama: IntentClassifierBenchmarkResult = IntentClassifierBenchmark().evaluate(OllamaIntentClassifier(model=LLAMA_3_2), test_case)
+    result_llama.display("PT")
 
 
 if __name__ == "__main__":
