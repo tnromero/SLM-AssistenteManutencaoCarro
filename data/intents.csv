@@ -1,0 +1,25 @@
+description,expected_intent
+Quando devo trocar o óleo?,Manutenção
+Qual óleo usar no motor?,Manutenção
+Quando devo trocar o filtro de ar?,Manutenção
+Preciso trocar o filtro de combustível?,Manutenção
+Meu carro está fazendo um barulho estranho,Problema
+O motor está tremendo,Problema
+O carro está fazendo um barulho ao frear,Problema
+O motor está falhando,Problema
+Quanto custa trocar o óleo?,Custo
+Quanto custa uma revisão?,Custo
+Qual o preço de uma troca de óleo?,Custo
+Quanto vou gastar com a revisão?,Custo
+Qual a calibragem dos pneus?,Especificação
+Qual óleo o motor utiliza?,Especificação
+Qual a pressão correta dos pneus?,Especificação
+Qual o tamanho do pneu?,Especificação
+Quando devo fazer a próxima revisão?,Revisão
+Qual a periodicidade da revisão?,Revisão
+Quando é a próxima revisão?,Revisão
+De quanto em quanto tempo devo revisar o carro?,Revisão
+Olá,Outro
+Bom dia,Outro
+Obrigado,Outro
+Quero falar sobre outra coisa,Outro
