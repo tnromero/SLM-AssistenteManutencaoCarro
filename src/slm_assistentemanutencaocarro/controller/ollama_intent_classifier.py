@@ -8,7 +8,30 @@ from slm_assistentemanutencaocarro.model.intent_classification import (
     IntentClassification,
 )
 
-SYSTEM_PROMPT = """
+FEW_SHOT_EXAMPLES = """
+Exemplos:
+
+"Quando devo trocar o óleo?" -> Manutenção
+"Preciso fazer a troca do óleo do meu carro" -> Manutenção
+
+"Meu carro está fazendo um barulho estranho" -> Problema
+"O motor está tremendo" -> Problema
+
+"Quanto custa trocar o óleo?" -> Custo
+"Quanto vou pagar na revisão?" -> Custo
+
+"Qual a calibragem dos pneus?" -> Especificação
+"Que pressão devo colocar nos pneus?" -> Especificação
+"Qual o tamanho do pneu?" -> Especificação
+
+"Quando devo fazer a próxima revisão?" -> Revisão
+"De quanto em quanto tempo devo revisar o carro?" -> Revisão
+
+"Olá" -> Outro
+"Bom dia" -> Outro
+""".strip()
+
+SYSTEM_PROMPT = f"""
 Você é um classificador de intenções para um assistente de manutenção de carros.
 
 Classifique a mensagem do usuário em exatamente uma das seguintes intenções:
@@ -19,6 +42,8 @@ Classifique a mensagem do usuário em exatamente uma das seguintes intenções:
 - Especificação: informações técnicas do carro, como óleo utilizado, calibragem, pneus e especificações.
 - Revisão: perguntas sobre periodicidade ou próxima revisão do veículo.
 - Outro: mensagens que não se encaixam nas categorias acima.
+
+{FEW_SHOT_EXAMPLES}
 
 Retorne somente o JSON correspondente ao modelo solicitado.
 """.strip()
