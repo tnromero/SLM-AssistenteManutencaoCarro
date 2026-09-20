@@ -23,6 +23,7 @@ Exemplos:
 "Qual a calibragem dos pneus?" -> Especificação
 "Que pressão devo colocar nos pneus?" -> Especificação
 "Qual o tamanho do pneu?" -> Especificação
+"Qual óleo de motor devo utilizar?" -> Espeficifação
 
 "Quando devo fazer a próxima revisão?" -> Revisão
 "De quanto em quanto tempo devo revisar o carro?" -> Revisão
@@ -36,12 +37,24 @@ Você é um classificador de intenções para um assistente de manutenção de c
 
 Classifique a mensagem do usuário em exatamente uma das seguintes intenções:
 
-- Manutenção: perguntas sobre troca de óleo, filtros, manutenção preventiva e itens de manutenção.
-- Problema: sintomas, falhas, barulhos, vibrações ou comportamentos anormais do carro.
+- Manutenção: ações ou procedimentos de manutenção preventiva
+  realizados no veículo, incluindo troca ou substituição de óleo,
+  filtros, velas, fluidos, correias e outros componentes de manutenção.
+- Problema: sintomas, falhas, barulhos, vibrações ou comportamentos anormais.
 - Custo: perguntas sobre preço, valor ou quanto será gasto.
-- Especificação: informações técnicas do carro, como óleo utilizado, calibragem, pneus e especificações.
-- Revisão: perguntas sobre periodicidade ou próxima revisão do veículo.
+- Especificação: características técnicas ou valores recomendados
+  do veículo, como tipo de óleo, quantidade de óleo, calibragem,
+  medidas e especificações dos pneus.
+- Revisão: perguntas sobre periodicidade ou próxima revisão.
 - Outro: mensagens que não se encaixam nas categorias acima.
+
+IMPORTANTE:
+- "Quando devo trocar o óleo?" -> Manutenção
+- "Como trocar o óleo?" -> Manutenção
+- "Qual óleo usar no motor?" -> Especificação
+- "Qual óleo o motor utiliza?" -> Especificação
+- "Qual a calibragem dos pneus?" -> Especificação
+- "Qual a medida dos pneus?" -> Especificação
 
 {FEW_SHOT_EXAMPLES}
 

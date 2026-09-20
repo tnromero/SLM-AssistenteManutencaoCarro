@@ -1,6 +1,9 @@
 import csv
 
 from slm_assistentemanutencaocarro.config.models import QWEN_3, LLAMA_3_2
+from slm_assistentemanutencaocarro.controller.hybrid_intent_classifier import (
+    HybridIntentClassifier,
+)
 from slm_assistentemanutencaocarro.controller.ollama_intent_classifier import (
     OllamaIntentClassifier,
 )
@@ -29,46 +32,19 @@ def load_test_cases(
 
 def main():
 
-    test_case = load_test_cases(csv_file_name="data/intents.csv")
-    
-    result_rule_based: IntentClassifierBenchmarkResult = (
-        IntentClassifierBenchmark().evaluate(RuleBasedIntentClassifier(), test_case)
-    )
-    result_rule_based.display("PT")
-    print()
+    for csv_file_name in ["data/intents.csv", "data/generalization.csv"]:
+        test_case = load_test_cases(csv_file_name=csv_file_name)
 
-    result_ollama: IntentClassifierBenchmarkResult = (
-        IntentClassifierBenchmark().evaluate(
-            OllamaIntentClassifier(model=QWEN_3), test_case
+        result: IntentClassifierBenchmarkResult = IntentClassifierBenchmark().evaluate(
+            # OllamaIntentClassifier(model=QWEN_3), test_case
+            HybridIntentClassifier(ollama_model=OllamaIntentClassifier(model=QWEN_3)),
+            test_case,
         )
-    )
-    result_ollama.display("PT")
-    print()
+        result.display("PT")
 
-    # result_llama: IntentClassifierBenchmarkResult = IntentClassifierBenchmark().evaluate(OllamaIntentClassifier(model=LLAMA_3_2), test_case)
-    # result_llama.display("PT")
-
-    print()
-    print()
-    print("====================================================")
-    print()
-    print()
-
-    test_case = load_test_cases(csv_file_name="data/generalization.csv")
-
-    result_rule_based: IntentClassifierBenchmarkResult = (
-        IntentClassifierBenchmark().evaluate(RuleBasedIntentClassifier(), test_case)
-    )
-    result_rule_based.display("PT")
-    print()
-
-    result_ollama: IntentClassifierBenchmarkResult = (
-        IntentClassifierBenchmark().evaluate(
-            OllamaIntentClassifier(model=QWEN_3), test_case
-        )
-    )
-    result_ollama.display("PT")
-    print()
+        print()
+        print()
+        print("====================================================")
 
 
 if __name__ == "__main__":
