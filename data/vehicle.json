@@ -1,0 +1,10 @@
+{
+  "brand": "Volkswagen",
+  "model": "T-Cross",
+  "year": 2022,
+  "engine": "1.0 TSI",
+  "engine_oil": "5W-30",
+  "tire_size": "205/55 R17",
+  "tire_pressure_front": 33.0,
+  "tire_pressure_rear": 33.0
+}

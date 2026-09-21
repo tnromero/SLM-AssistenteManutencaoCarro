@@ -36,9 +36,8 @@ def main():
         test_case = load_test_cases(csv_file_name=csv_file_name)
 
         result: IntentClassifierBenchmarkResult = IntentClassifierBenchmark().evaluate(
-            # OllamaIntentClassifier(model=QWEN_3), test_case
-            HybridIntentClassifier(ollama_model=OllamaIntentClassifier(model=QWEN_3)),
-            test_case,
+            OllamaIntentClassifier(model=QWEN_3), test_case, 
+            # HybridIntentClassifier(ollama_model=OllamaIntentClassifier(model=QWEN_3)), test_case,
         )
         result.display("PT")
 
