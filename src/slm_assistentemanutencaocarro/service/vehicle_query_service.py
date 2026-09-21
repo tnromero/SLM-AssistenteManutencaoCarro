@@ -1,4 +1,4 @@
-from slm_assistentemanutencaocarro.model.intent import Intent
+from slm_assistentemanutencaocarro.model.question_type import QuestionType
 from slm_assistentemanutencaocarro.model.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.service.vehicle_service import (
     VehicleService,
@@ -7,43 +7,19 @@ from slm_assistentemanutencaocarro.service.vehicle_service import (
 
 class VehicleQueryService:
 
-    def __init__(self, vehicle_service: VehicleService):
+    def __init__(
+        self,
+        vehicle_service: VehicleService,
+    ):
         self.vehicle_service = vehicle_service
 
     def answer(
         self,
         question: str,
-        intent: Intent,
+        question_type: QuestionType,
     ) -> VehicleAnswer:
 
-        if intent == Intent.ESPECIFICACAO:
-            return self._answer_specification(question)
-
-        if intent == Intent.MANUTENCAO:
-            return VehicleAnswer(
-                question=question,
-                answer=(
-                    "Essa pergunta requer uma informação "
-                    "de manutenção específica do veículo."
-                ),
-            )
-
-        return VehicleAnswer(
-            question=question,
-            answer=(
-                "Ainda não tenho conhecimento suficiente "
-                "para responder essa pergunta."
-            ),
-        )
-
-    def _answer_specification(
-        self,
-        question: str,
-    ) -> VehicleAnswer:
-
-        question_lower = question.lower()
-
-        if "óleo" in question_lower or "oleo" in question_lower:
+        if question_type == QuestionType.OLEO_MOTOR:
             return VehicleAnswer(
                 question=question,
                 answer=(
@@ -52,11 +28,7 @@ class VehicleQueryService:
                 ),
             )
 
-        if "pneu" in question_lower and (
-            "pressão" in question_lower
-            or "pressao" in question_lower
-            or "calibr" in question_lower
-        ):
+        if question_type == QuestionType.PRESSAO_PNEUS:
             front, rear = (
                 self.vehicle_service.get_tire_pressure()
             )
@@ -70,10 +42,7 @@ class VehicleQueryService:
                 ),
             )
 
-        if "pneu" in question_lower and (
-            "tamanho" in question_lower
-            or "medida" in question_lower
-        ):
+        if question_type == QuestionType.MEDIDA_PNEUS:
             return VehicleAnswer(
                 question=question,
                 answer=(
@@ -85,8 +54,7 @@ class VehicleQueryService:
         return VehicleAnswer(
             question=question,
             answer=(
-                "Tenho a intenção identificada como "
-                "Especificação, mas ainda não tenho "
-                "essa informação cadastrada."
+                "Ainda não tenho informação suficiente "
+                "para responder essa pergunta."
             ),
         )

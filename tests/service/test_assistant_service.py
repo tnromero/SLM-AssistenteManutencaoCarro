@@ -3,6 +3,9 @@ from slm_assistentemanutencaocarro.controller.hybrid_intent_classifier import (
     HybridIntentClassifier,
 )
 from slm_assistentemanutencaocarro.controller.ollama_intent_classifier import OllamaIntentClassifier
+from slm_assistentemanutencaocarro.controller.rule_based_question_classifier import (
+    RuleBasedQuestionClassifier,
+)
 from slm_assistentemanutencaocarro.repository.vehicle_repository import (
     VehicleRepository,
 )
@@ -17,37 +20,51 @@ from slm_assistentemanutencaocarro.service.vehicle_service import (
 )
 
 
-def create_service() -> AssistantService:
-    classifier = HybridIntentClassifier(ollama_model=OllamaIntentClassifier(model=QWEN_3))
+def create_service():
 
-    repository = VehicleRepository("data/vehicle.json")
+    intent_classifier = HybridIntentClassifier(ollama_model=OllamaIntentClassifier(model=QWEN_3))
 
-    vehicle_service = VehicleService(repository)
+    question_classifier = (
+        RuleBasedQuestionClassifier()
+    )
+
+    repository = VehicleRepository(
+        "data/vehicle.json"
+    )
+
+    vehicle_service = VehicleService(
+        repository
+    )
 
     query_service = VehicleQueryService(
         vehicle_service
     )
 
     return AssistantService(
-        classifier,
-        query_service,
+        intent_classifier=intent_classifier,
+        question_classifier=question_classifier,
+        query_service=query_service,
     )
 
 
 def test_should_answer_oil_question():
-    service = create_service()
 
-    result = service.answer(
+    assistant = create_service()
+
+    result = assistant.answer(
         "Qual óleo usar no motor?"
     )
 
-    assert "5W-30" in result.answer
+    assert result.answer == (
+        "O óleo especificado é 5W-30."
+    )
 
 
-def test_should_answer_tire_question():
-    service = create_service()
+def test_should_answer_tire_pressure_question():
 
-    result = service.answer(
+    assistant = create_service()
+
+    result = assistant.answer(
         "Qual a pressão correta dos pneus?"
     )
 
@@ -55,10 +72,11 @@ def test_should_answer_tire_question():
 
 
 def test_should_answer_tire_size_question():
-    service = create_service()
 
-    result = service.answer(
-        "Qual o tamanho do pneu?"
+    assistant = create_service()
+
+    result = assistant.answer(
+        "Qual o tamanho dos pneus?"
     )
 
     assert "205/55 R17" in result.answer
