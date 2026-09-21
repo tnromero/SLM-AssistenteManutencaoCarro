@@ -62,7 +62,7 @@ Retorne exclusivamente um JSON compatível com o schema informado.
                     model=self.model,
                     think=False,
                     options={
-                        "temperature": self.config.temperature,
+                        "temperature": 0.7,
                     },
                     messages=[
                         {
