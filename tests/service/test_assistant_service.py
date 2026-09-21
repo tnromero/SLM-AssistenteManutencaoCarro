@@ -2,11 +2,24 @@ from slm_assistentemanutencaocarro.config.model_name import OLLAMA_MODEL
 from slm_assistentemanutencaocarro.controller.intent_classifier.hybrid_intent_classifier import (
     HybridIntentClassifier,
 )
-from slm_assistentemanutencaocarro.controller.intent_classifier.ollama_intent_classifier import OllamaIntentClassifier
+from slm_assistentemanutencaocarro.controller.intent_classifier.ollama_intent_classifier import (
+    OllamaIntentClassifier,
+)
 from slm_assistentemanutencaocarro.controller.question_classifier.rule_based_question_classifier import (
     RuleBasedQuestionClassifier,
 )
-from slm_assistentemanutencaocarro.controller.response_generator.rule_based_response_generator import RuleBasedResponseGenerator
+from slm_assistentemanutencaocarro.controller.response_generator.hybrid_response_generator import (
+    HybridResponseGenerator,
+)
+from slm_assistentemanutencaocarro.controller.response_generator.ollama_response_generator import (
+    OllamaResponseGenerator,
+)
+from slm_assistentemanutencaocarro.controller.response_generator.response_generator import (
+    ResponseGenerator,
+)
+from slm_assistentemanutencaocarro.controller.response_generator.rule_based_response_generator import (
+    RuleBasedResponseGenerator,
+)
 from slm_assistentemanutencaocarro.repository.vehicle_repository import (
     VehicleRepository,
 )
@@ -23,31 +36,27 @@ from slm_assistentemanutencaocarro.service.vehicle_service import (
 
 def create_assistant():
 
-    intent_classifier = HybridIntentClassifier(ollama_model=OllamaIntentClassifier(model=OLLAMA_MODEL.QWEN_3))
-
-    question_classifier = (
-        RuleBasedQuestionClassifier()
+    intent_classifier = HybridIntentClassifier(
+        ollama_model=OllamaIntentClassifier(model=OLLAMA_MODEL.QWEN_3)
     )
 
-    repository = VehicleRepository(
-        "data/vehicle.json"
-    )
+    question_classifier = RuleBasedQuestionClassifier()
 
-    vehicle_service = VehicleService(
-        repository
-    )
+    repository = VehicleRepository("data/vehicle.json")
 
-    query_service = VehicleQueryService(
-        vehicle_service
-    )
+    vehicle_service = VehicleService(repository)
 
-    response_generator = RuleBasedResponseGenerator()
+    query_service = VehicleQueryService(vehicle_service)
+
+    response_generator: ResponseGenerator = HybridResponseGenerator(
+        RuleBasedResponseGenerator(), OllamaResponseGenerator()
+    )
 
     return AssistantService(
         intent_classifier=intent_classifier,
         question_classifier=question_classifier,
         vehicle_query_service=query_service,
-        response_generator=response_generator
+        response_generator=response_generator,
     )
 
 
@@ -55,22 +64,16 @@ def test_should_answer_oil_question():
 
     assistant = create_assistant()
 
-    result = assistant.answer(
-        "Qual óleo usar no motor?"
-    )
+    result = assistant.answer("Qual óleo usar no motor?")
 
-    assert result == (
-        "O óleo especificado é 5W-30."
-    )
+    assert result == ("O óleo especificado é 5W-30.")
 
 
 def test_should_answer_tire_pressure_question():
 
     assistant = create_assistant()
 
-    result = assistant.answer(
-        "Qual a pressão correta dos pneus?"
-    )
+    result = assistant.answer("Qual a pressão correta dos pneus?")
 
     assert "33 PSI" in result
 
@@ -79,8 +82,6 @@ def test_should_answer_tire_size_question():
 
     assistant = create_assistant()
 
-    result = assistant.answer(
-        "Qual o tamanho dos pneus?"
-    )
+    result = assistant.answer("Qual o tamanho dos pneus?")
 
     assert "205/55 R17" in result
