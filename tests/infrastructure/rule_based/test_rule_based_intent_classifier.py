@@ -1,9 +1,9 @@
 import pytest
 
+from slm_assistentemanutencaocarro.domain.intent import Intent
 from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_intent_classifier import (
     RuleBasedIntentClassifier,
 )
-from slm_assistentemanutencaocarro.domain.intent import Intent
 
 
 @pytest.fixture

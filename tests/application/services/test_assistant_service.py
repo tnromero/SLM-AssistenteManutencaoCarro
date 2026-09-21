@@ -1,4 +1,7 @@
-from slm_assistentemanutencaocarro.config.settings import OLLAMA_MODEL
+from slm_assistentemanutencaocarro.application.ports.vehicle_reader import VehicleReader
+from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import JsonVehicleReader
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_intent_classifier import RuleBasedIntentClassifier
+from slm_assistentemanutencaocarro.config.settings import Settings
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_intent_classifier import (
     HybridIntentClassifier,
 )
@@ -20,9 +23,6 @@ from slm_assistentemanutencaocarro.application.ports.response_generator import (
 from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
     RuleBasedResponseGenerator,
 )
-from slm_assistentemanutencaocarro.repository.vehicle_repository import (
-    VehicleRepository,
-)
 from slm_assistentemanutencaocarro.application.services.assistant_service import (
     AssistantService,
 )
@@ -33,19 +33,20 @@ from slm_assistentemanutencaocarro.application.services.vehicle_service import (
     VehicleService,
 )
 
+model_name = Settings().ollama_intent_model
 
-def create_assistant():
+
+def create_assistant(model_name):
 
     intent_classifier = HybridIntentClassifier(
-        ollama_model=OllamaIntentClassifier(model=OLLAMA_MODEL.QWEN_3)
+        rule_based_classifier=RuleBasedIntentClassifier(),
+        ollama_classifier=OllamaIntentClassifier(model=model_name)
     )
 
     question_classifier = RuleBasedQuestionClassifier()
 
-    repository = VehicleRepository("data/vehicle.json")
-
-    vehicle_service = VehicleService(repository)
-
+    reader:VehicleReader = JsonVehicleReader("data/vehicle.json")
+    vehicle_service = VehicleService(reader)
     query_service = VehicleQueryService(vehicle_service)
 
     response_generator: ResponseGenerator = HybridResponseGenerator(
@@ -62,7 +63,7 @@ def create_assistant():
 
 def test_should_answer_oil_question():
 
-    assistant = create_assistant()
+    assistant = create_assistant(model_name)
 
     result = assistant.answer("Qual óleo usar no motor?")
 
@@ -71,7 +72,7 @@ def test_should_answer_oil_question():
 
 def test_should_answer_tire_pressure_question():
 
-    assistant = create_assistant()
+    assistant = create_assistant(model_name)
 
     result = assistant.answer("Qual a pressão correta dos pneus?")
 
@@ -80,7 +81,7 @@ def test_should_answer_tire_pressure_question():
 
 def test_should_answer_tire_size_question():
 
-    assistant = create_assistant()
+    assistant = create_assistant(model_name)
 
     result = assistant.answer("Qual o tamanho dos pneus?")
 

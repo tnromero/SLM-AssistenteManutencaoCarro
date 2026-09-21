@@ -1,9 +1,9 @@
 import pytest
 
+from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
     RuleBasedQuestionClassifier,
 )
-from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 
 
 @pytest.fixture

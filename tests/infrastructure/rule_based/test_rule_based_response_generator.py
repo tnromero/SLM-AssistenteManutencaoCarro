@@ -1,7 +1,7 @@
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
     RuleBasedResponseGenerator,
 )
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 
 
 def test_should_generate_response():

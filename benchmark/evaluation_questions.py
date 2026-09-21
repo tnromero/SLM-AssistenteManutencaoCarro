@@ -48,7 +48,7 @@ def evaluate(classifier, dataset):
 
 
 def main():
-    dataset = load_dataset("data/questions.csv")
+    dataset = load_dataset("benchmark/data/questions.csv")
 
     evaluate(
         RuleBasedQuestionClassifier(),

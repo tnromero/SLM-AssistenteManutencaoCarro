@@ -1,17 +1,16 @@
-from slm_assistentemanutencaocarro.repository.vehicle_repository import (
-    VehicleRepository,
-)
+from slm_assistentemanutencaocarro.application.ports.vehicle_reader import VehicleReader
 from slm_assistentemanutencaocarro.application.services.vehicle_service import (
     VehicleService,
+)
+from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
+    JsonVehicleReader,
 )
 
 
 def create_vehicle_service() -> VehicleService:
-    repository:VehicleRepository = VehicleRepository(
-        "data/vehicle.json"
-    )
+    reader: VehicleReader = JsonVehicleReader("data/vehicle.json")
 
-    return VehicleService(repository)
+    return VehicleService(reader)
 
 
 def test_should_return_engine_oil():

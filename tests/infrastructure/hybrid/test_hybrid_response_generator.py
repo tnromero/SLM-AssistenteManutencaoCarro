@@ -1,10 +1,12 @@
 from unittest.mock import Mock
 
+from slm_assistentemanutencaocarro.config.settings import Settings
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
     HybridResponseGenerator,
 )
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 
+model_name = Settings().ollama_response_model
 
 def test_should_use_rule_based_generator():
 
