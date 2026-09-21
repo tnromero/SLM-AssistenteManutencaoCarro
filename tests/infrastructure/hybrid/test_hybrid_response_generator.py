@@ -8,14 +8,13 @@ from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generat
 
 model_name = Settings().ollama_response_model
 
+
 def test_should_use_rule_based_generator():
 
     rule_generator = Mock()
     ollama_generator = Mock()
 
-    rule_generator.generate.return_value = (
-        "O óleo especificado é 5W-30."
-    )
+    rule_generator.generate.return_value = "O óleo especificado é 5W-30."
 
     generator = HybridResponseGenerator(
         rule_generator=rule_generator,
@@ -31,8 +30,6 @@ def test_should_use_rule_based_generator():
 
     assert result == "O óleo especificado é 5W-30."
 
-    rule_generator.generate.assert_called_once_with(
-        answer
-    )
+    rule_generator.generate.assert_called_once_with(answer)
 
     ollama_generator.generate.assert_not_called()

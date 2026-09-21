@@ -1,4 +1,3 @@
-
 from slm_assistentemanutencaocarro.application.ports.intent_classifier import (
     IntentClassifier,
 )

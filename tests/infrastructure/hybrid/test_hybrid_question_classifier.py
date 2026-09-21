@@ -22,21 +22,20 @@ def test_should_use_rule_based_classifier_first():
         slm_classifier=slm_classifier,
     )
 
-    result:QuestionClassification = classifier.classify("Qual óleo usar no motor?")
+    result: QuestionClassification = classifier.classify("Qual óleo usar no motor?")
 
     assert result.question_type == QuestionType.OLEO_MOTOR
 
     slm_classifier.classify.assert_not_called()
+
 
 def test_should_use_slm_when_rule_based_classifier_cannot_classify():
 
     rule_classifier = RuleBasedQuestionClassifier()
     slm_classifier = Mock()
 
-    slm_classifier.classify.return_value = (
-        QuestionClassification(
-            question_type=QuestionType.OLEO_MOTOR
-        )
+    slm_classifier.classify.return_value = QuestionClassification(
+        question_type=QuestionType.OLEO_MOTOR
     )
 
     classifier = HybridQuestionClassifier(
@@ -44,12 +43,8 @@ def test_should_use_slm_when_rule_based_classifier_cannot_classify():
         slm_classifier=slm_classifier,
     )
 
-    result = classifier.classify(
-        "Que lubrificante é recomendado?"
-    )
+    result = classifier.classify("Que lubrificante é recomendado?")
 
     assert result.question_type == QuestionType.OLEO_MOTOR
 
-    slm_classifier.classify.assert_called_once_with(
-        "Que lubrificante é recomendado?"
-    )
+    slm_classifier.classify.assert_called_once_with("Que lubrificante é recomendado?")

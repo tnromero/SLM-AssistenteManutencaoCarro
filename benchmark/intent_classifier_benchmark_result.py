@@ -14,10 +14,10 @@ class IntentClassifierBenchmarkResult(BaseModel):
     @property
     def accuracy(self) -> float:
         return self.correct / self.total * 100
-    
-    def display(self, lang:str="PT") -> None:
+
+    def display(self, lang: str = "PT") -> None:
         print(f"=== {self.model} ===")
-        if lang=="PT":
+        if lang == "PT":
             self.__display_pt()
         else:
             self.__display_en()

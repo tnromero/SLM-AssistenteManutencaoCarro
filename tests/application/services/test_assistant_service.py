@@ -1,28 +1,7 @@
-from slm_assistentemanutencaocarro.application.ports.vehicle_reader import VehicleReader
-from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import JsonVehicleReader
-from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_intent_classifier import RuleBasedIntentClassifier
-from slm_assistentemanutencaocarro.config.settings import Settings
-from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_intent_classifier import (
-    HybridIntentClassifier,
-)
-from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
-    OllamaIntentClassifier,
-)
-from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
-    RuleBasedQuestionClassifier,
-)
-from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
-    HybridResponseGenerator,
-)
-from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
-    OllamaResponseGenerator,
-)
 from slm_assistentemanutencaocarro.application.ports.response_generator import (
     ResponseGenerator,
 )
-from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
-    RuleBasedResponseGenerator,
-)
+from slm_assistentemanutencaocarro.application.ports.vehicle_reader import VehicleReader
 from slm_assistentemanutencaocarro.application.services.assistant_service import (
     AssistantService,
 )
@@ -32,6 +11,31 @@ from slm_assistentemanutencaocarro.application.services.vehicle_query_service im
 from slm_assistentemanutencaocarro.application.services.vehicle_service import (
     VehicleService,
 )
+from slm_assistentemanutencaocarro.config.settings import Settings
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_intent_classifier import (
+    HybridIntentClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
+    HybridResponseGenerator,
+)
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
+    OllamaIntentClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
+    OllamaResponseGenerator,
+)
+from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
+    JsonVehicleReader,
+)
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_intent_classifier import (
+    RuleBasedIntentClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
+    RuleBasedQuestionClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
+    RuleBasedResponseGenerator,
+)
 
 model_name = Settings().ollama_intent_model
 
@@ -40,12 +44,12 @@ def create_assistant(model_name):
 
     intent_classifier = HybridIntentClassifier(
         rule_based_classifier=RuleBasedIntentClassifier(),
-        ollama_classifier=OllamaIntentClassifier(model=model_name)
+        ollama_classifier=OllamaIntentClassifier(model=model_name),
     )
 
     question_classifier = RuleBasedQuestionClassifier()
 
-    reader:VehicleReader = JsonVehicleReader("data/vehicle.json")
+    reader: VehicleReader = JsonVehicleReader("data/vehicle.json")
     vehicle_service = VehicleService(reader)
     query_service = VehicleQueryService(vehicle_service)
 

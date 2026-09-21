@@ -11,6 +11,7 @@ from slm_assistentemanutencaocarro.domain.question_classification import (
 
 settings = Settings()
 
+
 class OllamaQuestionClassifier(QuestionClassifier):
     def __init__(
         self,

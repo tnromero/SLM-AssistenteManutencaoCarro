@@ -10,7 +10,6 @@ from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classif
 from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
     RuleBasedQuestionClassifier,
 )
-from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 
 
 def load_dataset(path: str):
@@ -61,9 +60,7 @@ def main():
     )
 
     evaluate(
-        HybridQuestionClassifier(
-            RuleBasedQuestionClassifier(), OllamaQuestionClassifier()
-        ),
+        HybridQuestionClassifier(RuleBasedQuestionClassifier(), OllamaQuestionClassifier()),
         dataset,
     )
 

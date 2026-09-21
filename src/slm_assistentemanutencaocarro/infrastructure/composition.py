@@ -27,9 +27,9 @@ from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response
     RuleBasedResponseGenerator,
 )
 
-
 json_file_vehicle = "data/vehicle.json"
 settings = Settings()
+
 
 def create_assistant(json_file_vehicle: str) -> AssistantService:
     vehicle_reader = JsonVehicleReader(json_file_vehicle)

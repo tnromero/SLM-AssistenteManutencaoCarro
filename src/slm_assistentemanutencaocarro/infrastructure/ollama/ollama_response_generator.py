@@ -8,6 +8,7 @@ from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 
 settings = Settings()
 
+
 class OllamaResponseGenerator(ResponseGenerator):
     def __init__(
         self,

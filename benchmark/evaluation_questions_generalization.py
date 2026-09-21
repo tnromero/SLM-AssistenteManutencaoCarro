@@ -12,9 +12,7 @@ from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question
 
 
 def main():
-    dataset = load_dataset(
-        "benchmark/data/questions_generalization.csv"
-    )
+    dataset = load_dataset("benchmark/data/questions_generalization.csv")
 
     evaluate(
         RuleBasedQuestionClassifier(),
