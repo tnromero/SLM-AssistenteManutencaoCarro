@@ -6,6 +6,7 @@ from slm_assistentemanutencaocarro.controller.intent_classifier.ollama_intent_cl
 from slm_assistentemanutencaocarro.controller.question_classifier.rule_based_question_classifier import (
     RuleBasedQuestionClassifier,
 )
+from slm_assistentemanutencaocarro.controller.response_generator.rule_based_response_generator import RuleBasedResponseGenerator
 from slm_assistentemanutencaocarro.repository.vehicle_repository import (
     VehicleRepository,
 )
@@ -20,7 +21,7 @@ from slm_assistentemanutencaocarro.service.vehicle_service import (
 )
 
 
-def create_service():
+def create_assistant():
 
     intent_classifier = HybridIntentClassifier(ollama_model=OllamaIntentClassifier(model=OLLAMA_MODEL.QWEN_3))
 
@@ -40,43 +41,46 @@ def create_service():
         vehicle_service
     )
 
+    response_generator = RuleBasedResponseGenerator()
+
     return AssistantService(
         intent_classifier=intent_classifier,
         question_classifier=question_classifier,
         vehicle_query_service=query_service,
+        response_generator=response_generator
     )
 
 
 def test_should_answer_oil_question():
 
-    assistant = create_service()
+    assistant = create_assistant()
 
     result = assistant.answer(
         "Qual óleo usar no motor?"
     )
 
-    assert result.answer == (
+    assert result == (
         "O óleo especificado é 5W-30."
     )
 
 
 def test_should_answer_tire_pressure_question():
 
-    assistant = create_service()
+    assistant = create_assistant()
 
     result = assistant.answer(
         "Qual a pressão correta dos pneus?"
     )
 
-    assert "33 PSI" in result.answer
+    assert "33 PSI" in result
 
 
 def test_should_answer_tire_size_question():
 
-    assistant = create_service()
+    assistant = create_assistant()
 
     result = assistant.answer(
         "Qual o tamanho dos pneus?"
     )
 
-    assert "205/55 R17" in result.answer
+    assert "205/55 R17" in result
