@@ -1,5 +1,5 @@
-from slm_assistentemanutencaocarro.model.intent import Intent
-from slm_assistentemanutencaocarro.model.question_type import QuestionType
+from slm_assistentemanutencaocarro.model.intent.intent import Intent
+from slm_assistentemanutencaocarro.model.question.question_type import QuestionType
 from slm_assistentemanutencaocarro.model.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.repository.vehicle_repository import (
     VehicleRepository,

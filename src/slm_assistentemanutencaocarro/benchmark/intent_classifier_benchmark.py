@@ -1,7 +1,7 @@
 import time
 
-from slm_assistentemanutencaocarro.controller.intent_classifier import IntentClassifier
-from slm_assistentemanutencaocarro.model.intent_classifier_benchmark_result import IntentClassifierBenchmarkResult
+from slm_assistentemanutencaocarro.controller.intent_classifier.intent_classifier import IntentClassifier
+from slm_assistentemanutencaocarro.model.intent.intent_classifier_benchmark_result import IntentClassifierBenchmarkResult
 
 
 class IntentClassifierBenchmark:

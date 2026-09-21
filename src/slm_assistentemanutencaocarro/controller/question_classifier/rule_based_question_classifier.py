@@ -1,10 +1,10 @@
-from slm_assistentemanutencaocarro.controller.question_classifier import (
+from slm_assistentemanutencaocarro.controller.question_classifier.question_classifier import (
     QuestionClassifier,
 )
-from slm_assistentemanutencaocarro.model.question_classification import (
+from slm_assistentemanutencaocarro.model.question.question_classification import (
     QuestionClassification,
 )
-from slm_assistentemanutencaocarro.model.question_type import QuestionType
+from slm_assistentemanutencaocarro.model.question.question_type import QuestionType
 
 
 class RuleBasedQuestionClassifier(QuestionClassifier):

@@ -1,4 +1,4 @@
-from slm_assistentemanutencaocarro.model.question_type import QuestionType
+from slm_assistentemanutencaocarro.model.question.question_type import QuestionType
 from slm_assistentemanutencaocarro.model.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.service.vehicle_service import (
     VehicleService,

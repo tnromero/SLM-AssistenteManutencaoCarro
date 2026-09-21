@@ -1,19 +1,19 @@
 import time
 
-from slm_assistentemanutencaocarro.config.models import HYBRID, QWEN_3, RULE_BASED
-from slm_assistentemanutencaocarro.controller.intent_classifier import (
+from slm_assistentemanutencaocarro.config.model_name import HYBRID, OLLAMA_MODEL, RULE_BASED
+from slm_assistentemanutencaocarro.controller.intent_classifier.intent_classifier import (
     IntentClassifier,
 )
-from slm_assistentemanutencaocarro.controller.ollama_intent_classifier import (
+from slm_assistentemanutencaocarro.controller.intent_classifier.ollama_intent_classifier import (
     OllamaIntentClassifier,
 )
-from slm_assistentemanutencaocarro.controller.rule_based_intent_classifier import (
+from slm_assistentemanutencaocarro.controller.intent_classifier.rule_based_intent_classifier import (
     RuleBasedIntentClassifier,
 )
-from slm_assistentemanutencaocarro.model.intent import (
+from slm_assistentemanutencaocarro.model.intent.intent import (
     Intent,
 )
-from slm_assistentemanutencaocarro.model.intent_classification import (
+from slm_assistentemanutencaocarro.model.intent.intent_classification import (
     IntentClassification,
 )
 

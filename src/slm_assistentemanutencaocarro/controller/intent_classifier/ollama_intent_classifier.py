@@ -1,10 +1,10 @@
 import ollama
 from pydantic import ValidationError
 
-from slm_assistentemanutencaocarro.controller.intent_classifier import (
+from slm_assistentemanutencaocarro.controller.intent_classifier.intent_classifier import (
     IntentClassifier,
 )
-from slm_assistentemanutencaocarro.model.intent_classification import (
+from slm_assistentemanutencaocarro.model.intent.intent_classification import (
     IntentClassification,
 )
 

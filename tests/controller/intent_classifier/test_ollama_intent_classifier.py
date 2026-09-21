@@ -1,11 +1,11 @@
-from slm_assistentemanutencaocarro.config.models import QWEN_3
-from slm_assistentemanutencaocarro.controller.ollama_intent_classifier import (
+from slm_assistentemanutencaocarro.config.model_name import OLLAMA_MODEL
+from slm_assistentemanutencaocarro.controller.intent_classifier.ollama_intent_classifier import (
     OllamaIntentClassifier,
 )
 
 
 def test_ollama_should_classify_intent():
-    classifier = OllamaIntentClassifier(model=QWEN_3)
+    classifier = OllamaIntentClassifier(model=OLLAMA_MODEL.QWEN_3)
 
     result = classifier.classify(
         "Quando devo trocar o óleo?"
@@ -13,9 +13,9 @@ def test_ollama_should_classify_intent():
 
     assert result.intent.value == "Manutenção"
 
-def test_ollama_should_classify_intent_qwen_3_consistency():
+def test_ollama_should_classify_intent_ollama_model_qwen_3_consistency():
 
-    classifier = OllamaIntentClassifier(model=QWEN_3)
+    classifier = OllamaIntentClassifier(model=OLLAMA_MODEL.QWEN_3)
 
     text = "Quando devo trocar o óleo?"
 

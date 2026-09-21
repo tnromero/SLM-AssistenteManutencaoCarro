@@ -1,9 +1,9 @@
 import pytest
 
-from slm_assistentemanutencaocarro.controller.rule_based_intent_classifier import (
+from slm_assistentemanutencaocarro.controller.intent_classifier.rule_based_intent_classifier import (
     RuleBasedIntentClassifier,
 )
-from slm_assistentemanutencaocarro.model.intent import Intent
+from slm_assistentemanutencaocarro.model.intent.intent import Intent
 
 
 @pytest.fixture

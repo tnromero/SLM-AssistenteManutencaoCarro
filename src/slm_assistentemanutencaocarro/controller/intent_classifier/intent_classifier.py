@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from slm_assistentemanutencaocarro.model.intent_classification import (
+from slm_assistentemanutencaocarro.model.intent.intent_classification import (
     IntentClassification,
 )
 

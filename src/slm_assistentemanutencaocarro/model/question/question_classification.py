@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from slm_assistentemanutencaocarro.model.question_type import QuestionType
+from slm_assistentemanutencaocarro.model.question.question_type import QuestionType
 
 
 class QuestionClassification(BaseModel):

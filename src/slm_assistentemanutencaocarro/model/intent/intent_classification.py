@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from slm_assistentemanutencaocarro.model.intent import Intent
+from slm_assistentemanutencaocarro.model.intent.intent import Intent
 
 
 class IntentClassification(BaseModel):

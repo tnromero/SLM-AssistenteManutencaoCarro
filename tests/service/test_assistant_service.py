@@ -1,9 +1,9 @@
-from slm_assistentemanutencaocarro.config.models import QWEN_3
-from slm_assistentemanutencaocarro.controller.hybrid_intent_classifier import (
+from slm_assistentemanutencaocarro.config.model_name import OLLAMA_MODEL
+from slm_assistentemanutencaocarro.controller.intent_classifier.hybrid_intent_classifier import (
     HybridIntentClassifier,
 )
-from slm_assistentemanutencaocarro.controller.ollama_intent_classifier import OllamaIntentClassifier
-from slm_assistentemanutencaocarro.controller.rule_based_question_classifier import (
+from slm_assistentemanutencaocarro.controller.intent_classifier.ollama_intent_classifier import OllamaIntentClassifier
+from slm_assistentemanutencaocarro.controller.question_classifier.rule_based_question_classifier import (
     RuleBasedQuestionClassifier,
 )
 from slm_assistentemanutencaocarro.repository.vehicle_repository import (
@@ -22,7 +22,7 @@ from slm_assistentemanutencaocarro.service.vehicle_service import (
 
 def create_service():
 
-    intent_classifier = HybridIntentClassifier(ollama_model=OllamaIntentClassifier(model=QWEN_3))
+    intent_classifier = HybridIntentClassifier(ollama_model=OllamaIntentClassifier(model=OLLAMA_MODEL.QWEN_3))
 
     question_classifier = (
         RuleBasedQuestionClassifier()

@@ -1,7 +1,7 @@
-from slm_assistentemanutencaocarro.controller.hybrid_intent_classifier import (
+from slm_assistentemanutencaocarro.controller.intent_classifier.hybrid_intent_classifier import (
     HybridIntentClassifier,
 )
-from slm_assistentemanutencaocarro.controller.question_classifier import (
+from slm_assistentemanutencaocarro.controller.question_classifier.question_classifier import (
     QuestionClassifier,
 )
 from slm_assistentemanutencaocarro.model.vehicle_answer import VehicleAnswer
