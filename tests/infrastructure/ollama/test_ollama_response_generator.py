@@ -1,3 +1,5 @@
+import pytest
+
 from slm_assistentemanutencaocarro.config.settings import Settings
 from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
@@ -7,6 +9,7 @@ from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generat
 model_name = Settings().ollama_response_model
 
 
+@pytest.mark.integration
 def test_should_generate_response():
 
     generator = OllamaResponseGenerator(model=model_name)

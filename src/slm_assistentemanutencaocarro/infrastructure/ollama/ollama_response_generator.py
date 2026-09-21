@@ -3,18 +3,15 @@ import ollama
 from slm_assistentemanutencaocarro.application.ports.response_generator import (
     ResponseGenerator,
 )
-from slm_assistentemanutencaocarro.config.settings import Settings
 from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
-
-settings = Settings()
 
 
 class OllamaResponseGenerator(ResponseGenerator):
     def __init__(
         self,
-        model: str = settings.ollama_response_model,
+        model: str,
     ):
-        self.model = model
+        self.slm_model = model
 
     def generate(
         self,
@@ -37,7 +34,7 @@ Regras:
 """
 
         response = ollama.chat(
-            model=self.model,
+            model=self.slm_model,
             think=False,
             options={
                 "temperature": 0.7,

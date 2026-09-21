@@ -4,18 +4,15 @@ from pydantic import ValidationError
 from slm_assistentemanutencaocarro.application.ports.question_classifier import (
     QuestionClassifier,
 )
-from slm_assistentemanutencaocarro.config.settings import Settings
 from slm_assistentemanutencaocarro.domain.question_classification import (
     QuestionClassification,
 )
-
-settings = Settings()
 
 
 class OllamaQuestionClassifier(QuestionClassifier):
     def __init__(
         self,
-        model: str = settings.ollama_question_model,
+        model: str,
         max_retries: int = 2,
     ):
         self.model = model

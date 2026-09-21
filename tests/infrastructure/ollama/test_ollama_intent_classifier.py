@@ -1,3 +1,5 @@
+import pytest
+
 from slm_assistentemanutencaocarro.config.settings import Settings
 from slm_assistentemanutencaocarro.domain.intent import Intent
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
@@ -6,7 +8,7 @@ from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifie
 
 model_name = Settings().ollama_intent_model
 
-
+@pytest.mark.integration
 def test_ollama_should_classify_intent():
     classifier = OllamaIntentClassifier(model=model_name)
 
@@ -14,7 +16,7 @@ def test_ollama_should_classify_intent():
 
     assert result.intent.value == Intent.MANUTENCAO
 
-
+@pytest.mark.integration
 def test_ollama_should_classify_intent_ollama_model_qwen_3_consistency():
 
     classifier = OllamaIntentClassifier(model=model_name)

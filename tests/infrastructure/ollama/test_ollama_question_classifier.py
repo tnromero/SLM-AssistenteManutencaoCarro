@@ -1,16 +1,19 @@
 import pytest
 
+from slm_assistentemanutencaocarro.config.settings import Settings
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
     OllamaQuestionClassifier,
 )
 
+model_name = Settings().ollama_response_model
 
 @pytest.fixture
 def classifier():
-    return OllamaQuestionClassifier()
+    return OllamaQuestionClassifier(model=model_name)
 
 
+@pytest.mark.integration
 @pytest.mark.parametrize(
     ("question", "expected"),
     [
