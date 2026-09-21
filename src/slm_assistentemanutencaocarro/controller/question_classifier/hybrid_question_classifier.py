@@ -21,6 +21,7 @@ class HybridQuestionClassifier(QuestionClassifier):
     ):
         self.rule_classifier = rule_classifier
         self.slm_classifier = slm_classifier
+        self.slm_calls = 0
 
     def classify(
         self,
@@ -32,4 +33,9 @@ class HybridQuestionClassifier(QuestionClassifier):
         if rule_result.question_type != QuestionType.DESCONHECIDO:
             return rule_result
 
+        self.slm_calls += 1
         return self.slm_classifier.classify(question)
+
+    @property
+    def slm_call_rate(self) -> float:
+        return self.slm_calls

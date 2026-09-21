@@ -32,7 +32,7 @@ def load_test_cases(
 
 def main():
 
-    for csv_file_name in ["data/intents.csv", "data/generalization.csv"]:
+    for csv_file_name in ["data/intents.csv", "data/intents_generalization.csv"]:
         test_case = load_test_cases(csv_file_name=csv_file_name)
 
         result: IntentClassifierBenchmarkResult = IntentClassifierBenchmark().evaluate(
