@@ -1,5 +1,6 @@
 from evaluation_questions import evaluate, load_dataset
 
+from slm_assistentemanutencaocarro.config.settings import Settings
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (
     HybridQuestionClassifier,
 )
@@ -11,6 +12,9 @@ from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question
 )
 
 
+settings = Settings()
+
+
 def main():
     dataset = load_dataset("benchmark/data/questions_generalization.csv")
 
@@ -20,12 +24,12 @@ def main():
     )
 
     evaluate(
-        OllamaQuestionClassifier(),
+        OllamaQuestionClassifier(model=settings.ollama_question_model),
         dataset,
     )
 
     evaluate(
-        HybridQuestionClassifier(RuleBasedQuestionClassifier(), OllamaQuestionClassifier()),
+        HybridQuestionClassifier(RuleBasedQuestionClassifier(), OllamaQuestionClassifier(model=settings.ollama_question_model)),
         dataset,
     )
 

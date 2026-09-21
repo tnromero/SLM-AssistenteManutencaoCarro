@@ -1,6 +1,7 @@
 import csv
 import time
 
+from slm_assistentemanutencaocarro.config.settings import Settings
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (
     HybridQuestionClassifier,
 )
@@ -11,6 +12,8 @@ from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question
     RuleBasedQuestionClassifier,
 )
 
+
+settings = Settings()
 
 def load_dataset(path: str):
     with open(path, encoding="utf-8") as file:
@@ -55,12 +58,12 @@ def main():
     )
 
     evaluate(
-        OllamaQuestionClassifier(),
+        OllamaQuestionClassifier(model=settings.ollama_question_model),
         dataset,
     )
 
     evaluate(
-        HybridQuestionClassifier(RuleBasedQuestionClassifier(), OllamaQuestionClassifier()),
+        HybridQuestionClassifier(RuleBasedQuestionClassifier(), OllamaQuestionClassifier(model=settings.ollama_question_model)),
         dataset,
     )
 
