@@ -1,5 +1,7 @@
+import pytest
 from unittest.mock import Mock
 
+from slm_assistentemanutencaocarro.application.ports.question_classifier import QuestionClassifier
 from slm_assistentemanutencaocarro.domain.question_classification import (
     QuestionClassification,
 )
@@ -12,29 +14,11 @@ from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question
 )
 
 
-def test_should_use_rule_based_classifier_first():
+def test_should_use_rule_classifier_when_question_is_known():
+    rule_classifier = Mock(spec=QuestionClassifier)
+    slm_classifier = Mock(spec=QuestionClassifier)
 
-    rule_classifier = RuleBasedQuestionClassifier()
-    slm_classifier = Mock()
-
-    classifier = HybridQuestionClassifier(
-        rule_classifier=rule_classifier,
-        slm_classifier=slm_classifier,
-    )
-
-    result: QuestionClassification = classifier.classify("Qual óleo usar no motor?")
-
-    assert result.question_type == QuestionType.OLEO_MOTOR
-
-    slm_classifier.classify.assert_not_called()
-
-
-def test_should_use_slm_when_rule_based_classifier_cannot_classify():
-
-    rule_classifier = RuleBasedQuestionClassifier()
-    slm_classifier = Mock()
-
-    slm_classifier.classify.return_value = QuestionClassification(
+    rule_classifier.classify.return_value = QuestionClassification(
         question_type=QuestionType.OLEO_MOTOR
     )
 
@@ -43,8 +27,57 @@ def test_should_use_slm_when_rule_based_classifier_cannot_classify():
         slm_classifier=slm_classifier,
     )
 
-    result = classifier.classify("Que lubrificante é recomendado?")
+    result = classifier.classify("Qual óleo devo usar?")
 
     assert result.question_type == QuestionType.OLEO_MOTOR
+    slm_classifier.classify.assert_not_called()
+    assert classifier.slm_call_count == 0
 
-    slm_classifier.classify.assert_called_once_with("Que lubrificante é recomendado?")
+
+def test_should_use_slm_when_rule_classifier_returns_unknown():
+    rule_classifier = Mock(spec=QuestionClassifier)
+    slm_classifier = Mock(spec=QuestionClassifier)
+
+    rule_classifier.classify.return_value = QuestionClassification(
+        question_type=QuestionType.DESCONHECIDO
+    )
+
+    slm_classifier.classify.return_value = QuestionClassification(
+        question_type=QuestionType.MEDIDA_PNEUS
+    )
+
+    classifier = HybridQuestionClassifier(
+        rule_classifier=rule_classifier,
+        slm_classifier=slm_classifier,
+    )
+
+    result = classifier.classify("Qual pneu devo utilizar nessa situação?")
+
+    assert result.question_type == QuestionType.MEDIDA_PNEUS
+    slm_classifier.classify.assert_called_once_with(
+        "Qual pneu devo utilizar nessa situação?"
+    )
+    assert classifier.slm_call_count == 1
+
+def test_should_count_slm_calls():
+    rule_classifier = Mock(spec=QuestionClassifier)
+    slm_classifier = Mock(spec=QuestionClassifier)
+
+    rule_classifier.classify.return_value = QuestionClassification(
+        question_type=QuestionType.DESCONHECIDO
+    )
+
+    slm_classifier.classify.return_value = QuestionClassification(
+        question_type=QuestionType.MEDIDA_PNEUS
+    )
+
+    classifier = HybridQuestionClassifier(
+        rule_classifier=rule_classifier,
+        slm_classifier=slm_classifier,
+    )
+
+    classifier.classify("Pergunta 1")
+    classifier.classify("Pergunta 2")
+    classifier.classify("Pergunta 3")
+
+    assert classifier.slm_call_count == 3

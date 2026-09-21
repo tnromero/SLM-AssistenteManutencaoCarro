@@ -11,8 +11,14 @@ from slm_assistentemanutencaocarro.config.settings import Settings
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_intent_classifier import (
     HybridIntentClassifier,
 )
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (
+    HybridQuestionClassifier,
+)
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
     OllamaIntentClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
+    OllamaQuestionClassifier,
 )
 from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
     JsonVehicleReader,
@@ -39,7 +45,12 @@ def create_assistant(json_file_vehicle: str) -> AssistantService:
         ollama_classifier=OllamaIntentClassifier(model=settings.ollama_intent_model),
     )
 
-    question_classifier = RuleBasedQuestionClassifier()
+    question_classifier = HybridQuestionClassifier(
+        rule_classifier=RuleBasedQuestionClassifier(),
+        slm_classifier=OllamaQuestionClassifier(
+            model=settings.ollama_question_model
+        )
+    )
 
     response_generator = RuleBasedResponseGenerator()
 
