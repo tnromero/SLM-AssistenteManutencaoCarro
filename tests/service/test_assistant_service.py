@@ -1,35 +1,35 @@
-from slm_assistentemanutencaocarro.config.model_name import OLLAMA_MODEL
-from slm_assistentemanutencaocarro.controller.intent_classifier.hybrid_intent_classifier import (
+from slm_assistentemanutencaocarro.config.settings import OLLAMA_MODEL
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_intent_classifier import (
     HybridIntentClassifier,
 )
-from slm_assistentemanutencaocarro.controller.intent_classifier.ollama_intent_classifier import (
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
     OllamaIntentClassifier,
 )
-from slm_assistentemanutencaocarro.controller.question_classifier.rule_based_question_classifier import (
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
     RuleBasedQuestionClassifier,
 )
-from slm_assistentemanutencaocarro.controller.response_generator.hybrid_response_generator import (
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
     HybridResponseGenerator,
 )
-from slm_assistentemanutencaocarro.controller.response_generator.ollama_response_generator import (
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
     OllamaResponseGenerator,
 )
-from slm_assistentemanutencaocarro.controller.response_generator.response_generator import (
+from slm_assistentemanutencaocarro.application.ports.response_generator import (
     ResponseGenerator,
 )
-from slm_assistentemanutencaocarro.controller.response_generator.rule_based_response_generator import (
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
     RuleBasedResponseGenerator,
 )
 from slm_assistentemanutencaocarro.repository.vehicle_repository import (
     VehicleRepository,
 )
-from slm_assistentemanutencaocarro.service.assistant_service import (
+from slm_assistentemanutencaocarro.application.services.assistant_service import (
     AssistantService,
 )
-from slm_assistentemanutencaocarro.service.vehicle_query_service import (
+from slm_assistentemanutencaocarro.application.services.vehicle_query_service import (
     VehicleQueryService,
 )
-from slm_assistentemanutencaocarro.service.vehicle_service import (
+from slm_assistentemanutencaocarro.application.services.vehicle_service import (
     VehicleService,
 )
 

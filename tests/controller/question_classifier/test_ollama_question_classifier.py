@@ -1,9 +1,9 @@
 import pytest
 
-from slm_assistentemanutencaocarro.controller.question_classifier.ollama_question_classifier import (
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
     OllamaQuestionClassifier,
 )
-from slm_assistentemanutencaocarro.model.question.question_type import QuestionType
+from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 
 
 @pytest.fixture

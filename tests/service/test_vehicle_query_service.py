@@ -1,13 +1,13 @@
-from slm_assistentemanutencaocarro.model.intent.intent import Intent
-from slm_assistentemanutencaocarro.model.question.question_type import QuestionType
-from slm_assistentemanutencaocarro.model.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.domain.intent import Intent
+from slm_assistentemanutencaocarro.domain.question_type import QuestionType
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.repository.vehicle_repository import (
     VehicleRepository,
 )
-from slm_assistentemanutencaocarro.service.vehicle_query_service import (
+from slm_assistentemanutencaocarro.application.services.vehicle_query_service import (
     VehicleQueryService,
 )
-from slm_assistentemanutencaocarro.service.vehicle_service import (
+from slm_assistentemanutencaocarro.application.services.vehicle_service import (
     VehicleService,
 )
 

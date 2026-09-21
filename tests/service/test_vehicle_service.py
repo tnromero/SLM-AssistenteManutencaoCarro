@@ -1,7 +1,7 @@
 from slm_assistentemanutencaocarro.repository.vehicle_repository import (
     VehicleRepository,
 )
-from slm_assistentemanutencaocarro.service.vehicle_service import (
+from slm_assistentemanutencaocarro.application.services.vehicle_service import (
     VehicleService,
 )
 

@@ -1,19 +1,19 @@
 import csv
 
-from slm_assistentemanutencaocarro.config.model_name import OLLAMA_MODEL, OLLAMA_MODEL.LLAMA_3_2
-from slm_assistentemanutencaocarro.controller.intent_classifier.hybrid_intent_classifier import (
+from slm_assistentemanutencaocarro.config.settings import OLLAMA_MODEL, OLLAMA_MODEL.LLAMA_3_2
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_intent_classifier import (
     HybridIntentClassifier,
 )
-from slm_assistentemanutencaocarro.controller.intent_classifier.ollama_intent_classifier import (
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
     OllamaIntentClassifier,
 )
-from slm_assistentemanutencaocarro.controller.intent_classifier.rule_based_intent_classifier import (
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_intent_classifier import (
     RuleBasedIntentClassifier,
 )
 from slm_assistentemanutencaocarro.benchmark.intent_classifier_benchmark import (
     IntentClassifierBenchmark,
 )
-from slm_assistentemanutencaocarro.model.intent.intent_classifier_benchmark_result import (
+from benchmark.intent_classifier_benchmark_result import (
     IntentClassifierBenchmarkResult,
 )
 

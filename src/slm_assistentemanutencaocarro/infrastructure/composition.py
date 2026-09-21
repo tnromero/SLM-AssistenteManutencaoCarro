@@ -1,0 +1,54 @@
+from slm_assistentemanutencaocarro.application.services.assistant_service import (
+    AssistantService,
+)
+from slm_assistentemanutencaocarro.application.services.vehicle_query_service import (
+    VehicleQueryService,
+)
+from slm_assistentemanutencaocarro.application.services.vehicle_service import (
+    VehicleService,
+)
+from slm_assistentemanutencaocarro.config.settings import Settings
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_intent_classifier import (
+    HybridIntentClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
+    OllamaIntentClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
+    JsonVehicleReader,
+)
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_intent_classifier import (
+    RuleBasedIntentClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
+    RuleBasedQuestionClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
+    RuleBasedResponseGenerator,
+)
+
+
+json_file_vehicle = "data/vehicle.json"
+settings = Settings()
+
+def create_assistant(json_file_vehicle: str) -> AssistantService:
+    vehicle_reader = JsonVehicleReader(json_file_vehicle)
+
+    intent_classifier = HybridIntentClassifier(
+        rule_based_classifier=RuleBasedIntentClassifier(),
+        ollama_classifier=OllamaIntentClassifier(model=settings.ollama_intent_model),
+    )
+
+    question_classifier = RuleBasedQuestionClassifier()
+
+    response_generator = RuleBasedResponseGenerator()
+
+    vehicle_service = VehicleService(vehicle_reader)
+    vehicle_query_service = VehicleQueryService(vehicle_service)
+
+    return AssistantService(
+        intent_classifier=intent_classifier,
+        question_classifier=question_classifier,
+        vehicle_query_service=vehicle_query_service,
+        response_generator=response_generator,
+    )

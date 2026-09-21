@@ -1,9 +1,9 @@
 from unittest.mock import Mock
 
-from slm_assistentemanutencaocarro.controller.response_generator.hybrid_response_generator import (
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
     HybridResponseGenerator,
 )
-from slm_assistentemanutencaocarro.model.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 
 
 def test_should_use_rule_based_generator():

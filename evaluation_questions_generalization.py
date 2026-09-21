@@ -1,12 +1,12 @@
 from evaluation_questions import evaluate, load_dataset
 
-from slm_assistentemanutencaocarro.controller.question_classifier.hybrid_question_classifier import (
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (
     HybridQuestionClassifier,
 )
-from slm_assistentemanutencaocarro.controller.question_classifier.ollama_question_classifier import (
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
     OllamaQuestionClassifier,
 )
-from slm_assistentemanutencaocarro.controller.question_classifier.rule_based_question_classifier import (
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
     RuleBasedQuestionClassifier,
 )
 

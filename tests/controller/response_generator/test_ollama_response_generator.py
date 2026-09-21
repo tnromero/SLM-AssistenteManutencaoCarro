@@ -1,7 +1,7 @@
-from slm_assistentemanutencaocarro.controller.response_generator.ollama_response_generator import (
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
     OllamaResponseGenerator,
 )
-from slm_assistentemanutencaocarro.model.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 
 
 def test_should_generate_response():

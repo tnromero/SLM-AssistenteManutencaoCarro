@@ -1,5 +1,5 @@
-from slm_assistentemanutencaocarro.config.model_name import OLLAMA_MODEL
-from slm_assistentemanutencaocarro.controller.intent_classifier.ollama_intent_classifier import (
+from slm_assistentemanutencaocarro.config.settings import OLLAMA_MODEL
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
     OllamaIntentClassifier,
 )
 
