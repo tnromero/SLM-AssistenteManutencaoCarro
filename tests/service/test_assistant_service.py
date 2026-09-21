@@ -43,7 +43,7 @@ def create_service():
     return AssistantService(
         intent_classifier=intent_classifier,
         question_classifier=question_classifier,
-        query_service=query_service,
+        vehicle_query_service=query_service,
     )
 
 
