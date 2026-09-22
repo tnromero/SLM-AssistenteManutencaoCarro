@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import Mock
 
 from slm_assistentemanutencaocarro.application.ports.question_classifier import QuestionClassifier
@@ -8,9 +7,6 @@ from slm_assistentemanutencaocarro.domain.question_classification import (
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (
     HybridQuestionClassifier,
-)
-from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
-    RuleBasedQuestionClassifier,
 )
 
 

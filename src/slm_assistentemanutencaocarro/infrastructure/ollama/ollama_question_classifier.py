@@ -8,22 +8,7 @@ from slm_assistentemanutencaocarro.domain.question_classification import (
     QuestionClassification,
 )
 
-
-class OllamaQuestionClassifier(QuestionClassifier):
-    def __init__(
-        self,
-        model: str,
-        max_retries: int = 2,
-    ):
-        self.model = model
-        self.max_retries = max_retries
-
-    def classify(
-        self,
-        question: str,
-    ) -> QuestionClassification:
-
-        system_prompt = """
+SYSTEM_PROMPT = """
 Você é um classificador de perguntas sobre manutenção de veículos.
 
 Classifique a pergunta em exatamente uma das categorias:
@@ -52,6 +37,20 @@ Perguntas que não pertencem a nenhuma das categorias acima.
 Retorne exclusivamente um JSON compatível com o schema informado.
 """
 
+class OllamaQuestionClassifier(QuestionClassifier):
+    def __init__(
+        self,
+        model: str,
+        max_retries: int = 2,
+    ):
+        self.model = model
+        self.max_retries = max_retries
+
+    def classify(
+        self,
+        question: str,
+    ) -> QuestionClassification:
+
         last_error = None
 
         for _ in range(self.max_retries + 1):
@@ -59,13 +58,10 @@ Retorne exclusivamente um JSON compatível com o schema informado.
                 response = ollama.chat(
                     model=self.model,
                     think=False,
-                    options={
-                        "temperature": 0.7,
-                    },
                     messages=[
                         {
                             "role": "system",
-                            "content": system_prompt,
+                            "content": SYSTEM_PROMPT,
                         },
                         {
                             "role": "user",

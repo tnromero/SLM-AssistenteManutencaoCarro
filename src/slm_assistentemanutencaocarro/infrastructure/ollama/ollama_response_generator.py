@@ -6,19 +6,7 @@ from slm_assistentemanutencaocarro.application.ports.response_generator import (
 from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 
 
-class OllamaResponseGenerator(ResponseGenerator):
-    def __init__(
-        self,
-        model: str,
-    ):
-        self.slm_model = model
-
-    def generate(
-        self,
-        answer: VehicleAnswer,
-    ) -> str:
-
-        system_prompt = """
+SYSTEM_PROMPT = """
 Você é um assistente de manutenção automotiva.
 
 Transforme a informação fornecida pelo sistema
@@ -33,16 +21,25 @@ Regras:
 - Seja objetivo.
 """
 
+class OllamaResponseGenerator(ResponseGenerator):
+    def __init__(
+        self,
+        model: str,
+    ):
+        self.slm_model = model
+
+    def generate(
+        self,
+        answer: VehicleAnswer,
+    ) -> str:
+
         response = ollama.chat(
             model=self.slm_model,
             think=False,
-            options={
-                "temperature": 0.7,
-            },
             messages=[
                 {
                     "role": "system",
-                    "content": system_prompt,
+                    "content": SYSTEM_PROMPT,
                 },
                 {
                     "role": "user",

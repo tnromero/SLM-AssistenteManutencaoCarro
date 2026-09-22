@@ -12,8 +12,8 @@ from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question
     RuleBasedQuestionClassifier,
 )
 
-
 settings = Settings()
+
 
 def load_dataset(path: str):
     with open(path, encoding="utf-8") as file:
@@ -63,7 +63,10 @@ def main():
     )
 
     evaluate(
-        HybridQuestionClassifier(RuleBasedQuestionClassifier(), OllamaQuestionClassifier(model=settings.ollama_question_model)),
+        HybridQuestionClassifier(
+            RuleBasedQuestionClassifier(),
+            OllamaQuestionClassifier(model=settings.ollama_question_model),
+        ),
         dataset,
     )
 

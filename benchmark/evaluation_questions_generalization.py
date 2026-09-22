@@ -11,7 +11,6 @@ from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question
     RuleBasedQuestionClassifier,
 )
 
-
 settings = Settings()
 
 
@@ -29,7 +28,10 @@ def main():
     )
 
     evaluate(
-        HybridQuestionClassifier(RuleBasedQuestionClassifier(), OllamaQuestionClassifier(model=settings.ollama_question_model)),
+        HybridQuestionClassifier(
+            RuleBasedQuestionClassifier(),
+            OllamaQuestionClassifier(model=settings.ollama_question_model),
+        ),
         dataset,
     )
 
