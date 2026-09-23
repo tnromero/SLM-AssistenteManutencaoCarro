@@ -59,6 +59,7 @@ def create_assistant(json_file_vehicle: str) -> AssistantService:
         ollama_generator=OllamaResponseGenerator(
             model=settings.ollama_response_model,
         ),
+        use_slm=True
     )
 
     vehicle_service = VehicleService(vehicle_reader)
