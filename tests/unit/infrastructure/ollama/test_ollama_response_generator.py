@@ -10,7 +10,7 @@ from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generat
 def test_should_generate_response():
 
     response = Mock()
-    response.message.content = "O óleo especificado é 5W-30."
+    response.message.content = "O óleo especificado para o veículo é 5W-30."
     
     answer = Mock(spec=VehicleAnswer)
     answer.question = "Qual óleo usar?"
@@ -23,7 +23,7 @@ def test_should_generate_response():
         generator = OllamaResponseGenerator(model="qwen3:1.7b")
         result = generator.generate(answer)
 
-    assert result == "O óleo especificado é 5W-30."
+    assert result == "O óleo especificado para o veículo é 5W-30."
     assert isinstance(result, str)
     chat.assert_called_once_with(
         model="qwen3:1.7b",
