@@ -1,6 +1,9 @@
 from unittest.mock import Mock
 
 from slm_assistentemanutencaocarro.application.ports.response_generator import ResponseGenerator
+from slm_assistentemanutencaocarro.application.services.response_validation_service import (
+    ResponseValidationService,
+)
 from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
     HybridResponseGenerator,
@@ -10,6 +13,7 @@ from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generat
 def test_should_preserve_rule_based_response():
     rule_generator = Mock(spec=ResponseGenerator)
     ollama_generator = Mock(spec=ResponseGenerator)
+    validator = Mock(spec=ResponseValidationService)
 
     answer = VehicleAnswer(
         question="Qual óleo devo usar?",
@@ -21,6 +25,7 @@ def test_should_preserve_rule_based_response():
     generator = HybridResponseGenerator(
         rule_generator=rule_generator,
         ollama_generator=ollama_generator,
+        validator=validator
     )
 
     result = generator.generate(answer)
@@ -31,6 +36,7 @@ def test_should_preserve_rule_based_response():
 def test_should_use_slm_when_enabled():
     rule_generator = Mock(spec=ResponseGenerator)
     ollama_generator = Mock(spec=ResponseGenerator)
+    validator = Mock(spec=ResponseValidationService)
 
     answer = VehicleAnswer(
         question="Qual óleo devo usar?",
@@ -41,9 +47,12 @@ def test_should_use_slm_when_enabled():
         "Para o seu veículo, o óleo especificado é 5W-30."
     )
 
+    validator.validate.return_value = True
+
     generator = HybridResponseGenerator(
         rule_generator=rule_generator,
         ollama_generator=ollama_generator,
+        validator = validator,
         use_slm=True,
     )
 
@@ -56,6 +65,7 @@ def test_should_use_slm_when_enabled():
 def test_should_fallback_to_rule_generator_when_slm_fails():
     rule_generator = Mock(spec=ResponseGenerator)
     ollama_generator = Mock(spec=ResponseGenerator)
+    validator = Mock(spec=ResponseValidationService)
 
     answer = VehicleAnswer(
         question="Qual óleo devo usar?",
@@ -68,6 +78,7 @@ def test_should_fallback_to_rule_generator_when_slm_fails():
     generator = HybridResponseGenerator(
         rule_generator=rule_generator,
         ollama_generator=ollama_generator,
+        validator=validator,
         use_slm=True,
     )
 
@@ -75,4 +86,34 @@ def test_should_fallback_to_rule_generator_when_slm_fails():
 
     assert result == "O óleo especificado é 5W-30."
     ollama_generator.generate.assert_called_once_with(answer)
+    rule_generator.generate.assert_called_once_with(answer)
+
+def test_should_fallback_when_response_is_invalid():
+    rule_generator = Mock(spec=ResponseGenerator)
+    ollama_generator = Mock(spec=ResponseGenerator)
+    validator = Mock(spec=ResponseValidationService)
+
+    answer = VehicleAnswer(
+        question="Qual óleo devo usar?",
+        answer="O óleo especificado é 5W-30.",
+    )
+
+    ollama_generator.generate.return_value = "Resposta inventada."
+    validator.validate.return_value = False
+    rule_generator.generate.return_value = "O óleo especificado é 5W-30."
+
+    generator = HybridResponseGenerator(
+        rule_generator=rule_generator,
+        ollama_generator=ollama_generator,
+        validator=validator,
+        use_slm=True,
+    )
+
+    result = generator.generate(answer)
+
+    assert result == "O óleo especificado é 5W-30."
+    validator.validate.assert_called_once_with(
+        answer,
+        "Resposta inventada.",
+    )
     rule_generator.generate.assert_called_once_with(answer)

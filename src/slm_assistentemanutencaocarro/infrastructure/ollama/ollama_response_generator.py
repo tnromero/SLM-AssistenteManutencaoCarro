@@ -5,7 +5,6 @@ from slm_assistentemanutencaocarro.application.ports.response_generator import (
 )
 from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 
-
 SYSTEM_PROMPT = """
 Você é um assistente de manutenção automotiva.
 

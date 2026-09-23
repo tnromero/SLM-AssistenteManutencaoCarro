@@ -1,6 +1,9 @@
 from slm_assistentemanutencaocarro.application.services.assistant_service import (
     AssistantService,
 )
+from slm_assistentemanutencaocarro.application.services.response_validation_service import (
+    ResponseValidationService,
+)
 from slm_assistentemanutencaocarro.application.services.vehicle_query_service import (
     VehicleQueryService,
 )
@@ -14,14 +17,18 @@ from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_intent_classifie
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (
     HybridQuestionClassifier,
 )
-from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import HybridResponseGenerator
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
+    HybridResponseGenerator,
+)
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
     OllamaIntentClassifier,
 )
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
     OllamaQuestionClassifier,
 )
-from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import OllamaResponseGenerator
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
+    OllamaResponseGenerator,
+)
 from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
     JsonVehicleReader,
 )
@@ -59,6 +66,7 @@ def create_assistant(json_file_vehicle: str) -> AssistantService:
         ollama_generator=OllamaResponseGenerator(
             model=settings.ollama_response_model,
         ),
+        validator=ResponseValidationService(),
         use_slm=True
     )
 
