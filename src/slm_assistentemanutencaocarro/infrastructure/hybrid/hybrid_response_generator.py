@@ -9,13 +9,20 @@ class HybridResponseGenerator(ResponseGenerator):
         self,
         rule_generator: ResponseGenerator,
         ollama_generator: ResponseGenerator,
+        use_slm:bool = False
     ):
         self.rule_generator = rule_generator
         self.ollama_generator = ollama_generator
+        self.use_slm = use_slm
 
     def generate(
         self,
         answer: VehicleAnswer,
     ) -> str:
-
+        if self.use_slm:
+            try:
+                return self.ollama_generator.generate(answer)
+            except Exception:
+                ...        
+        
         return self.rule_generator.generate(answer)
