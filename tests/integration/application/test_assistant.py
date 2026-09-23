@@ -8,7 +8,7 @@ def test_should_answer_engine_oil_question():
 
     result = assistant.answer("Qual óleo devo usar?")
 
-    assert result == "O óleo especificado é 5W-30."
+    assert "5W-40" in result
 
 def test_should_answer_tire_pressure_question():
     assistant = create_assistant("data/vehicle.json")

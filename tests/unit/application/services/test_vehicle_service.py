@@ -16,7 +16,7 @@ def create_vehicle_service() -> VehicleService:
 def test_should_return_engine_oil():
     vehicle_service = create_vehicle_service()
 
-    assert vehicle_service.get_engine_oil() == "5W-30"
+    assert vehicle_service.get_engine_oil() == "5W-40"
 
 
 def test_should_return_tire_size():

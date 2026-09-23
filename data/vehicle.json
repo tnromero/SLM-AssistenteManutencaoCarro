@@ -1,10 +1,17 @@
 {
-  "brand": "Volkswagen",
-  "model": "T-Cross",
-  "year": 2022,
-  "engine": "1.0 TSI",
-  "engine_oil": "5W-30",
-  "tire_size": "205/55 R17",
-  "tire_pressure_front": 33.0,
-  "tire_pressure_rear": 33.0
+"brand": "Volkswagen",
+"model": "T-Cross",
+"year": 2022,
+"engine": "1.0 TSI",
+"fuel_type": "Flex",
+"transmission": "Automático de 6 marchas",
+"engine_oil": "5W-40",
+"coolant_type": "G12 EVO / G13",
+"spark_plug_spec": "NGK PLZKR7B-G",
+"battery_spec": "12V 60Ah EFB",
+"tank_capacity_l": 52.0,
+"trunk_capacity_l": 373.0,
+"tire_size": "205/55 R17",
+"tire_pressure_front": 33.0,
+"tire_pressure_rear": 33.0
 }

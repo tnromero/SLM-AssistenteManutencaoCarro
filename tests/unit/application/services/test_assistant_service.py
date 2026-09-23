@@ -39,10 +39,10 @@ def test_should_answer_vehicle_specification_question():
 
     vehicle_query_service.answer.return_value = VehicleAnswer(
         question="Qual óleo devo usar?",
-        answer="O óleo especificado é 5W-30.",
+        answer="O óleo especificado é 5W-40.",
     )
 
-    response_generator.generate.return_value = "O óleo especificado é 5W-30."
+    response_generator.generate.return_value = "O óleo especificado é 5W-40."
 
     service = AssistantService(
         intent_classifier=intent_classifier,
@@ -53,7 +53,7 @@ def test_should_answer_vehicle_specification_question():
 
     result = service.answer("Qual óleo devo usar?")
 
-    assert result == "O óleo especificado é 5W-30."
+    assert result == "O óleo especificado é 5W-40."
 
 def test_should_orchestrate_vehicle_specification_question():
     intent_classifier = Mock(spec=IntentClassifier)
@@ -71,10 +71,10 @@ def test_should_orchestrate_vehicle_specification_question():
 
     vehicle_query_service.answer.return_value = VehicleAnswer(
         question="Qual óleo devo usar?",
-        answer="O óleo especificado é 5W-30.",
+        answer="O óleo especificado é 5W-40.",
     )
 
-    response_generator.generate.return_value = "O óleo especificado é 5W-30."
+    response_generator.generate.return_value = "O óleo especificado é 5W-40."
 
     service = AssistantService(
         intent_classifier=intent_classifier,

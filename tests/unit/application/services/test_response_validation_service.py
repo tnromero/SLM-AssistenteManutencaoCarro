@@ -9,12 +9,12 @@ def test_should_accept_non_empty_response():
 
     answer = VehicleAnswer(
         question="Qual óleo devo usar?",
-        answer="O óleo especificado é 5W-30.",
+        answer="O óleo especificado é 5W-40.",
     )
 
     assert service.validate(
         answer,
-        "Para seu veículo, o óleo especificado é 5W-30.",
+        "Para seu veículo, o óleo especificado é 5W-40.",
     )
 
 
@@ -23,7 +23,7 @@ def test_should_reject_empty_response():
 
     answer = VehicleAnswer(
         question="Qual óleo devo usar?",
-        answer="O óleo especificado é 5W-30.",
+        answer="O óleo especificado é 5W-40.",
     )
 
     assert not service.validate(answer, "")

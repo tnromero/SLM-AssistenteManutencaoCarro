@@ -17,10 +17,10 @@ def test_should_preserve_rule_based_response():
 
     answer = VehicleAnswer(
         question="Qual óleo devo usar?",
-        answer="O óleo especificado é 5W-30.",
+        answer="O óleo especificado é 5W-40.",
     )
 
-    rule_generator.generate.return_value = "O óleo especificado é 5W-30."
+    rule_generator.generate.return_value = "O óleo especificado é 5W-40."
 
     generator = HybridResponseGenerator(
         rule_generator=rule_generator,
@@ -30,7 +30,7 @@ def test_should_preserve_rule_based_response():
 
     result = generator.generate(answer)
 
-    assert result == "O óleo especificado é 5W-30."
+    assert result == "O óleo especificado é 5W-40."
     ollama_generator.generate.assert_not_called()
 
 def test_should_use_slm_when_enabled():
@@ -40,11 +40,11 @@ def test_should_use_slm_when_enabled():
 
     answer = VehicleAnswer(
         question="Qual óleo devo usar?",
-        answer="O óleo especificado é 5W-30.",
+        answer="O óleo especificado é 5W-40.",
     )
 
     ollama_generator.generate.return_value = (
-        "Para o seu veículo, o óleo especificado é 5W-30."
+        "Para o seu veículo, o óleo especificado é 5W-40."
     )
 
     validator.validate.return_value = True
@@ -58,7 +58,7 @@ def test_should_use_slm_when_enabled():
 
     result = generator.generate(answer)
 
-    assert result == "Para o seu veículo, o óleo especificado é 5W-30."
+    assert result == "Para o seu veículo, o óleo especificado é 5W-40."
     ollama_generator.generate.assert_called_once_with(answer)
     rule_generator.generate.assert_not_called()
 
@@ -69,10 +69,10 @@ def test_should_fallback_to_rule_generator_when_slm_fails():
 
     answer = VehicleAnswer(
         question="Qual óleo devo usar?",
-        answer="O óleo especificado é 5W-30.",
+        answer="O óleo especificado é 5W-40.",
     )
 
-    rule_generator.generate.return_value = "O óleo especificado é 5W-30."
+    rule_generator.generate.return_value = "O óleo especificado é 5W-40."
     ollama_generator.generate.side_effect = RuntimeError("Ollama indisponível")
 
     generator = HybridResponseGenerator(
@@ -84,7 +84,7 @@ def test_should_fallback_to_rule_generator_when_slm_fails():
 
     result = generator.generate(answer)
 
-    assert result == "O óleo especificado é 5W-30."
+    assert result == "O óleo especificado é 5W-40."
     ollama_generator.generate.assert_called_once_with(answer)
     rule_generator.generate.assert_called_once_with(answer)
 
@@ -95,12 +95,12 @@ def test_should_fallback_when_response_is_invalid():
 
     answer = VehicleAnswer(
         question="Qual óleo devo usar?",
-        answer="O óleo especificado é 5W-30.",
+        answer="O óleo especificado é 5W-40.",
     )
 
     ollama_generator.generate.return_value = "Resposta inventada."
     validator.validate.return_value = False
-    rule_generator.generate.return_value = "O óleo especificado é 5W-30."
+    rule_generator.generate.return_value = "O óleo especificado é 5W-40."
 
     generator = HybridResponseGenerator(
         rule_generator=rule_generator,
@@ -111,7 +111,7 @@ def test_should_fallback_when_response_is_invalid():
 
     result = generator.generate(answer)
 
-    assert result == "O óleo especificado é 5W-30."
+    assert result == "O óleo especificado é 5W-40."
     validator.validate.assert_called_once_with(
         answer,
         "Resposta inventada.",

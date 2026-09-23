@@ -22,7 +22,7 @@ def test_should_answer_engine_oil():
 
     result: VehicleAnswer = service.answer("Qual óleo usar no motor?", QuestionType.OLEO_MOTOR)
 
-    assert result.answer == "O óleo especificado é 5W-30."
+    assert result.answer == "O óleo especificado é 5W-40."
 
 
 def test_should_answer_tire_pressure():

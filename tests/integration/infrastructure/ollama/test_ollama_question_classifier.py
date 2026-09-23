@@ -13,7 +13,6 @@ def classifier():
     return OllamaQuestionClassifier(model=model_name)
 
 
-@pytest.mark.integration
 @pytest.mark.parametrize(
     ("question", "expected"),
     [

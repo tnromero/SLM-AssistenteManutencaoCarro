@@ -10,9 +10,9 @@ def test_should_generate_response():
 
     answer = VehicleAnswer(
         question="Qual óleo usar?",
-        answer="O óleo especificado é 5W-30.",
+        answer="O óleo especificado é 5W-40.",
     )
 
     result = generator.generate(answer)
 
-    assert result == "O óleo especificado é 5W-30."
+    assert result == "O óleo especificado é 5W-40."
