@@ -1,13 +1,10 @@
 from unittest.mock import Mock, patch
 
-import pytest
-
 from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
     SYSTEM_PROMPT,
     OllamaResponseGenerator,
 )
-
 
 
 def test_should_generate_response():
