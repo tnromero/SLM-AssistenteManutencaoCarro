@@ -1,6 +1,6 @@
 import time
 
-from benchmark.intent_classifier_benchmark_result import IntentClassifierBenchmarkResult
+from benchmark.benchmark_result import BenchmarkResult
 from slm_assistentemanutencaocarro.application.ports.intent_classifier import IntentClassifier
 
 
@@ -8,7 +8,7 @@ class IntentClassifierBenchmark:
     @staticmethod
     def evaluate(
         evaluate_name: str, intent_classifier: IntentClassifier, test_case: list[dict[str, str]]
-    ) -> IntentClassifierBenchmarkResult:
+    ) -> BenchmarkResult:
 
         total = 0
         correct = 0
@@ -32,7 +32,7 @@ class IntentClassifierBenchmark:
 
         elapsed = time.perf_counter() - start
 
-        return IntentClassifierBenchmarkResult(
+        return BenchmarkResult(
             model=evaluate_name,
             correct=correct,
             total=total,

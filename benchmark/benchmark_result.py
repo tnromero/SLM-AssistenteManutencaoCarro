@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class IntentClassifierBenchmarkResult(BaseModel):
+class BenchmarkResult(BaseModel):
     model: str
     correct: int
     total: int

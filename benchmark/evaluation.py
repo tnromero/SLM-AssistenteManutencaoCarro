@@ -1,9 +1,9 @@
 import csv
 
-from benchmark.intent_classifier_benchmark import IntentClassifierBenchmark
-from benchmark.intent_classifier_benchmark_result import (
-    IntentClassifierBenchmarkResult,
+from benchmark.benchmark_result import (
+    BenchmarkResult,
 )
+from benchmark.intent_classifier_benchmark import IntentClassifierBenchmark
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_intent_classifier import (
     HybridIntentClassifier,
 )
@@ -42,13 +42,13 @@ def main():
     for csv_file_name in csv_files:
         test_case = load_test_cases(csv_file_name=csv_file_name)
 
-        result: IntentClassifierBenchmarkResult = IntentClassifierBenchmark().evaluate(
+        result: BenchmarkResult = IntentClassifierBenchmark().evaluate(
             "QWEN_3",
             OllamaIntentClassifier(model=QWEN_3),
             test_case,
         )
 
-        result: IntentClassifierBenchmarkResult = IntentClassifierBenchmark().evaluate(
+        result: BenchmarkResult = IntentClassifierBenchmark().evaluate(
             "Hibrido",
             HybridIntentClassifier(
                 rule_based_classifier=RuleBasedIntentClassifier(),
