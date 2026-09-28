@@ -15,6 +15,17 @@ class BenchmarkResult(BaseModel):
     def accuracy(self) -> float:
         return self.correct / self.total * 100
 
+    def __str__(self) -> str:
+        return (
+            "========================================\n"
+            f"Modelo: {self.model}\n"
+            f"  Acertos    : {self.correct}/{self.total}\n"
+            f"  Acurácia   : {self.accuracy:.2f}%\n"
+            f"  Tempo total: {self.elapsed:.2f}s\n"
+            f"  Tempo médio: {self.average_time:.3f}s\n"
+            "========================================"
+        )
+
     def display(self, lang: str = "PT") -> None:
         print(f"=== {self.model} ===")
         if lang == "PT":
