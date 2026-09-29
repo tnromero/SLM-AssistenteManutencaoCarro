@@ -102,3 +102,16 @@ def test_should_reject_different_tire_size():
         answer,
         "A medida recomendada é 215/55 R17.",
     )
+
+def test_should_reject_response_when_expected_value_is_missing():
+    validator = ResponseValidationService()
+
+    answer = VehicleAnswer(
+        question="Qual óleo usar?",
+        answer="O óleo especificado é 5W-40.",
+    )
+
+    assert not validator.validate(
+        answer,
+        "O óleo recomendado é adequado para o seu veículo.",
+    )

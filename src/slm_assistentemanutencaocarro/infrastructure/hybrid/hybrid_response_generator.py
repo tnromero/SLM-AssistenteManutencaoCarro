@@ -12,25 +12,28 @@ class HybridResponseGenerator(ResponseGenerator):
         self,
         rule_generator: ResponseGenerator,
         ollama_generator: ResponseGenerator,
-        validator: ResponseValidationService,
-        use_slm:bool = False
+        validator: ResponseValidationService
     ):
         self.rule_generator = rule_generator
         self.ollama_generator = ollama_generator
         self.validator = validator
-        self.use_slm = use_slm
+        self.fallback_count = 0
 
     def generate(
         self,
         answer: VehicleAnswer,
     ) -> str:
-        if self.use_slm:
-            try:
-                response = self.ollama_generator.generate(answer)
+        try:
+            response = self.ollama_generator.generate(answer)
 
-                if self.validator.validate(answer, response):
-                    return response
-            except Exception:
-                pass        
-        
+            if self.validator.validate(answer, response):
+                return response
+        except Exception:
+            pass        
+
+        self.fallback_count += 1
         return self.rule_generator.generate(answer)
+
+    @property
+    def fallback_call_count(self) -> int:
+        return self.fallback_count
