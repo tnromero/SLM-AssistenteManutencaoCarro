@@ -1,13 +1,15 @@
 import time
 
-from benchmark.benchmark_result import BenchmarkResult
+from benchmark.model.benchmark_result import BenchmarkResult
 from slm_assistentemanutencaocarro.application.ports.intent_classifier import IntentClassifier
 
 
 class IntentClassifierBenchmark:
     @staticmethod
     def evaluate(
-        evaluate_name: str, intent_classifier: IntentClassifier, test_case: list[dict[str, str]]
+        evaluate_name: str, 
+        intent_classifier: IntentClassifier, 
+        dataset: list[dict[str, str]]
     ) -> BenchmarkResult:
 
         total = 0
@@ -15,7 +17,7 @@ class IntentClassifierBenchmark:
 
         start = time.perf_counter()
 
-        for row in test_case:
+        for row in dataset:
             result = intent_classifier.classify(row["description"])
 
             total += 1

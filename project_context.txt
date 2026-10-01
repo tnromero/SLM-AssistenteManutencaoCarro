@@ -1,0 +1,2876 @@
+===== PROJECT STRUCTURE =====
+.
+├── .env
+├── .gitignore
+├── .python-version
+├── .vscode
+├── README.md
+├── benchmark
+│   ├── __init__.py
+│   ├── benchmark_result.py
+│   ├── data
+│   │   ├── intents.csv
+│   │   ├── intents_generalization.csv
+│   │   ├── questions.csv
+│   │   ├── questions_generalization.csv
+│   │   └── responses.csv
+│   ├── evaluation.py
+│   ├── evaluation_questions.py
+│   ├── evaluation_questions_generalization.py
+│   ├── evaluation_response.py
+│   ├── intent_classifier_benchmark.py
+│   └── response_generator_benchmark.py
+├── data
+│   └── vehicle.json
+├── gerador_contexto_projeto.sh
+├── project_context.txt
+├── pyproject.toml
+├── src
+│   └── slm_assistentemanutencaocarro
+│       ├── __init__.py
+│       ├── application
+│       │   ├── __init__.py
+│       │   ├── ports
+│       │   │   ├── __init__.py
+│       │   │   ├── intent_classifier.py
+│       │   │   ├── question_classifier.py
+│       │   │   ├── response_generator.py
+│       │   │   └── vehicle_reader.py
+│       │   └── services
+│       │       ├── __init__.py
+│       │       ├── assistant_service.py
+│       │       ├── response_validation_service.py
+│       │       ├── vehicle_query_service.py
+│       │       └── vehicle_service.py
+│       ├── config
+│       │   ├── __init__.py
+│       │   └── settings.py
+│       ├── domain
+│       │   ├── __init__.py
+│       │   ├── intent.py
+│       │   ├── intent_classification.py
+│       │   ├── question_classification.py
+│       │   ├── question_type.py
+│       │   ├── vehicle.py
+│       │   └── vehicle_answer.py
+│       ├── infrastructure
+│       │   ├── __init__.py
+│       │   ├── composition.py
+│       │   ├── hybrid
+│       │   │   ├── __init__.py
+│       │   │   ├── hybrid_intent_classifier.py
+│       │   │   ├── hybrid_question_classifier.py
+│       │   │   └── hybrid_response_generator.py
+│       │   ├── ollama
+│       │   │   ├── __init__.py
+│       │   │   ├── ollama_intent_classifier.py
+│       │   │   ├── ollama_question_classifier.py
+│       │   │   └── ollama_response_generator.py
+│       │   ├── persistence
+│       │   │   ├── __init__.py
+│       │   │   └── json_vehicle_reader.py
+│       │   └── rule_based
+│       │       ├── __init__.py
+│       │       ├── rule_based_intent_classifier.py
+│       │       ├── rule_based_question_classifier.py
+│       │       └── rule_based_response_generator.py
+│       └── presentation
+│           ├── __init__.py
+│           └── cli.py
+└── tests
+    ├── __init__.py
+    ├── integration
+    │   ├── __init__.py
+    │   ├── application
+    │   │   ├── __init__.py
+    │   │   └── test_assistant.py
+    │   └── infrastructure
+    │       ├── __init__.py
+    │       ├── hybrid
+    │       │   └── __init__.py
+    │       └── ollama
+    │           ├── __init__.py
+    │           ├── test_ollama_intent_classifier.py
+    │           ├── test_ollama_question_classifier.py
+    │           └── test_ollama_response_generator.py
+    └── unit
+        ├── __init__.py
+        ├── application
+        │   ├── __init__.py
+        │   ├── ports
+        │   │   └── __init__.py
+        │   └── services
+        │       ├── __init__.py
+        │       ├── test_assistant_service.py
+        │       ├── test_response_validation_service.py
+        │       ├── test_vehicle_query_service.py
+        │       └── test_vehicle_service.py
+        ├── domain
+        │   ├── __init__.py
+        │   └── test_intent.py
+        └── infrastructure
+            ├── __init__.py
+            ├── hybrid
+            │   ├── __init__.py
+            │   ├── test_hybrid_question_classifier.py
+            │   └── test_hybrid_response_generator.py
+            ├── ollama
+            │   ├── __init__.py
+            │   ├── test_ollama_intent_classifier.py
+            │   ├── test_ollama_question_classifier.py
+            │   └── test_ollama_response_generator.py
+            ├── persistence
+            │   ├── __init__.py
+            │   └── test_json_vehicle_reader.py
+            └── rule_based
+                ├── __init__.py
+                ├── test_rule_based_intent_classifier.py
+                ├── test_rule_based_question_classifier.py
+                └── test_rule_based_response_generator.py
+
+34 directories, 94 files
+
+===== FILE CONTENT =====
+
+============================================================
+FILE: ./data/vehicle.json
+============================================================
+{
+"brand": "Volkswagen",
+"model": "T-Cross",
+"year": 2022,
+"engine": "1.0 TSI",
+"fuel_type": "Flex",
+"transmission": "Automático de 6 marchas",
+"engine_oil": "5W-40",
+"coolant_type": "G12 EVO / G13",
+"spark_plug_spec": "NGK PLZKR7B-G",
+"battery_spec": "12V 60Ah EFB",
+"tank_capacity_l": 52.0,
+"trunk_capacity_l": 373.0,
+"tire_size": "205/55 R17",
+"tire_pressure_front": 33.0,
+"tire_pressure_rear": 33.0
+}
+============================================================
+FILE: ./README.md
+============================================================
+# Repositorio
+
+## Config
+
+`uv init --python 3.13`
+
+`uv sync`
+
+`uv add ollama pydantic`
+
+`uv add --dev pytest`
+
+============================================================
+FILE: ./pyproject.toml
+============================================================
+[project]
+name = "slm-assistentemanutencaocarro"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Thiago Romero", email = "tnromero@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "ollama>=0.6.2",
+    "pydantic>=2.13.5",
+]
+
+[project.scripts]
+slm-assistentemanutencaocarro = "slm_assistentemanutencaocarro:main"
+
+[build-system]
+requires = ["uv_build>=0.12.13,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.8",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/config/settings.py
+============================================================
+import os
+
+
+class Settings:
+    ollama_intent_model: str = os.getenv("OLLAMA_INTENT_MODEL", "qwen3:1.7b")
+    ollama_question_model: str = os.getenv("OLLAMA_QUESTION_MODEL", "qwen3:1.7b")
+    ollama_response_model: str = os.getenv("OLLAMA_RESPONSE_MODEL", "qwen3:1.7b")
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/config/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/presentation/cli.py
+============================================================
+from slm_assistentemanutencaocarro.infrastructure.composition import (
+    create_assistant,
+)
+
+
+def run() -> None:
+    assistant = create_assistant("data/vehicle.json")
+
+    print("Assistente de Manutenção do Carro")
+    print("Digite sua pergunta ou '/sair' para encerrar.")
+    print()
+
+    while True:
+        question = input("> ").strip()
+
+        if question.lower() in {"sair", "/exit", "/quit"}:
+            print("Até mais!")
+            break
+
+        if not question:
+            continue
+
+        try:
+            response = assistant.answer(question)
+            print(response)
+        except Exception as exc:
+            print(f"Erro ao processar pergunta: {exc}")
+
+        print()
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/presentation/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/domain/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/domain/intent_classification.py
+============================================================
+from pydantic import BaseModel
+
+from slm_assistentemanutencaocarro.domain.intent import Intent
+
+
+class IntentClassification(BaseModel):
+    intent: Intent
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/domain/vehicle.py
+============================================================
+from pydantic import BaseModel
+
+
+class Vehicle(BaseModel):
+    brand: str
+    model: str
+    year: int
+    engine: str
+    engine_oil: str
+    tire_size: str
+    tire_pressure_front: float
+    tire_pressure_rear: float
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/domain/vehicle_answer.py
+============================================================
+from pydantic import BaseModel
+
+
+class VehicleAnswer(BaseModel):
+    question: str
+    answer: str
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/domain/intent.py
+============================================================
+import enum
+
+
+class Intent(enum.StrEnum):
+    MANUTENCAO = "Manutenção"
+    PROBLEMA = "Problema"
+    CUSTO = "Custo"
+    ESPECIFICACAO = "Especificação"
+    REVISAO = "Revisão"
+    OUTRO = "Outro"
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/domain/question_type.py
+============================================================
+import enum
+
+
+class QuestionType(enum.StrEnum):
+    OLEO_MOTOR = "Óleo do motor"
+    PRESSAO_PNEUS = "Pressão dos pneus"
+    MEDIDA_PNEUS = "Medida dos pneus"
+    DESCONHECIDO = "Desconhecido"
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/domain/question_classification.py
+============================================================
+from pydantic import BaseModel
+
+from slm_assistentemanutencaocarro.domain.question_type import QuestionType
+
+
+class QuestionClassification(BaseModel):
+    question_type: QuestionType
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/__init__.py
+============================================================
+from slm_assistentemanutencaocarro.presentation.cli import run
+
+
+def main() -> None:
+    run()
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/infrastructure/persistence/json_vehicle_reader.py
+============================================================
+import json
+from pathlib import Path
+
+from slm_assistentemanutencaocarro.application.ports.vehicle_reader import VehicleReader
+from slm_assistentemanutencaocarro.domain.vehicle import Vehicle
+
+
+class JsonVehicleReader(VehicleReader):
+    def __init__(self, file_path: str):
+        self.file_path = Path(file_path)
+
+    def load(self) -> Vehicle:
+        with self.file_path.open(encoding="utf-8") as file:
+            data = json.load(file)
+
+        return Vehicle.model_validate(data)
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/infrastructure/persistence/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/infrastructure/ollama/ollama_response_generator.py
+============================================================
+import ollama
+
+from slm_assistentemanutencaocarro.application.ports.response_generator import (
+    ResponseGenerator,
+)
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+
+SYSTEM_PROMPT = """
+Você é um assistente de manutenção automotiva.
+
+Você deve apenas transformar a informação fornecida em uma resposta natural.
+
+Regras:
+- Não altere valores.
+- Não invente informações.
+- Não adicione recomendações.
+- Não adicione especificações que não estejam no texto fornecido.
+- Preserve números, unidades, códigos e medidas exatamente.
+- Responda em português.
+"""
+
+class OllamaResponseGenerator(ResponseGenerator):
+    def __init__(
+        self,
+        model: str,
+    ):
+        self.slm_model = model
+
+    def generate(
+        self,
+        answer: VehicleAnswer,
+    ) -> str:
+
+        response = ollama.chat(
+            model=self.slm_model,
+            think=False,
+            messages=[
+                {
+                    "role": "system",
+                    "content": SYSTEM_PROMPT,
+                },
+                {
+                    "role": "user",
+                    "content": answer.answer,
+                },
+            ],
+        )
+
+        return response.message.content.strip()
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/infrastructure/ollama/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/infrastructure/ollama/ollama_question_classifier.py
+============================================================
+import ollama
+from pydantic import ValidationError
+
+from slm_assistentemanutencaocarro.application.ports.question_classifier import (
+    QuestionClassifier,
+)
+from slm_assistentemanutencaocarro.domain.question_classification import (
+    QuestionClassification,
+)
+
+SYSTEM_PROMPT = """
+Você é um classificador de perguntas sobre manutenção de veículos.
+
+Classifique a pergunta em exatamente uma das categorias:
+
+- Óleo do motor
+- Pressão dos pneus
+- Medida dos pneus
+- Desconhecido
+
+Regras:
+
+Óleo do motor:
+Perguntas sobre óleo, lubrificante, viscosidade ou especificação
+do óleo do motor.
+
+Pressão dos pneus:
+Perguntas sobre pressão, calibragem ou PSI dos pneus.
+
+Medida dos pneus:
+Perguntas sobre tamanho, medida, dimensão ou especificação
+dos pneus.
+
+Desconhecido:
+Perguntas que não pertencem a nenhuma das categorias acima.
+
+Retorne exclusivamente um JSON compatível com o schema informado.
+"""
+
+class OllamaQuestionClassifier(QuestionClassifier):
+    def __init__(
+        self,
+        model: str,
+        max_retries: int = 2,
+    ):
+        self.model = model
+        self.max_retries = max_retries
+
+    def classify(
+        self,
+        question: str,
+    ) -> QuestionClassification:
+
+        last_error = None
+
+        for _ in range(self.max_retries + 1):
+            try:
+                response = ollama.chat(
+                    model=self.model,
+                    think=False,
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": SYSTEM_PROMPT,
+                        },
+                        {
+                            "role": "user",
+                            "content": question,
+                        },
+                    ],
+                    format=QuestionClassification.model_json_schema(),
+                )
+
+                return QuestionClassification.model_validate_json(response.message.content)
+
+            except (ValidationError, ValueError) as exc:
+                last_error = exc
+
+            except Exception as exc:
+                last_error = exc
+
+        raise RuntimeError(
+            f"Falha ao classificar pergunta após {self.max_retries + 1} tentativas"
+        ) from last_error
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/infrastructure/ollama/ollama_intent_classifier.py
+============================================================
+import ollama
+from pydantic import ValidationError
+
+from slm_assistentemanutencaocarro.application.ports.intent_classifier import (
+    IntentClassifier,
+)
+from slm_assistentemanutencaocarro.domain.intent_classification import (
+    IntentClassification,
+)
+
+FEW_SHOT_EXAMPLES = """
+Exemplos:
+
+"Quando devo trocar o óleo?" -> Manutenção
+"Preciso fazer a troca do óleo do meu carro" -> Manutenção
+
+"Meu carro está fazendo um barulho estranho" -> Problema
+"O motor está tremendo" -> Problema
+
+"Quanto custa trocar o óleo?" -> Custo
+"Quanto vou pagar na revisão?" -> Custo
+
+"Qual a calibragem dos pneus?" -> Especificação
+"Que pressão devo colocar nos pneus?" -> Especificação
+"Qual o tamanho do pneu?" -> Especificação
+"Qual óleo de motor devo utilizar?" -> Espeficifação
+
+"Quando devo fazer a próxima revisão?" -> Revisão
+"De quanto em quanto tempo devo revisar o carro?" -> Revisão
+
+"Olá" -> Outro
+"Bom dia" -> Outro
+""".strip()
+
+SYSTEM_PROMPT = f"""
+Você é um classificador de intenções para um assistente de manutenção de carros.
+
+Classifique a mensagem do usuário em exatamente uma das seguintes intenções:
+
+- Manutenção: ações ou procedimentos de manutenção preventiva
+  realizados no veículo, incluindo troca ou substituição de óleo,
+  filtros, velas, fluidos, correias e outros componentes de manutenção.
+- Problema: sintomas, falhas, barulhos, vibrações ou comportamentos anormais.
+- Custo: perguntas sobre preço, valor ou quanto será gasto.
+- Especificação: características técnicas ou valores recomendados
+  do veículo, como tipo de óleo, quantidade de óleo, calibragem,
+  medidas e especificações dos pneus.
+- Revisão: perguntas sobre periodicidade ou próxima revisão.
+- Outro: mensagens que não se encaixam nas categorias acima.
+
+IMPORTANTE:
+- "Quando devo trocar o óleo?" -> Manutenção
+- "Como trocar o óleo?" -> Manutenção
+- "Qual óleo usar no motor?" -> Especificação
+- "Qual óleo o motor utiliza?" -> Especificação
+- "Qual a calibragem dos pneus?" -> Especificação
+- "Qual a medida dos pneus?" -> Especificação
+
+{FEW_SHOT_EXAMPLES}
+
+Retorne somente o JSON correspondente ao modelo solicitado.
+""".strip()
+
+
+class OllamaIntentClassifier(IntentClassifier):
+    def __init__(self, model: str):
+        self.slm_name = model
+
+    def classify(self, text: str) -> IntentClassification:
+        try:
+            response = ollama.chat(
+                model=self.slm_name,
+                think=False,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": SYSTEM_PROMPT,
+                    },
+                    {
+                        "role": "user",
+                        "content": text,
+                    },
+                ],
+                format=IntentClassification.model_json_schema(),
+            )
+
+            content = response.message.content
+            if not isinstance(content, str):
+                raise TypeError("A resposta do modelo não contém JSON válido.")
+
+            return IntentClassification.model_validate_json(content)
+
+        except (ValidationError, TypeError, ValueError) as exc:
+            raise RuntimeError("O modelo retornou uma classificação inválida.") from exc
+
+        except Exception as exc:
+            raise RuntimeError("Falha ao executar classificação com Ollama.") from exc
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/infrastructure/hybrid/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/infrastructure/hybrid/hybrid_question_classifier.py
+============================================================
+from slm_assistentemanutencaocarro.application.ports.question_classifier import (
+    QuestionClassifier,
+)
+from slm_assistentemanutencaocarro.domain.question_classification import (
+    QuestionClassification,
+)
+from slm_assistentemanutencaocarro.domain.question_type import QuestionType
+
+
+class HybridQuestionClassifier(QuestionClassifier):
+    def __init__(
+        self,
+        rule_classifier: QuestionClassifier,
+        slm_classifier: QuestionClassifier,
+    ):
+        self.rule_classifier = rule_classifier
+        self.slm_classifier = slm_classifier
+        self.slm_calls = 0
+
+    def classify(
+        self,
+        question: str,
+    ) -> QuestionClassification:
+
+        rule_result = self.rule_classifier.classify(question)
+
+        if rule_result.question_type != QuestionType.DESCONHECIDO:
+            return rule_result
+
+        self.slm_calls += 1
+        return self.slm_classifier.classify(question)
+
+    @property
+    def slm_call_count(self) -> int:
+        return self.slm_calls
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/infrastructure/hybrid/hybrid_intent_classifier.py
+============================================================
+from slm_assistentemanutencaocarro.application.ports.intent_classifier import (
+    IntentClassifier,
+)
+from slm_assistentemanutencaocarro.domain.intent import (
+    Intent,
+)
+from slm_assistentemanutencaocarro.domain.intent_classification import (
+    IntentClassification,
+)
+
+
+class HybridIntentClassifier(IntentClassifier):
+    def __init__(
+        self,
+        rule_based_classifier: IntentClassifier,
+        ollama_classifier: IntentClassifier,
+    ):
+        self.rule_based_intent_classifier = rule_based_classifier
+        self.ollama_intent_classifier = ollama_classifier
+
+    def classify(self, text: str) -> IntentClassification:
+
+        rule_result: IntentClassification = self.rule_based_intent_classifier.classify(text)
+
+        if rule_result.intent == Intent.OUTRO:
+            return self.ollama_intent_classifier.classify(text)
+        else:
+            return rule_result
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/infrastructure/hybrid/hybrid_response_generator.py
+============================================================
+from slm_assistentemanutencaocarro.application.ports.response_generator import (
+    ResponseGenerator,
+)
+from slm_assistentemanutencaocarro.application.services.response_validation_service import (
+    ResponseValidationService,
+)
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+
+
+class HybridResponseGenerator(ResponseGenerator):
+    def __init__(
+        self,
+        rule_generator: ResponseGenerator,
+        ollama_generator: ResponseGenerator,
+        validator: ResponseValidationService
+    ):
+        self.rule_generator = rule_generator
+        self.ollama_generator = ollama_generator
+        self.validator = validator
+        self.fallback_count = 0
+
+    def generate(
+        self,
+        answer: VehicleAnswer,
+    ) -> str:
+        try:
+            response = self.ollama_generator.generate(answer)
+
+            if self.validator.validate(answer, response):
+                return response
+        except Exception:
+            pass        
+
+        self.fallback_count += 1
+        return self.rule_generator.generate(answer)
+
+    @property
+    def fallback_call_count(self) -> int:
+        return self.fallback_count
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/infrastructure/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/infrastructure/rule_based/rule_based_question_classifier.py
+============================================================
+from slm_assistentemanutencaocarro.application.ports.question_classifier import (
+    QuestionClassifier,
+)
+from slm_assistentemanutencaocarro.domain.question_classification import (
+    QuestionClassification,
+)
+from slm_assistentemanutencaocarro.domain.question_type import QuestionType
+
+
+class RuleBasedQuestionClassifier(QuestionClassifier):
+    def classify(
+        self,
+        question: str,
+    ) -> QuestionClassification:
+
+        text = question.lower()
+
+        if "óleo" in text or "oleo" in text:
+            return QuestionClassification(question_type=QuestionType.OLEO_MOTOR)
+
+        if ("pressão" in text or "pressao" in text or "calibr" in text) and "pneu" in text:
+            return QuestionClassification(question_type=QuestionType.PRESSAO_PNEUS)
+
+        if "pneu" in text and ("tamanho" in text or "medida" in text):
+            return QuestionClassification(question_type=QuestionType.MEDIDA_PNEUS)
+
+        return QuestionClassification(question_type=QuestionType.DESCONHECIDO)
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/infrastructure/rule_based/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/infrastructure/rule_based/rule_based_response_generator.py
+============================================================
+from slm_assistentemanutencaocarro.application.ports.response_generator import (
+    ResponseGenerator,
+)
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+
+
+class RuleBasedResponseGenerator(ResponseGenerator):
+    def generate(
+        self,
+        answer: VehicleAnswer,
+    ) -> str:
+        return answer.answer
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/infrastructure/rule_based/rule_based_intent_classifier.py
+============================================================
+from slm_assistentemanutencaocarro.application.ports.intent_classifier import IntentClassifier
+from slm_assistentemanutencaocarro.domain.intent import Intent
+from slm_assistentemanutencaocarro.domain.intent_classification import (
+    IntentClassification,
+)
+
+
+class RuleBasedIntentClassifier(IntentClassifier):
+    def classify(self, text: str) -> IntentClassification:
+        text = text.lower()
+
+        if any(
+            keyword in text
+            for keyword in [
+                "barulho",
+                "ruído",
+                "tremendo",
+                "trepidando",
+                "falhando",
+            ]
+        ):
+            return IntentClassification(intent=Intent.PROBLEMA)
+
+        if any(
+            keyword in text
+            for keyword in [
+                "quanto custa",
+                "quanto vou gastar",
+                "quanto vou pagar",
+                "quanto é",
+                "preço",
+                "valor",
+                "custa",
+            ]
+        ):
+            return IntentClassification(intent=Intent.CUSTO)
+
+        if any(
+            keyword in text
+            for keyword in [
+                "revisão",
+                "revisao",
+                "periodicidade",
+            ]
+        ):
+            return IntentClassification(intent=Intent.REVISAO)
+
+        if any(
+            keyword in text
+            for keyword in [
+                "calibragem",
+                "pressão dos pneus",
+                "pressao dos pneus",
+                "especificação",
+                "especificacao",
+            ]
+        ):
+            return IntentClassification(intent=Intent.ESPECIFICACAO)
+
+        if any(
+            keyword in text
+            for keyword in [
+                "trocar o óleo",
+                "troca de óleo",
+                "troca de oleo",
+                "filtro",
+                "manutenção",
+                "manutencao",
+            ]
+        ):
+            return IntentClassification(intent=Intent.MANUTENCAO)
+
+        return IntentClassification(intent=Intent.OUTRO)
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/infrastructure/composition.py
+============================================================
+from slm_assistentemanutencaocarro.application.services.assistant_service import (
+    AssistantService,
+)
+from slm_assistentemanutencaocarro.application.services.response_validation_service import (
+    ResponseValidationService,
+)
+from slm_assistentemanutencaocarro.application.services.vehicle_query_service import (
+    VehicleQueryService,
+)
+from slm_assistentemanutencaocarro.application.services.vehicle_service import (
+    VehicleService,
+)
+from slm_assistentemanutencaocarro.config.settings import Settings
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_intent_classifier import (
+    HybridIntentClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (
+    HybridQuestionClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
+    HybridResponseGenerator,
+)
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
+    OllamaIntentClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
+    OllamaQuestionClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
+    OllamaResponseGenerator,
+)
+from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
+    JsonVehicleReader,
+)
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_intent_classifier import (
+    RuleBasedIntentClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
+    RuleBasedQuestionClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
+    RuleBasedResponseGenerator,
+)
+
+
+def create_assistant(json_file_vehicle: str) -> AssistantService:
+
+    settings = Settings()
+
+    vehicle_reader = JsonVehicleReader(json_file_vehicle)
+
+    intent_classifier = HybridIntentClassifier(
+        rule_based_classifier=RuleBasedIntentClassifier(),
+        ollama_classifier=OllamaIntentClassifier(model=settings.ollama_intent_model),
+    )
+
+    question_classifier = HybridQuestionClassifier(
+        rule_classifier=RuleBasedQuestionClassifier(),
+        slm_classifier=OllamaQuestionClassifier(
+            model=settings.ollama_question_model
+        )
+    )
+
+    response_generator =  HybridResponseGenerator(
+        rule_generator=RuleBasedResponseGenerator(),
+        ollama_generator=OllamaResponseGenerator(
+            model=settings.ollama_response_model,
+        ),
+        validator=ResponseValidationService()
+    )
+
+    vehicle_service = VehicleService(vehicle_reader)
+    vehicle_query_service = VehicleQueryService(vehicle_service)
+
+    return AssistantService(
+        intent_classifier=intent_classifier,
+        question_classifier=question_classifier,
+        vehicle_query_service=vehicle_query_service,
+        response_generator=response_generator,
+    )
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/ports/response_generator.py
+============================================================
+from abc import ABC, abstractmethod
+
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+
+
+class ResponseGenerator(ABC):
+    @abstractmethod
+    def generate(
+        self,
+        answer: VehicleAnswer,
+    ) -> str:
+        pass
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/ports/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/ports/vehicle_reader.py
+============================================================
+from typing import Protocol
+
+from slm_assistentemanutencaocarro.domain.vehicle import Vehicle
+
+
+class VehicleReader(Protocol):
+    def load(self) -> Vehicle: ...
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/ports/question_classifier.py
+============================================================
+from abc import ABC, abstractmethod
+
+from slm_assistentemanutencaocarro.domain.question_classification import (
+    QuestionClassification,
+)
+
+
+class QuestionClassifier(ABC):
+    @abstractmethod
+    def classify(
+        self,
+        question: str,
+    ) -> QuestionClassification:
+        pass
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/ports/intent_classifier.py
+============================================================
+from abc import ABC, abstractmethod
+
+from slm_assistentemanutencaocarro.domain.intent_classification import (
+    IntentClassification,
+)
+
+
+class IntentClassifier(ABC):
+    @abstractmethod
+    def classify(self, text: str) -> IntentClassification:
+        pass
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/services/vehicle_query_service.py
+============================================================
+from slm_assistentemanutencaocarro.application.services.vehicle_service import (
+    VehicleService,
+)
+from slm_assistentemanutencaocarro.domain.question_type import QuestionType
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+
+
+class VehicleQueryService:
+    def __init__(
+        self,
+        vehicle_service: VehicleService,
+    ):
+        self.vehicle_service = vehicle_service
+
+    def answer(
+        self,
+        question: str,
+        question_type: QuestionType,
+    ) -> VehicleAnswer:
+
+        if question_type == QuestionType.OLEO_MOTOR:
+            return VehicleAnswer(
+                question=question,
+                answer=(f"O óleo especificado é {self.vehicle_service.get_engine_oil()}."),
+            )
+
+        if question_type == QuestionType.PRESSAO_PNEUS:
+            front, rear = self.vehicle_service.get_tire_pressure()
+
+            return VehicleAnswer(
+                question=question,
+                answer=(
+                    f"A pressão configurada é "
+                    f"{front:.0f} PSI nos pneus dianteiros "
+                    f"e {rear:.0f} PSI nos traseiros."
+                ),
+            )
+
+        if question_type == QuestionType.MEDIDA_PNEUS:
+            return VehicleAnswer(
+                question=question,
+                answer=(f"A medida dos pneus é {self.vehicle_service.get_tire_size()}."),
+            )
+
+        return VehicleAnswer(
+            question=question,
+            answer=("Ainda não tenho informação suficiente para responder essa pergunta."),
+        )
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/services/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/services/assistant_service.py
+============================================================
+from slm_assistentemanutencaocarro.application.ports.intent_classifier import (
+    IntentClassifier,
+)
+from slm_assistentemanutencaocarro.application.ports.question_classifier import (
+    QuestionClassifier,
+)
+from slm_assistentemanutencaocarro.application.ports.response_generator import ResponseGenerator
+from slm_assistentemanutencaocarro.application.services.vehicle_query_service import (
+    VehicleQueryService,
+)
+from slm_assistentemanutencaocarro.domain.intent import Intent
+
+
+class AssistantService:
+    def __init__(
+        self,
+        intent_classifier: IntentClassifier,
+        question_classifier: QuestionClassifier,
+        vehicle_query_service: VehicleQueryService,
+        response_generator: ResponseGenerator,
+    ):
+        self.intent_classifier = intent_classifier
+        self.question_classifier = question_classifier
+        self.vehicle_query_service = vehicle_query_service
+        self.response_generator = response_generator
+
+    def answer(self, question: str):
+
+        intent = self.intent_classifier.classify(question).intent
+
+        if intent != Intent.ESPECIFICACAO:
+            return "Ainda não tenho suporte para responder esse tipo de pergunta."
+
+        question_type = self.question_classifier.classify(question).question_type
+
+        vehicle_answer = self.vehicle_query_service.answer(
+            question,
+            question_type,
+        )
+
+        return self.response_generator.generate(vehicle_answer)
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/services/vehicle_service.py
+============================================================
+from slm_assistentemanutencaocarro.application.ports.vehicle_reader import VehicleReader
+from slm_assistentemanutencaocarro.domain.vehicle import Vehicle
+
+
+class VehicleService:
+    def __init__(self, reader: VehicleReader):
+        self.vehicle = reader.load()
+
+    def get_vehicle(self) -> Vehicle:
+        return self.vehicle
+
+    def get_engine_oil(self) -> str:
+        return self.vehicle.engine_oil
+
+    def get_tire_size(self) -> str:
+        return self.vehicle.tire_size
+
+    def get_tire_pressure(self) -> tuple[float, float]:
+        return (
+            self.vehicle.tire_pressure_front,
+            self.vehicle.tire_pressure_rear,
+        )
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/services/response_validation_service.py
+============================================================
+import re
+
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+
+
+class ResponseValidationService:
+    
+    def validate(
+        self,
+        answer: VehicleAnswer,
+        response: str,
+    ) -> bool:
+        expected_values = self._extract_values(answer.answer)
+        response_values = self._extract_values(response)
+
+        return expected_values.issubset(response_values)
+
+    def _extract_values(self, text: str) -> set[str]:
+        values = set()
+
+        values.update(
+            value.upper()
+            for value in re.findall(
+                r"\b\d+(?:[.,]\d+)?\s*(?:PSI|BAR)\b",
+                text,
+                re.IGNORECASE,
+            )
+        )
+
+        values.update(
+            value.upper()
+            for value in re.findall(
+                r"\b\d{3}/\d{2}\s*R\d{2}\b",
+                text,
+                re.IGNORECASE,
+            )
+        )
+
+        values.update(
+            value.upper()
+            for value in re.findall(
+                r"\b\d+W-\d+\b",
+                text,
+                re.IGNORECASE,
+            )
+        )
+
+        return values
+============================================================
+FILE: ./tests/integration/__init__.py
+============================================================
+
+============================================================
+FILE: ./tests/integration/infrastructure/ollama/test_ollama_question_classifier.py
+============================================================
+import pytest
+
+from slm_assistentemanutencaocarro.config.settings import Settings
+from slm_assistentemanutencaocarro.domain.question_type import QuestionType
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
+    OllamaQuestionClassifier,
+)
+
+model_name = Settings().ollama_response_model
+
+@pytest.fixture
+def classifier():
+    return OllamaQuestionClassifier(model=model_name)
+
+
+@pytest.mark.parametrize(
+    ("question", "expected"),
+    [
+        (
+            "Qual óleo usar no motor?",
+            QuestionType.OLEO_MOTOR,
+        ),
+        (
+            "Qual a viscosidade do óleo?",
+            QuestionType.OLEO_MOTOR,
+        ),
+        (
+            "Qual a pressão correta dos pneus?",
+            QuestionType.PRESSAO_PNEUS,
+        ),
+        (
+            "Quantos PSI devo colocar nos pneus?",
+            QuestionType.PRESSAO_PNEUS,
+        ),
+        (
+            "Qual o tamanho dos pneus?",
+            QuestionType.MEDIDA_PNEUS,
+        ),
+        (
+            "Qual a medida original dos pneus?",
+            QuestionType.MEDIDA_PNEUS,
+        ),
+    ],
+)
+def test_should_classify_question(
+    classifier: OllamaQuestionClassifier,
+    question: str,
+    expected: QuestionType,
+):
+    result = classifier.classify(question)
+
+    assert result.question_type == expected
+
+============================================================
+FILE: ./tests/integration/infrastructure/ollama/__init__.py
+============================================================
+
+============================================================
+FILE: ./tests/integration/infrastructure/ollama/test_ollama_response_generator.py
+============================================================
+import pytest
+
+from slm_assistentemanutencaocarro.config.settings import Settings
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
+    OllamaResponseGenerator,
+)
+
+model_name = Settings().ollama_response_model
+
+
+@pytest.mark.integration
+def test_should_generate_response():
+
+    generator = OllamaResponseGenerator(model=model_name)
+
+    answer = VehicleAnswer(
+        question="Qual óleo usar?",
+        answer="O óleo especificado é 5W-40.",
+    )
+
+    result = generator.generate(answer)
+
+    assert result
+    assert isinstance(result, str)
+
+============================================================
+FILE: ./tests/integration/infrastructure/ollama/test_ollama_intent_classifier.py
+============================================================
+import pytest
+
+from slm_assistentemanutencaocarro.config.settings import Settings
+from slm_assistentemanutencaocarro.domain.intent import Intent
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
+    OllamaIntentClassifier,
+)
+
+model_name = Settings().ollama_intent_model
+
+def test_ollama_should_classify_intent():
+    classifier = OllamaIntentClassifier(model=model_name)
+
+    result = classifier.classify("Quando devo trocar o óleo?")
+
+    assert result.intent.value == Intent.MANUTENCAO
+
+def test_ollama_should_classify_intent_ollama_model_qwen_3_consistency():
+
+    classifier = OllamaIntentClassifier(model=model_name)
+
+    text = "Quando devo trocar o óleo?"
+
+    results = [classifier.classify(text).intent for _ in range(5)]
+
+    assert all(result == Intent.MANUTENCAO for result in results)
+
+============================================================
+FILE: ./tests/integration/infrastructure/hybrid/__init__.py
+============================================================
+
+============================================================
+FILE: ./tests/integration/infrastructure/__init__.py
+============================================================
+
+============================================================
+FILE: ./tests/integration/application/test_assistant.py
+============================================================
+from slm_assistentemanutencaocarro.infrastructure.composition import (
+    create_assistant,
+)
+
+
+def test_should_answer_engine_oil_question():
+    assistant = create_assistant("data/vehicle.json")
+
+    result = assistant.answer("Qual óleo devo usar?")
+
+    assert "5W-40" in result
+
+def test_should_answer_tire_pressure_question():
+    assistant = create_assistant("data/vehicle.json")
+
+    result = assistant.answer("Qual a pressão dos pneus?")
+
+    assert "33 PSI" in result
+
+def test_should_answer_tire_size_question():
+    assistant = create_assistant("data/vehicle.json")
+
+    result = assistant.answer("Qual a medida dos pneus?")
+
+    assert "205/55 R17" in result
+============================================================
+FILE: ./tests/integration/application/__init__.py
+============================================================
+
+============================================================
+FILE: ./tests/unit/domain/__init__.py
+============================================================
+
+============================================================
+FILE: ./tests/unit/domain/test_intent.py
+============================================================
+import pytest
+from pydantic import ValidationError
+
+from slm_assistentemanutencaocarro.domain.intent import Intent
+from slm_assistentemanutencaocarro.domain.intent_classification import (
+    IntentClassification,
+)
+
+
+def test_should_create_valid_intent_classification():
+    result = IntentClassification(intent=Intent.MANUTENCAO)
+
+    assert result.intent == Intent.MANUTENCAO
+
+
+def test_should_accept_string_value():
+    result = IntentClassification(intent="Problema")
+
+    assert result.intent == Intent.PROBLEMA
+
+
+def test_should_reject_invalid_intent():
+    with pytest.raises(ValidationError):
+        IntentClassification(intent="Categoria inexistente")
+
+============================================================
+FILE: ./tests/unit/__init__.py
+============================================================
+
+============================================================
+FILE: ./tests/unit/infrastructure/persistence/test_json_vehicle_reader.py
+============================================================
+from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
+    JsonVehicleReader,
+)
+
+
+def test_should_load_vehicle_from_json():
+    reader = JsonVehicleReader("data/vehicle.json")
+
+    vehicle = reader.load()
+
+    assert vehicle.brand == "Volkswagen"
+    assert vehicle.model == "T-Cross"
+    assert vehicle.year == 2022
+    assert vehicle.engine == "1.0 TSI"
+
+============================================================
+FILE: ./tests/unit/infrastructure/persistence/__init__.py
+============================================================
+
+============================================================
+FILE: ./tests/unit/infrastructure/ollama/test_ollama_question_classifier.py
+============================================================
+from unittest.mock import Mock, patch
+
+from slm_assistentemanutencaocarro.domain.question_classification import QuestionClassification
+from slm_assistentemanutencaocarro.domain.question_type import QuestionType
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
+    SYSTEM_PROMPT,
+    OllamaQuestionClassifier,
+)
+
+
+def test_should_classify_question():
+
+    response = Mock()
+    response.message.content = '{"question_type": "Óleo do motor"}'
+
+    with patch(
+        "slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier.ollama.chat",
+        return_value=response,
+    ) as chat:
+        classifier = OllamaQuestionClassifier(model="qwen3:1.7b")
+
+        result = classifier.classify("Qual óleo usar no motor?")
+
+    assert result.question_type == QuestionType.OLEO_MOTOR
+    chat.assert_called_once_with(
+        model="qwen3:1.7b",
+        think=False,
+        messages=[
+            {
+                "role": "system",
+                "content": SYSTEM_PROMPT,
+            },
+            {
+                "role": "user",
+                "content": "Qual óleo usar no motor?",
+            },
+        ],
+        format=QuestionClassification.model_json_schema(),
+    )
+
+============================================================
+FILE: ./tests/unit/infrastructure/ollama/__init__.py
+============================================================
+
+============================================================
+FILE: ./tests/unit/infrastructure/ollama/test_ollama_response_generator.py
+============================================================
+from unittest.mock import Mock, patch
+
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
+    SYSTEM_PROMPT,
+    OllamaResponseGenerator,
+)
+
+
+def test_should_generate_response():
+
+    response = Mock()
+    response.message.content = "O óleo especificado para o veículo é 5W-40."
+    
+    answer = Mock(spec=VehicleAnswer)
+    answer.question = "Qual óleo usar?"
+    answer.answer = "O óleo especificado é 5W-40."
+
+    with patch(
+        "slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator.ollama.chat",
+        return_value=response,
+    ) as chat:
+        generator = OllamaResponseGenerator(model="qwen3:1.7b")
+        result = generator.generate(answer)
+
+    assert result == "O óleo especificado para o veículo é 5W-40."
+    assert isinstance(result, str)
+    chat.assert_called_once_with(
+        model="qwen3:1.7b",
+        think=False,
+        messages=[
+            {
+                "role": "system",
+                "content": SYSTEM_PROMPT,
+            },
+            {
+                "role": "user",
+                "content": "O óleo especificado é 5W-40.",
+            },
+        ]
+    )
+
+============================================================
+FILE: ./tests/unit/infrastructure/ollama/test_ollama_intent_classifier.py
+============================================================
+from unittest.mock import Mock, patch
+
+from slm_assistentemanutencaocarro.domain.intent import Intent
+from slm_assistentemanutencaocarro.domain.intent_classification import IntentClassification
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
+    SYSTEM_PROMPT,
+    OllamaIntentClassifier,
+)
+
+
+def test_should_classify_intent():
+
+    response = Mock()
+    response.message.content = '{"intent": "Especificação"}'
+
+    with patch(
+        "slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier.ollama.chat",
+        return_value=response,
+    ) as chat:
+        classifier = OllamaIntentClassifier(model="qwen3:1.7b")
+
+        result = classifier.classify("Qual óleo devo usar?")
+
+    assert result.intent == Intent.ESPECIFICACAO
+    chat.assert_called_once_with(
+        model="qwen3:1.7b",
+        think=False,
+        messages=[
+            {
+                "role": "system",
+                "content": SYSTEM_PROMPT,
+            },
+            {
+                "role": "user",
+                "content": "Qual óleo devo usar?",
+            },
+        ],
+        format=IntentClassification.model_json_schema(),
+    )
+
+============================================================
+FILE: ./tests/unit/infrastructure/hybrid/test_hybrid_question_classifier.py
+============================================================
+from unittest.mock import Mock
+
+from slm_assistentemanutencaocarro.application.ports.question_classifier import QuestionClassifier
+from slm_assistentemanutencaocarro.domain.question_classification import (
+    QuestionClassification,
+)
+from slm_assistentemanutencaocarro.domain.question_type import QuestionType
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (
+    HybridQuestionClassifier,
+)
+
+
+def test_should_use_rule_classifier_when_question_is_known():
+    rule_classifier = Mock(spec=QuestionClassifier)
+    slm_classifier = Mock(spec=QuestionClassifier)
+
+    rule_classifier.classify.return_value = QuestionClassification(
+        question_type=QuestionType.OLEO_MOTOR
+    )
+
+    classifier = HybridQuestionClassifier(
+        rule_classifier=rule_classifier,
+        slm_classifier=slm_classifier,
+    )
+
+    result = classifier.classify("Qual óleo devo usar?")
+
+    assert result.question_type == QuestionType.OLEO_MOTOR
+    slm_classifier.classify.assert_not_called()
+    assert classifier.slm_call_count == 0
+
+
+def test_should_use_slm_when_rule_classifier_returns_unknown():
+    rule_classifier = Mock(spec=QuestionClassifier)
+    slm_classifier = Mock(spec=QuestionClassifier)
+
+    rule_classifier.classify.return_value = QuestionClassification(
+        question_type=QuestionType.DESCONHECIDO
+    )
+
+    slm_classifier.classify.return_value = QuestionClassification(
+        question_type=QuestionType.MEDIDA_PNEUS
+    )
+
+    classifier = HybridQuestionClassifier(
+        rule_classifier=rule_classifier,
+        slm_classifier=slm_classifier,
+    )
+
+    result = classifier.classify("Qual pneu devo utilizar nessa situação?")
+
+    assert result.question_type == QuestionType.MEDIDA_PNEUS
+    slm_classifier.classify.assert_called_once_with(
+        "Qual pneu devo utilizar nessa situação?"
+    )
+    assert classifier.slm_call_count == 1
+
+def test_should_count_slm_calls():
+    rule_classifier = Mock(spec=QuestionClassifier)
+    slm_classifier = Mock(spec=QuestionClassifier)
+
+    rule_classifier.classify.return_value = QuestionClassification(
+        question_type=QuestionType.DESCONHECIDO
+    )
+
+    slm_classifier.classify.return_value = QuestionClassification(
+        question_type=QuestionType.MEDIDA_PNEUS
+    )
+
+    classifier = HybridQuestionClassifier(
+        rule_classifier=rule_classifier,
+        slm_classifier=slm_classifier,
+    )
+
+    classifier.classify("Pergunta 1")
+    classifier.classify("Pergunta 2")
+    classifier.classify("Pergunta 3")
+
+    assert classifier.slm_call_count == 3
+============================================================
+FILE: ./tests/unit/infrastructure/hybrid/test_hybrid_response_generator.py
+============================================================
+from unittest.mock import Mock
+
+from slm_assistentemanutencaocarro.application.ports.response_generator import ResponseGenerator
+from slm_assistentemanutencaocarro.application.services.response_validation_service import (
+    ResponseValidationService,
+)
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
+    HybridResponseGenerator,
+)
+
+
+def create_generator(rule_response, ollama_response):
+    rule_generator = Mock()
+    ollama_generator = Mock()
+    validator = ResponseValidationService()
+
+    rule_generator.generate.return_value = rule_response
+    ollama_generator.generate.return_value = ollama_response
+
+    return (
+        HybridResponseGenerator(
+            rule_generator=rule_generator,
+            ollama_generator=ollama_generator,
+            validator=validator,
+        ),
+        rule_generator,
+        ollama_generator,
+    )
+
+
+def test_should_fallback_to_rule_generator_when_slm_fails():
+    rule_generator = Mock(spec=ResponseGenerator)
+    ollama_generator = Mock(spec=ResponseGenerator)
+    validator = Mock(spec=ResponseValidationService)
+
+    answer = VehicleAnswer(
+        question="Qual óleo devo usar?",
+        answer="O óleo especificado é 5W-40.",
+    )
+
+    rule_generator.generate.return_value = "O óleo especificado é 5W-40."
+    ollama_generator.generate.side_effect = RuntimeError("Ollama indisponível")
+
+    generator = HybridResponseGenerator(
+        rule_generator=rule_generator,
+        ollama_generator=ollama_generator,
+        validator=validator,
+    )
+
+    result = generator.generate(answer)
+
+    assert result == "O óleo especificado é 5W-40."
+    ollama_generator.generate.assert_called_once_with(answer)
+    rule_generator.generate.assert_called_once_with(answer)
+
+def test_should_fallback_when_response_is_invalid():
+    rule_generator = Mock(spec=ResponseGenerator)
+    ollama_generator = Mock(spec=ResponseGenerator)
+    validator = Mock(spec=ResponseValidationService)
+
+    answer = VehicleAnswer(
+        question="Qual óleo devo usar?",
+        answer="O óleo especificado é 5W-40.",
+    )
+
+    ollama_generator.generate.return_value = "Resposta inventada."
+    validator.validate.return_value = False
+    rule_generator.generate.return_value = "O óleo especificado é 5W-40."
+
+    generator = HybridResponseGenerator(
+        rule_generator=rule_generator, ollama_generator=ollama_generator, validator=validator
+    )
+
+    result = generator.generate(answer)
+
+    assert result == "O óleo especificado é 5W-40."
+    validator.validate.assert_called_once_with(
+        answer,
+        "Resposta inventada.",
+    )
+    rule_generator.generate.assert_called_once_with(answer)
+
+def test_should_use_ollama_when_response_is_valid():
+
+    hybrid_generator, rule_generator, ollama_generator = create_generator(
+        "O óleo especificado é 5W-40.",
+        "O óleo recomendado para o veículo é 5W-40.",
+    )
+
+    answer = VehicleAnswer(
+        question="Qual óleo usar?",
+        answer="O óleo especificado é 5W-40.",
+    )
+
+    result = hybrid_generator.generate(answer)
+
+    assert result == "O óleo recomendado para o veículo é 5W-40."
+
+    ollama_generator.generate.assert_called_once_with(answer)
+    rule_generator.generate.assert_not_called()
+
+
+def test_should_use_rule_based_when_response_is_invalid():
+
+    hybrid_generator, rule_generator, ollama_generator = create_generator(
+        "O óleo especificado é 5W-40.",
+        "O óleo recomendado para o veículo é 0W-20.",
+    )
+
+    answer = VehicleAnswer(
+        question="Qual óleo usar?",
+        answer="O óleo especificado é 5W-40.",
+    )
+
+    result = hybrid_generator.generate(answer)
+
+    assert result == "O óleo especificado é 5W-40."
+
+    ollama_generator.generate.assert_called_once_with(answer)
+    rule_generator.generate.assert_called_once_with(answer)
+
+def test_should_count_fallback():
+
+    generator, rule_generator, ollama_generator = create_generator(
+        "O óleo especificado é 5W-40.",
+        "O óleo recomendado é 0W-20.",
+    )
+
+    answer = VehicleAnswer(
+        question="Qual óleo usar?",
+        answer="O óleo especificado é 5W-40.",
+    )
+
+    generator.generate(answer)
+
+    assert generator.fallback_count == 1
+
+def test_should_not_count_valid_response_as_fallback():
+
+    generator, rule_generator, ollama_generator = create_generator(
+        "O óleo especificado é 5W-40.",
+        "O óleo recomendado é 5W-40.",
+    )
+
+    answer = VehicleAnswer(
+        question="Qual óleo usar?",
+        answer="O óleo especificado é 5W-40.",
+    )
+
+    generator.generate(answer)
+
+    assert generator.fallback_count == 0
+============================================================
+FILE: ./tests/unit/infrastructure/hybrid/__init__.py
+============================================================
+
+============================================================
+FILE: ./tests/unit/infrastructure/__init__.py
+============================================================
+
+============================================================
+FILE: ./tests/unit/infrastructure/rule_based/test_rule_based_response_generator.py
+============================================================
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
+    RuleBasedResponseGenerator,
+)
+
+
+def test_should_generate_response():
+
+    generator = RuleBasedResponseGenerator()
+
+    answer = VehicleAnswer(
+        question="Qual óleo usar?",
+        answer="O óleo especificado é 5W-40.",
+    )
+
+    result = generator.generate(answer)
+
+    assert result == "O óleo especificado é 5W-40."
+
+============================================================
+FILE: ./tests/unit/infrastructure/rule_based/__init__.py
+============================================================
+
+============================================================
+FILE: ./tests/unit/infrastructure/rule_based/test_rule_based_question_classifier.py
+============================================================
+import pytest
+
+from slm_assistentemanutencaocarro.domain.question_type import QuestionType
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
+    RuleBasedQuestionClassifier,
+)
+
+
+@pytest.fixture
+def classifier():
+    return RuleBasedQuestionClassifier()
+
+
+@pytest.mark.parametrize(
+    ("question", "expected"),
+    [
+        (
+            "Qual óleo usar no motor?",
+            QuestionType.OLEO_MOTOR,
+        ),
+        (
+            "Qual oleo o motor utiliza?",
+            QuestionType.OLEO_MOTOR,
+        ),
+        (
+            "Qual a pressão correta dos pneus?",
+            QuestionType.PRESSAO_PNEUS,
+        ),
+        (
+            "Como devo calibrar os pneus?",
+            QuestionType.PRESSAO_PNEUS,
+        ),
+        (
+            "Qual o tamanho do pneu?",
+            QuestionType.MEDIDA_PNEUS,
+        ),
+        (
+            "Qual é a medida original dos pneus?",
+            QuestionType.MEDIDA_PNEUS,
+        ),
+        (
+            "Quem é o presidente?",
+            QuestionType.DESCONHECIDO,
+        ),
+    ],
+)
+def test_should_classify_question(
+    classifier,
+    question,
+    expected,
+):
+    result = classifier.classify(question)
+
+    assert result.question_type == expected
+
+============================================================
+FILE: ./tests/unit/infrastructure/rule_based/test_rule_based_intent_classifier.py
+============================================================
+import pytest
+
+from slm_assistentemanutencaocarro.domain.intent import Intent
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_intent_classifier import (
+    RuleBasedIntentClassifier,
+)
+
+
+@pytest.fixture
+def classifier():
+    return RuleBasedIntentClassifier()
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("Quando devo trocar o óleo?", Intent.MANUTENCAO),
+        ("Quando devo trocar o filtro de ar?", Intent.MANUTENCAO),
+        ("Meu carro está fazendo um barulho estranho", Intent.PROBLEMA),
+        ("O motor está tremendo", Intent.PROBLEMA),
+        ("Quanto custa trocar o óleo?", Intent.CUSTO),
+        ("Quanto custa uma revisão?", Intent.CUSTO),
+        ("Qual a calibragem dos pneus?", Intent.ESPECIFICACAO),
+        ("Quando devo fazer a próxima revisão?", Intent.REVISAO),
+        ("Olá", Intent.OUTRO),
+    ],
+)
+def test_should_classify_intent(classifier, text, expected):
+    result = classifier.classify(text)
+
+    assert result.intent == expected
+
+============================================================
+FILE: ./tests/unit/application/__init__.py
+============================================================
+
+============================================================
+FILE: ./tests/unit/application/ports/__init__.py
+============================================================
+
+============================================================
+FILE: ./tests/unit/application/services/test_vehicle_query_service.py
+============================================================
+from slm_assistentemanutencaocarro.application.services.vehicle_query_service import (
+    VehicleQueryService,
+)
+from slm_assistentemanutencaocarro.application.services.vehicle_service import VehicleService
+from slm_assistentemanutencaocarro.domain.question_type import QuestionType
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
+    JsonVehicleReader,
+)
+
+
+def create_vehicle_query_service() -> VehicleQueryService:
+    reader = JsonVehicleReader("data/vehicle.json")
+
+    vehicle_service: VehicleService = VehicleService(reader)
+
+    return VehicleQueryService(vehicle_service)
+
+
+def test_should_answer_engine_oil():
+    service: VehicleQueryService = create_vehicle_query_service()
+
+    result: VehicleAnswer = service.answer("Qual óleo usar no motor?", QuestionType.OLEO_MOTOR)
+
+    assert result.answer == "O óleo especificado é 5W-40."
+
+
+def test_should_answer_tire_pressure():
+    service = create_vehicle_query_service()
+
+    result: VehicleAnswer = service.answer("Qual a pressão dos pneus?", QuestionType.PRESSAO_PNEUS)
+
+    assert result.answer == (
+        "A pressão configurada é 33 PSI nos pneus dianteiros e 33 PSI nos traseiros."
+    )
+
+
+def test_should_answer_tire_size():
+    service = create_vehicle_query_service()
+
+    result: VehicleAnswer = service.answer("Qual o tamanho do pneu?", QuestionType.MEDIDA_PNEUS)
+
+    assert result.answer == ("A medida dos pneus é 205/55 R17.")
+
+
+def test_should_not_invent_maintenance_information():
+    service = create_vehicle_query_service()
+
+    result: VehicleAnswer = service.answer("Devo trocar o filtro?", QuestionType.DESCONHECIDO)
+
+    assert "não tenho conhecimento" not in result.answer.lower()
+
+============================================================
+FILE: ./tests/unit/application/services/test_assistant_service.py
+============================================================
+from unittest.mock import Mock
+
+from slm_assistentemanutencaocarro.application.ports.intent_classifier import (
+    IntentClassifier,
+)
+from slm_assistentemanutencaocarro.application.ports.question_classifier import (
+    QuestionClassifier,
+)
+from slm_assistentemanutencaocarro.application.ports.response_generator import (
+    ResponseGenerator,
+)
+from slm_assistentemanutencaocarro.application.services.assistant_service import (
+    AssistantService,
+)
+from slm_assistentemanutencaocarro.domain.intent import Intent
+from slm_assistentemanutencaocarro.domain.intent_classification import (
+    IntentClassification,
+)
+from slm_assistentemanutencaocarro.domain.question_classification import (
+    QuestionClassification,
+)
+from slm_assistentemanutencaocarro.domain.question_type import QuestionType
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+
+
+def test_should_answer_vehicle_specification_question():
+    intent_classifier = Mock(spec=IntentClassifier)
+    question_classifier = Mock(spec=QuestionClassifier)
+    vehicle_query_service = Mock()
+    response_generator = Mock(spec=ResponseGenerator)
+
+    intent_classifier.classify.return_value = IntentClassification(
+        intent=Intent.ESPECIFICACAO
+    )
+
+    question_classifier.classify.return_value = QuestionClassification(
+        question_type=QuestionType.OLEO_MOTOR
+    )
+
+    vehicle_query_service.answer.return_value = VehicleAnswer(
+        question="Qual óleo devo usar?",
+        answer="O óleo especificado é 5W-40.",
+    )
+
+    response_generator.generate.return_value = "O óleo especificado é 5W-40."
+
+    service = AssistantService(
+        intent_classifier=intent_classifier,
+        question_classifier=question_classifier,
+        vehicle_query_service=vehicle_query_service,
+        response_generator=response_generator,
+    )
+
+    result = service.answer("Qual óleo devo usar?")
+
+    assert result == "O óleo especificado é 5W-40."
+
+def test_should_orchestrate_vehicle_specification_question():
+    intent_classifier = Mock(spec=IntentClassifier)
+    question_classifier = Mock(spec=QuestionClassifier)
+    vehicle_query_service = Mock()
+    response_generator = Mock(spec=ResponseGenerator)
+
+    intent_classifier.classify.return_value = IntentClassification(
+        intent=Intent.ESPECIFICACAO
+    )
+
+    question_classifier.classify.return_value = QuestionClassification(
+        question_type=QuestionType.OLEO_MOTOR
+    )
+
+    vehicle_query_service.answer.return_value = VehicleAnswer(
+        question="Qual óleo devo usar?",
+        answer="O óleo especificado é 5W-40.",
+    )
+
+    response_generator.generate.return_value = "O óleo especificado é 5W-40."
+
+    service = AssistantService(
+        intent_classifier=intent_classifier,
+        question_classifier=question_classifier,
+        vehicle_query_service=vehicle_query_service,
+        response_generator=response_generator,
+    )
+
+    service.answer("Qual óleo devo usar?")
+
+    intent_classifier.classify.assert_called_once_with(
+        "Qual óleo devo usar?"
+    )
+
+    question_classifier.classify.assert_called_once_with(
+        "Qual óleo devo usar?"
+    )
+
+    vehicle_query_service.answer.assert_called_once_with(
+        "Qual óleo devo usar?",
+        QuestionType.OLEO_MOTOR,
+    )
+
+    response_generator.generate.assert_called_once_with(
+        vehicle_query_service.answer.return_value
+    )
+
+def test_should_reject_unsupported_intent():
+    intent_classifier = Mock(spec=IntentClassifier)
+    question_classifier = Mock(spec=QuestionClassifier)
+    vehicle_query_service = Mock()
+    response_generator = Mock(spec=ResponseGenerator)
+
+    intent_classifier.classify.return_value = IntentClassification(
+        intent=Intent.MANUTENCAO
+    )
+
+    service = AssistantService(
+        intent_classifier=intent_classifier,
+        question_classifier=question_classifier,
+        vehicle_query_service=vehicle_query_service,
+        response_generator=response_generator,
+    )
+
+    result = service.answer("Quando devo trocar o óleo?")
+
+    assert result == "Ainda não tenho suporte para responder esse tipo de pergunta."
+
+    question_classifier.classify.assert_not_called()
+    vehicle_query_service.answer.assert_not_called()
+    response_generator.generate.assert_not_called()
+============================================================
+FILE: ./tests/unit/application/services/test_vehicle_service.py
+============================================================
+from slm_assistentemanutencaocarro.application.ports.vehicle_reader import VehicleReader
+from slm_assistentemanutencaocarro.application.services.vehicle_service import (
+    VehicleService,
+)
+from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
+    JsonVehicleReader,
+)
+
+
+def create_vehicle_service() -> VehicleService:
+    reader: VehicleReader = JsonVehicleReader("data/vehicle.json")
+
+    return VehicleService(reader)
+
+
+def test_should_return_engine_oil():
+    vehicle_service = create_vehicle_service()
+
+    assert vehicle_service.get_engine_oil() == "5W-40"
+
+
+def test_should_return_tire_size():
+    vehicle_service = create_vehicle_service()
+
+    assert vehicle_service.get_tire_size() == "205/55 R17"
+
+
+def test_should_return_tire_pressure():
+    vehicle_service = create_vehicle_service()
+
+    assert vehicle_service.get_tire_pressure() == (33.0, 33.0)
+
+============================================================
+FILE: ./tests/unit/application/services/test_response_validation_service.py
+============================================================
+from slm_assistentemanutencaocarro.application.services.response_validation_service import (
+    ResponseValidationService,
+)
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+
+
+def test_should_accept_non_empty_response():
+    validator = ResponseValidationService()
+
+    answer = VehicleAnswer(
+        question="Qual óleo devo usar?",
+        answer="O óleo especificado é 5W-40.",
+    )
+
+    assert validator.validate(
+        answer,
+        "Para seu veículo, o óleo especificado é 5W-40.",
+    )
+
+
+def test_should_reject_empty_response():
+    validator = ResponseValidationService()
+
+    answer = VehicleAnswer(
+        question="Qual óleo devo usar?",
+        answer="O óleo especificado é 5W-40.",
+    )
+
+    assert not validator.validate(answer, "")
+
+
+def test_should_accept_response_with_same_oil():
+    validator = ResponseValidationService()
+
+    answer = VehicleAnswer(question="Qual óleo devo usar?", answer="O óleo especificado é 5W-40.")
+
+    assert validator.validate(
+        answer,
+        "Para o seu veículo, o óleo especificado é 5W-40.",
+    )
+
+
+def test_should_reject_response_with_different_oil():
+    validator = ResponseValidationService()
+
+    answer = VehicleAnswer(question="Qual óleo devo usar?", answer="O óleo especificado é 5W-40.")
+
+    assert not validator.validate(
+        answer,
+        "Para o seu veículo, o óleo especificado é 0W-20.",
+    )
+
+
+def test_should_accept_response_with_same_tire_pressure():
+    validator = ResponseValidationService()
+
+    answer = VehicleAnswer(
+        question="Qual a pressão correta dos pneus?", answer="A pressão correta é 33 PSI."
+    )
+
+    assert validator.validate(
+        answer,
+        "A pressão recomendada para os pneus é 33 PSI.",
+    )
+
+
+def test_should_reject_response_with_different_tire_pressure():
+    validator = ResponseValidationService()
+
+    answer = VehicleAnswer(
+        question="Qual a pressão correta dos pneus?", answer="A pressão correta é 33 PSI."
+    )
+
+    assert not validator.validate(
+        answer,
+        "A pressão recomendada para os pneus é 35 PSI.",
+    )
+
+def test_should_accept_same_tire_size():
+    validator = ResponseValidationService()
+
+    answer = VehicleAnswer(
+        question="Qual o tamanho do pneu?",
+        answer="A medida dos pneus é 205/55 R17.",
+    )
+
+    assert validator.validate(
+        answer,
+        "A medida recomendada é 205/55 R17.",
+    )
+
+
+def test_should_reject_different_tire_size():
+    validator = ResponseValidationService()
+
+    answer = VehicleAnswer(
+        question="Qual o tamanho do pneu?",
+        answer="A medida dos pneus é 205/55 R17.",
+    )
+
+    assert not validator.validate(
+        answer,
+        "A medida recomendada é 215/55 R17.",
+    )
+
+def test_should_reject_response_when_expected_value_is_missing():
+    validator = ResponseValidationService()
+
+    answer = VehicleAnswer(
+        question="Qual óleo usar?",
+        answer="O óleo especificado é 5W-40.",
+    )
+
+    assert not validator.validate(
+        answer,
+        "O óleo recomendado é adequado para o seu veículo.",
+    )
+============================================================
+FILE: ./tests/unit/application/services/__init__.py
+============================================================
+
+============================================================
+FILE: ./tests/__init__.py
+============================================================
+
+============================================================
+FILE: ./benchmark/evaluation.py
+============================================================
+import csv
+
+from benchmark.benchmark_result import (
+    BenchmarkResult,
+)
+from benchmark.intent_classifier_benchmark import IntentClassifierBenchmark
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_intent_classifier import (
+    HybridIntentClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
+    OllamaIntentClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_intent_classifier import (
+    RuleBasedIntentClassifier,
+)
+
+# Modelos
+QWEN_3 = "qwen3:1.7b"
+LLAMA_3_2 = "llama3.2:1b"
+
+# Arquivos de testes/treinamentos
+csv_files = [
+    "benchmark/data/intents.csv",
+    "benchmark/data/intents_generalization.csv",
+]
+
+
+def load_test_cases(
+    csv_file_name: str, enconding_file: str = "utf-8", delimiter=","
+) -> list[dict[str, str]]:
+
+    test_cases: list[dict[str, str]]
+    with open(csv_file_name, encoding=enconding_file) as file:
+        reader = csv.DictReader(file, delimiter=delimiter)
+        test_cases = list(reader)
+
+    return test_cases
+
+
+def main():
+
+    for csv_file_name in csv_files:
+        test_case = load_test_cases(csv_file_name=csv_file_name)
+
+        result: BenchmarkResult = IntentClassifierBenchmark().evaluate(
+            "QWEN_3",
+            OllamaIntentClassifier(model=QWEN_3),
+            test_case,
+        )
+
+        result: BenchmarkResult = IntentClassifierBenchmark().evaluate(
+            "Hibrido",
+            HybridIntentClassifier(
+                rule_based_classifier=RuleBasedIntentClassifier(),
+                ollama_classifier=OllamaIntentClassifier(model=QWEN_3),
+            ),
+            test_case,
+        )
+        result.display("PT")
+
+        print()
+        print()
+        print("====================================================")
+
+
+if __name__ == "__main__":
+    main()
+
+============================================================
+FILE: ./benchmark/response_generator_benchmark.py
+============================================================
+import csv
+import time
+from pathlib import Path
+
+from benchmark.benchmark_result import BenchmarkResult
+from slm_assistentemanutencaocarro.application.ports.question_classifier import QuestionClassifier
+from slm_assistentemanutencaocarro.application.ports.response_generator import ResponseGenerator
+from slm_assistentemanutencaocarro.application.services.response_validation_service import (
+    ResponseValidationService,
+)
+from slm_assistentemanutencaocarro.application.services.vehicle_query_service import (
+    VehicleQueryService,
+)
+from slm_assistentemanutencaocarro.application.services.vehicle_service import VehicleService
+from slm_assistentemanutencaocarro.config.settings import Settings
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
+    HybridResponseGenerator,
+)
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
+    OllamaResponseGenerator,
+)
+from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
+    JsonVehicleReader,
+)
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
+    RuleBasedQuestionClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
+    RuleBasedResponseGenerator,
+)
+
+DATASET = Path("benchmark/data/responses.csv")
+VEHICLE_FILE = Path("data/vehicle.json")
+
+
+def load_dataset() -> list[dict]:
+    with DATASET.open(encoding="utf-8") as file:
+        return list(csv.DictReader(file))
+
+
+def create_vehicle_query_answer() -> VehicleQueryService:
+    vehicle_reader = JsonVehicleReader(str(VEHICLE_FILE))
+    vehicle_service = VehicleService(vehicle_reader)
+
+    return VehicleQueryService(vehicle_service)
+
+
+class ResponseGeneratorBenchamark:
+    @staticmethod
+    def evaluate(
+        evaluate_name: str,
+        response_generator: ResponseGenerator,
+        vehicle_query_service: VehicleQueryService,
+        question_classifier: QuestionClassifier,
+        verbose:bool = True
+    ) -> BenchmarkResult:
+        dataset = load_dataset()
+
+        correct = 0
+        total_time = 0.0
+
+        for row in dataset:
+            question = row["question"]
+            expected_answer = row["expected_answer"]
+
+            question_type = question_classifier.classify(question).question_type
+
+            vehicle_answer = vehicle_query_service.answer(
+                question,
+                question_type,
+            )
+
+            start = time.perf_counter()
+
+            response = response_generator.generate(vehicle_answer)
+
+            elapsed = time.perf_counter() - start
+            total_time += elapsed
+
+            if expected_answer.lower() in response.lower():
+                correct += 1
+                status = "✓"
+            else:
+                status = "✗"
+
+            if verbose:
+                print(f"\n{evaluate_name}")
+                print(f"{status}         : {question}")
+                print(f"  Esperado: {expected_answer}")
+                print(f"  Resposta: {response}")
+                print(f"  Tempo:    {elapsed}s")
+
+        return BenchmarkResult(
+            model=evaluate_name, correct=correct, total=len(dataset), elapsed=total_time
+        )
+
+
+def main():
+    settings = Settings()
+
+    vehicle_query_service = create_vehicle_query_answer()
+    question_classifier = RuleBasedQuestionClassifier()
+
+    rule_generator = RuleBasedResponseGenerator()
+
+    ollama_generator = OllamaResponseGenerator(model=settings.ollama_response_model)
+
+    hybrid_generator = HybridResponseGenerator(
+        rule_generator=rule_generator,
+        ollama_generator=ollama_generator,
+        validator=ResponseValidationService()
+    )
+
+    result = ResponseGeneratorBenchamark.evaluate(
+        "Rule Based", rule_generator, vehicle_query_service, question_classifier
+    )
+    print(result)
+
+    result = ResponseGeneratorBenchamark.evaluate(
+        "Ollama", ollama_generator, vehicle_query_service, question_classifier, False
+    )
+    print(result)
+
+    result = ResponseGeneratorBenchamark.evaluate(
+        "Hybrid", hybrid_generator, vehicle_query_service, question_classifier, False
+    )
+    print(result)
+
+
+if __name__ == "__main__":
+    main()
+
+============================================================
+FILE: ./benchmark/evaluation_questions_generalization.py
+============================================================
+from evaluation_questions import evaluate, load_dataset
+
+from slm_assistentemanutencaocarro.config.settings import Settings
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (
+    HybridQuestionClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
+    OllamaQuestionClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
+    RuleBasedQuestionClassifier,
+)
+
+settings = Settings()
+
+
+def main():
+    dataset = load_dataset("benchmark/data/questions_generalization.csv")
+
+    evaluate(
+        RuleBasedQuestionClassifier(),
+        dataset,
+    )
+
+    evaluate(
+        OllamaQuestionClassifier(model=settings.ollama_question_model),
+        dataset,
+    )
+
+    evaluate(
+        HybridQuestionClassifier(
+            RuleBasedQuestionClassifier(),
+            OllamaQuestionClassifier(model=settings.ollama_question_model),
+        ),
+        dataset,
+    )
+
+
+if __name__ == "__main__":
+    main()
+
+============================================================
+FILE: ./benchmark/__init__.py
+============================================================
+
+============================================================
+FILE: ./benchmark/data/intents.csv
+============================================================
+description,expected_intent
+Quando devo trocar o óleo?,Manutenção
+Qual óleo usar no motor?,Especificação
+Quando devo trocar o filtro de ar?,Manutenção
+Preciso trocar o filtro de combustível?,Manutenção
+Meu carro está fazendo um barulho estranho,Problema
+O motor está tremendo,Problema
+O carro está fazendo um barulho ao frear,Problema
+O motor está falhando,Problema
+Quanto custa trocar o óleo?,Custo
+Quanto custa uma revisão?,Custo
+Qual o preço de uma troca de óleo?,Custo
+Quanto vou gastar com a revisão?,Custo
+Qual a calibragem dos pneus?,Especificação
+Qual óleo o motor utiliza?,Especificação
+Qual a pressão correta dos pneus?,Especificação
+Qual o tamanho do pneu?,Especificação
+Quando devo fazer a próxima revisão?,Revisão
+Qual a periodicidade da revisão?,Revisão
+Quando é a próxima revisão?,Revisão
+De quanto em quanto tempo devo revisar o carro?,Revisão
+Olá,Outro
+Bom dia,Outro
+Obrigado,Outro
+Quero falar sobre outra coisa,Outro
+============================================================
+FILE: ./benchmark/data/intents_generalization.csv
+============================================================
+description,expected_intent
+Preciso fazer a troca do óleo do meu carro,Manutenção
+Devo substituir o filtro de combustível?,Manutenção
+Meu veículo começou a vibrar quando acelero,Problema
+Escuto um ruído metálico vindo do motor,Problema
+Qual será o valor para trocar os filtros?,Custo
+Quanto vou pagar na revisão?,Custo
+Que pressão devo colocar nos pneus?,Especificação
+Qual é a medida original dos pneus?,Especificação
+Com qual óleo o veículo deve ser abastecido?,Especificação
+A cada quantos quilômetros faço a revisão?,Revisão
+Quando chegará o momento da próxima revisão?,Revisão
+Boa noite,Outro
+Tudo bem?,Outro
+Quero fazer uma pergunta diferente,Outro
+============================================================
+FILE: ./benchmark/data/responses.csv
+============================================================
+question,expected_answer
+Qual óleo devo usar no motor?,O óleo especificado é 5W-40.
+Qual a pressão correta dos pneus?,33 PSI
+Qual o tamanho dos pneus?,205/55 R17
+Qual óleo devo usar?,5W-40
+Qual óleo o motor utiliza?,5W-40
+Que pressão devo colocar nos pneus?,33 PSI
+Qual o tamanho do pneu?,205/55 R17
+Qual a medida dos pneus?,205/55 R17
+============================================================
+FILE: ./benchmark/data/questions.csv
+============================================================
+question,expected
+Qual óleo usar no motor?,Óleo do motor
+Qual oleo o motor utiliza?,Óleo do motor
+Qual a viscosidade do óleo?,Óleo do motor
+Que lubrificante devo usar no motor?,Óleo do motor
+Qual óleo é recomendado para o carro?,Óleo do motor
+Qual a pressão correta dos pneus?,Pressão dos pneus
+Quantos PSI devo colocar nos pneus?,Pressão dos pneus
+Como devo calibrar os pneus?,Pressão dos pneus
+Qual a calibragem dos pneus?,Pressão dos pneus
+Qual pressão usar nos pneus?,Pressão dos pneus
+Qual o tamanho dos pneus?,Medida dos pneus
+Qual a medida dos pneus?,Medida dos pneus
+Qual a medida original dos pneus?,Medida dos pneus
+Qual pneu o carro utiliza?,Medida dos pneus
+Qual a dimensão dos pneus?,Medida dos pneus
+Qual a cor do carro?,Desconhecido
+Quem fabrica o carro?,Desconhecido
+Qual o modelo do carro?,Desconhecido
+Quanto pesa o carro?,Desconhecido
+Onde o carro foi fabricado?,Desconhecido
+============================================================
+FILE: ./benchmark/data/questions_generalization.csv
+============================================================
+question,expected
+Que óleo devo colocar?,Óleo do motor
+Qual lubrificante é indicado?,Óleo do motor
+Qual viscosidade devo procurar?,Óleo do motor
+Que produto vai no motor?,Óleo do motor
+Como faço a calibragem?,Pressão dos pneus
+Quanto devo colocar nos pneus?,Pressão dos pneus
+Qual deve ser a calibragem?,Pressão dos pneus
+Quantos PSI são recomendados?,Pressão dos pneus
+Que pneu devo comprar?,Medida dos pneus
+Qual pneu é compatível?,Medida dos pneus
+Qual dimensão devo procurar?,Medida dos pneus
+Que tamanho devo comprar?,Medida dos pneus
+Quanto custa uma revisão?,Desconhecido
+Quando devo trocar o óleo?,Desconhecido
+============================================================
+FILE: ./benchmark/evaluation_questions.py
+============================================================
+import csv
+import time
+
+from slm_assistentemanutencaocarro.config.settings import Settings
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (
+    HybridQuestionClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
+    OllamaQuestionClassifier,
+)
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
+    RuleBasedQuestionClassifier,
+)
+
+settings = Settings()
+
+
+def load_dataset(path: str):
+    with open(path, encoding="utf-8") as file:
+        return list(csv.DictReader(file))
+
+
+def evaluate(classifier, dataset):
+    start = time.perf_counter()
+
+    correct = 0
+
+    for item in dataset:
+        result = classifier.classify(item["question"])
+
+        if result.question_type.value == item["expected"]:
+            correct += 1
+        else:
+            print(
+                f"ERRO [{classifier.__class__.__name__}]: "
+                f"{item['question']} | "
+                f"esperado={item['expected']} | "
+                f"obtido={result.question_type.value}"
+            )
+
+    elapsed = time.perf_counter() - start
+
+    total = len(dataset)
+
+    print(f"\n=== {classifier.__class__.__name__} ===")
+    print(f"Acurácia: {correct / total * 100:.2f}%")
+    print(f"Acertos: {correct}/{total}")
+    print(f"Tempo total: {elapsed:.2f}s")
+    print(f"Tempo médio: {elapsed / total:.3f}s")
+
+
+def main():
+    dataset = load_dataset("benchmark/data/questions.csv")
+
+    evaluate(
+        RuleBasedQuestionClassifier(),
+        dataset,
+    )
+
+    evaluate(
+        OllamaQuestionClassifier(model=settings.ollama_question_model),
+        dataset,
+    )
+
+    evaluate(
+        HybridQuestionClassifier(
+            RuleBasedQuestionClassifier(),
+            OllamaQuestionClassifier(model=settings.ollama_question_model),
+        ),
+        dataset,
+    )
+
+
+if __name__ == "__main__":
+    main()
+
+============================================================
+FILE: ./benchmark/benchmark_result.py
+============================================================
+from pydantic import BaseModel
+
+
+class BenchmarkResult(BaseModel):
+    model: str
+    correct: int
+    total: int
+    elapsed: float
+
+    @property
+    def average_time(self) -> float:
+        return self.elapsed / self.total
+
+    @property
+    def accuracy(self) -> float:
+        return self.correct / self.total * 100
+
+    def __str__(self) -> str:
+        return (
+            "========================================\n"
+            f"Modelo: {self.model}\n"
+            f"  Acertos    : {self.correct}/{self.total}\n"
+            f"  Acurácia   : {self.accuracy:.2f}%\n"
+            f"  Tempo total: {self.elapsed:.2f}s\n"
+            f"  Tempo médio: {self.average_time:.3f}s\n"
+            "========================================"
+        )
+
+    def display(self, lang: str = "PT") -> None:
+        print(f"=== {self.model} ===")
+        if lang == "PT":
+            self.__display_pt()
+        else:
+            self.__display_en()
+
+    def __display_pt(self):
+        print(f"Modelo: {self.model}")
+        print("----------------------------------------")
+        print(f"Acurácia: {self.accuracy:.2f}%")
+        print(f"Acertos: {self.correct}/{self.total}")
+        print(f"Tempo total: {self.elapsed:.2f}s")
+        print(f"Tempo médio: {self.average_time:.3f}s")
+
+    def __display_en(self):
+        print(f"Model: {self.model}")
+        print("----------------------------------------")
+        print(f"Accuracy: {self.accuracy:.2f}%")
+        print(f"Corrects: {self.correct}/{self.total}")
+        print(f"Elapsed: {self.elapsed:.2f}s")
+        print(f"Average Time: {self.average_time:.3f}s")
+
+============================================================
+FILE: ./benchmark/evaluation_response.py
+============================================================
+import csv
+
+from benchmark.benchmark_result import (
+    BenchmarkResult,
+)
+from benchmark.response_generator_benchmark import ResponseGeneratorBenchamark
+from slm_assistentemanutencaocarro.application.services.response_validation_service import (
+    ResponseValidationService,
+)
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
+    HybridResponseGenerator,
+)
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
+    OllamaResponseGenerator,
+)
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
+    RuleBasedResponseGenerator,
+)
+
+# Modelos
+QWEN_3 = "qwen3:1.7b"
+LLAMA_3_2 = "llama3.2:1b"
+
+# Arquivos de testes/treinamentos
+csv_files = [
+    "benchmark/data/responses.csv",
+]
+
+
+def load_test_cases(
+    csv_file_name: str, enconding_file: str = "utf-8", delimiter=","
+) -> list[dict[str, str]]:
+
+    test_cases: list[dict[str, str]]
+    with open(csv_file_name, encoding=enconding_file) as file:
+        reader = csv.DictReader(file, delimiter=delimiter)
+        test_cases = list(reader)
+
+    return test_cases
+
+
+def main():
+
+    for csv_file_name in csv_files:
+        test_case = load_test_cases(csv_file_name=csv_file_name)
+
+        result: BenchmarkResult = ResponseGeneratorBenchamark().evaluate(
+            "QWEN_3",
+            OllamaResponseGenerator(model=QWEN_3),
+            test_case,
+        )
+
+        result: BenchmarkResult = ResponseGeneratorBenchamark().evaluate(
+            "Hibrido",
+            HybridResponseGenerator(
+                rule_generator=RuleBasedResponseGenerator(),
+                ollama_generator=OllamaResponseGenerator(model=QWEN_3),
+                validator=ResponseValidationService(),
+                use_slm=True
+            ),
+            test_case,
+        )
+        result.display("PT")
+
+        print()
+        print()
+        print("====================================================")
+
+
+if __name__ == "__main__":
+    main()
+
+============================================================
+FILE: ./benchmark/intent_classifier_benchmark.py
+============================================================
+import time
+
+from benchmark.benchmark_result import BenchmarkResult
+from slm_assistentemanutencaocarro.application.ports.intent_classifier import IntentClassifier
+
+
+class IntentClassifierBenchmark:
+    @staticmethod
+    def evaluate(
+        evaluate_name: str, intent_classifier: IntentClassifier, test_case: list[dict[str, str]]
+    ) -> BenchmarkResult:
+
+        total = 0
+        correct = 0
+
+        start = time.perf_counter()
+
+        for row in test_case:
+            result = intent_classifier.classify(row["description"])
+
+            total += 1
+
+            if result.intent.value == row["expected_intent"]:
+                correct += 1
+            else:
+                print(
+                    f"ERRO [{evaluate_name}]: "
+                    f"{row['description']} | "
+                    f"esperado={row['expected_intent']} | "
+                    f"obtido={result.intent.value}"
+                )
+
+        elapsed = time.perf_counter() - start
+
+        return BenchmarkResult(
+            model=evaluate_name,
+            correct=correct,
+            total=total,
+            elapsed=elapsed,
+        )
