@@ -62,11 +62,11 @@ def test_should_answer_specification_question():
 def test_should_not_continue_when_intent_is_not_supported():
     intent_classifier = Mock(spec=IntentClassifier)
     question_classifier = Mock(spec=QuestionClassifier)
-    vehicle_query_service = Mock()
+    vehicle_query_service = Mock(spec=VehicleQueryService)
     response_generator = Mock(spec=ResponseGenerator)
 
     intent_classifier.classify.return_value = IntentClassification(
-        intent=Intent.MANUTENCAO
+        intent=Intent.OUTRO
     )
 
     service = AssistantService(
@@ -76,11 +76,39 @@ def test_should_not_continue_when_intent_is_not_supported():
         response_generator=response_generator,
     )
 
-    result = service.answer("Quando devo trocar o óleo?")
+    result = service.answer("Qual a capital da França?")
 
-    assert result == "Ainda não tenho suporte para responder esse tipo de pergunta."
+    assert result == service.UNSUPPORTED_INTENT_MESSAGE
 
     question_classifier.classify.assert_not_called()
+    vehicle_query_service.answer.assert_not_called()
+    response_generator.generate.assert_not_called()
+
+def test_should_not_continue_when_question_type_is_not_supported():
+    intent_classifier = Mock(spec=IntentClassifier)
+    question_classifier = Mock(spec=QuestionClassifier)
+    vehicle_query_service = Mock(spec=VehicleQueryService)
+    response_generator = Mock(spec=ResponseGenerator)
+
+    intent_classifier.classify.return_value = IntentClassification(
+        intent=Intent.ESPECIFICACAO
+    )
+
+    question_classifier.classify.return_value = QuestionClassification(
+        question_type=QuestionType.DESCONHECIDO
+    )
+
+    service = AssistantService(
+        intent_classifier=intent_classifier,
+        question_classifier=question_classifier,
+        vehicle_query_service=vehicle_query_service,
+        response_generator=response_generator,
+    )
+
+    result = service.answer("Qual o torque do parafuso do suporte do motor?")
+
+    assert result == service.UNSUPPORTED_QUESTION_MESSAGE
+
     vehicle_query_service.answer.assert_not_called()
     response_generator.generate.assert_not_called()
 

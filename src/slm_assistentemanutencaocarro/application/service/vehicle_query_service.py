@@ -1,6 +1,9 @@
 from slm_assistentemanutencaocarro.application.service.vehicle_service import (
     VehicleService,
 )
+from slm_assistentemanutencaocarro.domain.exception import (
+    VehicleDataNotFoundError,
+)
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 
@@ -19,13 +22,27 @@ class VehicleQueryService:
     ) -> VehicleAnswer:
 
         if question_type == QuestionType.OLEO_MOTOR:
+            engine_oil = self.vehicle_service.get_engine_oil()
+
+            if engine_oil is None:
+                raise VehicleDataNotFoundError(
+                    "Informação não encontrada sobre: o óleo motor"
+                )
+
             return VehicleAnswer(
                 question=question,
-                answer=(f"O óleo especificado é {self.vehicle_service.get_engine_oil()}."),
+                answer=f"O óleo especificado é {engine_oil}.",
             )
 
         if question_type == QuestionType.PRESSAO_PNEUS:
-            front, rear = self.vehicle_service.get_tire_pressure()
+            tire_pressure = self.vehicle_service.get_tire_pressure()
+
+            if tire_pressure is None:
+                raise VehicleDataNotFoundError(
+                    "Informação não encontrada sobre: pressão dos pneus"
+                )
+
+            front, rear = tire_pressure
 
             return VehicleAnswer(
                 question=question,
@@ -37,12 +54,18 @@ class VehicleQueryService:
             )
 
         if question_type == QuestionType.MEDIDA_PNEUS:
+            tire_size = self.vehicle_service.get_tire_size()
+
+            if tire_size is None:
+                raise VehicleDataNotFoundError(
+                    "Informação não encontrada sobre: medida dos pneus"
+                )
+
             return VehicleAnswer(
                 question=question,
-                answer=(f"A medida dos pneus é {self.vehicle_service.get_tire_size()}."),
+                answer=f"A medida dos pneus é {tire_size}.",
             )
 
-        return VehicleAnswer(
-            question=question,
-            answer=("Ainda não tenho informação suficiente para responder essa pergunta."),
+        raise VehicleDataNotFoundError(
+            f"Tipo de questão não suportada: {question_type}"
         )

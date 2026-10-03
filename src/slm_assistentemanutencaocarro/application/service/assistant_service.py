@@ -8,10 +8,21 @@ from slm_assistentemanutencaocarro.application.ports.response_generator import R
 from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
     VehicleQueryService,
 )
+from slm_assistentemanutencaocarro.domain.exception import VehicleDataNotFoundError
 from slm_assistentemanutencaocarro.domain.intent import Intent
+from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 
 
 class AssistantService:
+    
+    UNSUPPORTED_INTENT_MESSAGE = (
+        "Ainda não tenho suporte para responder esse tipo de pergunta."
+    )
+
+    UNSUPPORTED_QUESTION_MESSAGE = (
+        "Ainda não tenho informações para responder essa pergunta sobre o veículo."
+    )
+
     def __init__(
         self,
         intent_classifier: IntentClassifier,
@@ -26,16 +37,22 @@ class AssistantService:
 
     def answer(self, question: str):
 
-        intent_classification = self.intent_classifier.classify(question).intent
+        intent_classification = self.intent_classifier.classify(question)
 
-        if intent_classification != Intent.ESPECIFICACAO:
-            return "Ainda não tenho suporte para responder esse tipo de pergunta."
+        if intent_classification.intent != Intent.ESPECIFICACAO:
+            return self.UNSUPPORTED_INTENT_MESSAGE
 
         question_classification = self.question_classifier.classify(question)
 
-        vehicle_answer = self.vehicle_query_service.answer(
-            question,
-            question_classification.question_type,
-        )
+        if question_classification.question_type == QuestionType.DESCONHECIDO:
+            return self.UNSUPPORTED_QUESTION_MESSAGE
+
+        try:
+            vehicle_answer = self.vehicle_query_service.answer(
+                question,
+                question_classification.question_type,
+            )
+        except VehicleDataNotFoundError:
+            return "Informação não encontrada nos dados disponíveis deste veículo"
 
         return self.response_generator.generate(vehicle_answer)

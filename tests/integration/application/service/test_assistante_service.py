@@ -146,3 +146,35 @@ def test_should_use_fallback_when_slm_raises_exception():
     )
 
     assert result == "O óleo especificado é 5W-40."
+
+def test_should_reject_question_outside_vehicle_domain():
+
+    intent_classifier = RuleBasedIntentClassifier()
+    question_classifier = RuleBasedQuestionClassifier()
+    
+    vehicle_reader = JsonVehicleReader("data/vehicle.json")
+    vehicle_service = VehicleService(vehicle_reader)
+    vehicle_query_service = VehicleQueryService(vehicle_service)
+
+    slm_response_generator = Mock(spec=ResponseGenerator)
+    fallback_response_generator = RuleBasedResponseGenerator()
+    response_validator = ResponseValidationService()
+
+    response_generator = HybridResponseGenerator(
+        response_generator=slm_response_generator,
+        fallback_generator=fallback_response_generator,
+        response_validator=response_validator
+    )
+
+    service = AssistantService(
+        intent_classifier=intent_classifier,
+        question_classifier=question_classifier,
+        vehicle_query_service=vehicle_query_service,
+        response_generator=response_generator,
+    )
+    
+    result = service.answer("Qual a capital da França?")
+
+    assert result == (
+        service.UNSUPPORTED_QUESTION_MESSAGE
+    )

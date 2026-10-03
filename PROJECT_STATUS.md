@@ -535,9 +535,9 @@ FASE 4 — Aplicação
 [✓] Testes de integração
 
 FASE 5 — Robustez
-[ ] Perguntas desconhecidas
-[ ] Dados inexistentes
-[ ] Tratamento de erros de domínio
+[✓] Perguntas desconhecidas
+[✓] Dados inexistentes
+[✓] Tratamento de erros de domínio
 
 FASE 6 — Avaliação de SLM
 [ ] Dataset ampliado
@@ -548,25 +548,4 @@ FASE 7 — Evoluções futuras
 [ ] Persistência
 [ ] Contexto conversacional
 [ ] Observabilidade ampliada
-```
-
----
-
-## Próximo incremento
-
-O próximo incremento recomendado é:
-
-```text
-Tratamento de perguntas desconhecidas
-```
-
-Critério de conclusão:
-
-```text
-[✓] intent desconhecido não chega ao QuestionClassifier
-[✓] question type desconhecido não chega ao VehicleQueryService
-[✓] nenhuma resposta é inventada pelo SLM
-[✓] mensagem de não suporte é padronizada
-[✓] testes unitários cobrindo ambos os casos
-[✓] teste de integração cobrindo pergunta fora do domínio
 ```
