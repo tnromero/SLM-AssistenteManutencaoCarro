@@ -8,41 +8,65 @@ class ResponseValidationService:
     def validate(
         self,
         answer: VehicleAnswer,
-        response: str,
+        generated_response: str,
     ) -> bool:
-        expected_values = self._extract_values(answer.answer)
-        response_values = self._extract_values(response)
+        expected_values = self._extract_factual_values(answer.answer)
 
-        return expected_values.issubset(response_values)
-
-    def _extract_values(self, text: str) -> set[str]:
-        values = set()
-
-        values.update(
-            value.upper()
-            for value in re.findall(
-                r"\b\d+(?:[.,]\d+)?\s*(?:PSI|BAR)\b",
-                text,
-                re.IGNORECASE,
+        if not expected_values:
+            return self._validate_text(
+                expected_answer=answer.answer,
+                generated_response=generated_response,
             )
+
+        normalized_response = self._normalize_fact(generated_response)
+
+        return all(
+            self._normalize_fact(value) in normalized_response
+            for value in expected_values
         )
 
-        values.update(
-            value.upper()
-            for value in re.findall(
-                r"\b\d{3}/\d{2}\s*R\d{2}\b",
-                text,
-                re.IGNORECASE,
-            )
-        )
+    def _extract_factual_values(self, text: str) -> list[str]:
+        patterns = [
+            r"\b\d+(?:\.\d+)?\s?psi\b", # Pressao Pneu
+            r"\b\d+(?:[.,]\d+)?\s?bar\b", # Pressao Pneu
+            r"\b\d{3}/\d{2}\s?r\d{2}\b", # Tamanho Pneu
+            r"\b\d{1,2}w-\d{2}\b", # Oleo 5w40
+        ]
 
-        values.update(
-            value.upper()
-            for value in re.findall(
-                r"\b\d+W-\d+\b",
+        values: list[str] = []
+
+        for pattern in patterns:
+            matches = re.findall(
+                pattern,
                 text,
-                re.IGNORECASE,
+                flags=re.IGNORECASE,
             )
-        )
+
+            values.extend(matches)
 
         return values
+
+    def _validate_text(
+        self,
+        expected_answer: str,
+        generated_response: str,
+    ) -> bool:
+        expected = self._normalize_text(expected_answer)
+        generated = self._normalize_text(generated_response)
+
+        return expected in generated or generated in expected
+
+    def _normalize_text(self, text: str) -> str:
+        return " ".join(
+            text.lower()
+            .strip()
+            .split()
+        )
+
+    def _normalize_fact(self, text: str) -> str:
+        return (
+            text.lower()
+            .replace(",", ".")
+            .replace(" ", "")
+            .strip()
+        )
