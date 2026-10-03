@@ -5,7 +5,7 @@ from slm_assistentemanutencaocarro.application.ports.question_classifier import 
     QuestionClassifier,
 )
 from slm_assistentemanutencaocarro.application.ports.response_generator import ResponseGenerator
-from slm_assistentemanutencaocarro.application.services.vehicle_query_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
     VehicleQueryService,
 )
 from slm_assistentemanutencaocarro.domain.intent import Intent
@@ -26,16 +26,16 @@ class AssistantService:
 
     def answer(self, question: str):
 
-        intent = self.intent_classifier.classify(question).intent
+        intent_classification = self.intent_classifier.classify(question).intent
 
-        if intent != Intent.ESPECIFICACAO:
+        if intent_classification != Intent.ESPECIFICACAO:
             return "Ainda não tenho suporte para responder esse tipo de pergunta."
 
-        question_type = self.question_classifier.classify(question).question_type
+        question_classification = self.question_classifier.classify(question)
 
         vehicle_answer = self.vehicle_query_service.answer(
             question,
-            question_type,
+            question_classification.question_type,
         )
 
         return self.response_generator.generate(vehicle_answer)

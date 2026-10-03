@@ -53,6 +53,7 @@ class RuleBasedIntentClassifier(IntentClassifier):
                 "pressao dos pneus",
                 "especificação",
                 "especificacao",
+                "qual"
             ]
         ):
             return IntentClassification(intent=Intent.ESPECIFICACAO)

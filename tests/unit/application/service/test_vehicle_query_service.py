@@ -1,7 +1,7 @@
-from slm_assistentemanutencaocarro.application.services.vehicle_query_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
     VehicleQueryService,
 )
-from slm_assistentemanutencaocarro.application.services.vehicle_service import VehicleService
+from slm_assistentemanutencaocarro.application.service.vehicle_service import VehicleService
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (

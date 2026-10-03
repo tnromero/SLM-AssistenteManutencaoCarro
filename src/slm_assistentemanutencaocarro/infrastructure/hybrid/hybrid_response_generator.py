@@ -1,7 +1,7 @@
 from slm_assistentemanutencaocarro.application.ports.response_generator import (
     ResponseGenerator,
 )
-from slm_assistentemanutencaocarro.application.services.response_validation_service import (
+from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,
 )
 from slm_assistentemanutencaocarro.domain.fallback_metrics import FallbackMetrics

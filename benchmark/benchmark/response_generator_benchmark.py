@@ -4,7 +4,7 @@ from benchmark.model.benchmark_result import BenchmarkResult
 from slm_assistentemanutencaocarro.application.ports.response_generator import (
     ResponseGenerator,
 )
-from slm_assistentemanutencaocarro.application.services.response_validation_service import ResponseValidationService
+from slm_assistentemanutencaocarro.application.service.response_validation_service import ResponseValidationService
 from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 
 

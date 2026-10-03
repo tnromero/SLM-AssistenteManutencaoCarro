@@ -1,4 +1,4 @@
-from slm_assistentemanutencaocarro.application.services.vehicle_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle_service import (
     VehicleService,
 )
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType

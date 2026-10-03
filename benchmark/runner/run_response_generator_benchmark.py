@@ -1,6 +1,6 @@
 from benchmark.benchmark.response_generator_benchmark import ResponseGeneratorBenchmark
 from benchmark.dataset_loader import DatasetLoader
-from slm_assistentemanutencaocarro.application.services.response_validation_service import ResponseValidationService
+from slm_assistentemanutencaocarro.application.service.response_validation_service import ResponseValidationService
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
     OllamaResponseGenerator,
 )
