@@ -1,5 +1,3 @@
-from slm_assistentemanutencaocarro.presentation.cli import run
+from slm_assistentemanutencaocarro.main import main
 
-
-def main() -> None:
-    run()
+__all__ = ["main"]

@@ -43,7 +43,7 @@ from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response
 )
 
 
-def create_assistant(json_file_vehicle: str) -> AssistantService:
+def build_assistant(json_file_vehicle: str) -> AssistantService:
 
     settings = Settings()
 
@@ -62,11 +62,11 @@ def create_assistant(json_file_vehicle: str) -> AssistantService:
     )
 
     response_generator =  HybridResponseGenerator(
-        rule_generator=RuleBasedResponseGenerator(),
-        ollama_generator=OllamaResponseGenerator(
+        response_generator=RuleBasedResponseGenerator(),
+        fallback_generator=OllamaResponseGenerator(
             model=settings.ollama_response_model,
         ),
-        validator=ResponseValidationService()
+        response_validator=ResponseValidationService()
     )
 
     vehicle_service = VehicleService(vehicle_reader)
