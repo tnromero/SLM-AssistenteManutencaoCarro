@@ -1,12 +1,9 @@
-from slm_assistentemanutencaocarro.infrastructure.composition import (
-    create_assistant,
-)
+from slm_assistentemanutencaocarro.application.service.assistant_service import AssistantService
 
 
-def run() -> None:
-    assistant = create_assistant("data/vehicle.json")
+def run(assistant: AssistantService) -> None:
 
-    print("Assistente de Manutenção do Carro")
+    print("Assistente de Manutenção")
     print("Digite sua pergunta ou '/sair' para encerrar.")
     print()
 
