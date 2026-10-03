@@ -2,30 +2,53 @@ from slm_assistentemanutencaocarro.application.ports.vehicle_reader import Vehic
 from slm_assistentemanutencaocarro.application.service.vehicle_service import (
     VehicleService,
 )
+from slm_assistentemanutencaocarro.domain.tire_pressure import TirePressure
+from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
 from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
     JsonVehicleReader,
 )
 
+reader = JsonVehicleReader("data/vehicle.json")
 
-def create_vehicle_service() -> VehicleService:
-    reader: VehicleReader = JsonVehicleReader("data/vehicle.json")
+def test_should_return_engine_oil_from_selected_vehicle():
 
-    return VehicleService(reader)
-
-
-def test_should_return_engine_oil():
-    vehicle_service = create_vehicle_service()
+    vehicle_service = VehicleService(
+        vehicle_reader=reader,
+        vehicle_id=VehicleId(
+            value="t-cross-2022"
+        ),
+    )
 
     assert vehicle_service.get_engine_oil() == "5W-40"
 
+    vehicle_service = VehicleService(
+        vehicle_reader=reader,
+        vehicle_id=VehicleId(
+            value="polo-2023"
+        ),
+    )
 
-def test_should_return_tire_size():
-    vehicle_service = create_vehicle_service()
+    assert vehicle_service.get_engine_oil() == "0W-20"
 
-    assert vehicle_service.get_tire_size() == "205/55 R17"
+
+def test_should_return_tire_size_from_selected_vehicle():
+
+    vehicle_service = VehicleService(
+            vehicle_reader=reader,
+            vehicle_id=VehicleId(
+                value="t-cross-2022"
+            ),
+        )
+
+    assert vehicle_service.get_tire_size() == "205/55 R16"
 
 
 def test_should_return_tire_pressure():
-    vehicle_service = create_vehicle_service()
+    vehicle_service = VehicleService(
+            vehicle_reader=reader,
+            vehicle_id=VehicleId(
+                value="t-cross-2022"
+            ),
+        )
 
-    assert vehicle_service.get_tire_pressure() == (33.0, 33.0)
+    assert vehicle_service.get_tire_pressure() == TirePressure(front=32, rear=32)

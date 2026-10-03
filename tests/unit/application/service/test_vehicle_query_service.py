@@ -9,6 +9,7 @@ from slm_assistentemanutencaocarro.application.service.vehicle_service import Ve
 from slm_assistentemanutencaocarro.domain.exception import VehicleDataNotFoundError
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
 from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
     JsonVehicleReader,
 )
@@ -17,7 +18,8 @@ from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reade
 def create_vehicle_query_service() -> VehicleQueryService:
     reader = JsonVehicleReader("data/vehicle.json")
 
-    vehicle_service: VehicleService = VehicleService(reader)
+    tcross_id = VehicleId(value="t-cross-2022")
+    vehicle_service = VehicleService(reader, tcross_id)
 
     return VehicleQueryService(vehicle_service)
 
@@ -36,7 +38,7 @@ def test_should_answer_tire_pressure():
     result: VehicleAnswer = service.answer("Qual a pressão dos pneus?", QuestionType.PRESSAO_PNEUS)
 
     assert result.answer == (
-        "A pressão configurada é 33 PSI nos pneus dianteiros e 33 PSI nos traseiros."
+        "A pressão configurada é 32 PSI nos pneus dianteiros e 32 PSI nos traseiros."
     )
 
 
@@ -45,7 +47,7 @@ def test_should_answer_tire_size():
 
     result: VehicleAnswer = service.answer("Qual o tamanho do pneu?", QuestionType.MEDIDA_PNEUS)
 
-    assert result.answer == ("A medida dos pneus é 205/55 R17.")
+    assert result.answer == ("A medida dos pneus é 205/55 R16.")
 
 def test_should_raise_when_engine_oil_data_is_missing():
     vehicle_service = Mock(spec=VehicleService)

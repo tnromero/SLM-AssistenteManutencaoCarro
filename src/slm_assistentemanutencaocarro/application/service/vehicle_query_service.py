@@ -42,14 +42,14 @@ class VehicleQueryService:
                     "Informação não encontrada sobre: pressão dos pneus"
                 )
 
-            front, rear = tire_pressure
+            
 
             return VehicleAnswer(
                 question=question,
                 answer=(
                     f"A pressão configurada é "
-                    f"{front:.0f} PSI nos pneus dianteiros "
-                    f"e {rear:.0f} PSI nos traseiros."
+                    f"{tire_pressure.front:.0f} PSI nos pneus dianteiros "
+                    f"e {tire_pressure.rear:.0f} PSI nos traseiros."
                 ),
             )
 

@@ -11,6 +11,7 @@ from slm_assistentemanutencaocarro.application.service.vehicle_query_service imp
     VehicleQueryService,
 )
 from slm_assistentemanutencaocarro.application.service.vehicle_service import VehicleService
+from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
     HybridResponseGenerator,
 )
@@ -34,7 +35,9 @@ def test_should_answer_using_hybrid_response_generator():
     question_classifier = RuleBasedQuestionClassifier()
     
     vehicle_reader = JsonVehicleReader("data/vehicle.json")
-    vehicle_service = VehicleService(vehicle_reader)
+
+    tcross_id = VehicleId(value="t-cross-2022")
+    vehicle_service = VehicleService(vehicle_reader, tcross_id)
     vehicle_query_service = VehicleQueryService(vehicle_service)
 
     slm_response_generator = Mock(spec=ResponseGenerator)
@@ -67,7 +70,8 @@ def test_should_use_fallback_when_slm_response_is_factually_invalid():
     question_classifier = RuleBasedQuestionClassifier()
     
     vehicle_reader = JsonVehicleReader("data/vehicle.json")
-    vehicle_service = VehicleService(vehicle_reader)
+    tcross_id = VehicleId(value="t-cross-2022")
+    vehicle_service = VehicleService(vehicle_reader, tcross_id)
     vehicle_query_service = VehicleQueryService(vehicle_service)
 
     slm_response_generator = Mock(spec=ResponseGenerator)
@@ -109,7 +113,8 @@ def test_should_use_fallback_when_slm_raises_exception():
     question_classifier = RuleBasedQuestionClassifier()
     
     vehicle_reader = JsonVehicleReader("data/vehicle.json")
-    vehicle_service = VehicleService(vehicle_reader)
+    tcross_id = VehicleId(value="t-cross-2022")
+    vehicle_service = VehicleService(vehicle_reader, tcross_id)
     vehicle_query_service = VehicleQueryService(vehicle_service)
 
     slm_response_generator = Mock(spec=ResponseGenerator)
@@ -153,7 +158,8 @@ def test_should_reject_question_outside_vehicle_domain():
     question_classifier = RuleBasedQuestionClassifier()
     
     vehicle_reader = JsonVehicleReader("data/vehicle.json")
-    vehicle_service = VehicleService(vehicle_reader)
+    tcross_id = VehicleId(value="t-cross-2022")
+    vehicle_service = VehicleService(vehicle_reader, tcross_id)
     vehicle_query_service = VehicleQueryService(vehicle_service)
 
     slm_response_generator = Mock(spec=ResponseGenerator)
