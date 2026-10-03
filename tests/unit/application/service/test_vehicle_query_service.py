@@ -2,6 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
+from slm_assistentemanutencaocarro.application.context.vehicle_context import VehicleContext
 from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
     VehicleQueryService,
 )
@@ -19,7 +20,10 @@ def create_vehicle_query_service() -> VehicleQueryService:
     reader = JsonVehicleReader("data/vehicle.json")
 
     tcross_id = VehicleId(value="t-cross-2022")
-    vehicle_service = VehicleService(reader, tcross_id)
+    vehicle_context = VehicleContext()
+    vehicle_context.select(tcross_id)
+
+    vehicle_service = VehicleService(reader, vehicle_context)
 
     return VehicleQueryService(vehicle_service)
 

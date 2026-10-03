@@ -8,18 +8,23 @@ from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
 
 
 class JsonVehicleReader(VehicleReader):
+    
     def __init__(self, json_file: str | Path):
         self.json_file = Path(json_file)
+        self._vehicles = self._load()
 
+    def _load(self) -> dict:
+        with self.json_file.open(
+            encoding="utf-8",
+        ) as file:
+            return json.load(file)["vehicles"]
+    
     def get_vehicle(
         self,
         vehicle_id: VehicleId,
     ) -> Vehicle:
         
-        with self.json_file.open(encoding="utf-8") as file:
-            data = json.load(file)
-
-        vehicle_data = data["vehicles"].get(
+        vehicle_data = self._vehicles.get(
             vehicle_id.value
         )
 
