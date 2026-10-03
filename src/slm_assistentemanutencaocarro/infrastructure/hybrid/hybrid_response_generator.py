@@ -4,36 +4,46 @@ from slm_assistentemanutencaocarro.application.ports.response_generator import (
 from slm_assistentemanutencaocarro.application.services.response_validation_service import (
     ResponseValidationService,
 )
+from slm_assistentemanutencaocarro.domain.fallback_metrics import FallbackMetrics
 from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 
 
 class HybridResponseGenerator(ResponseGenerator):
     def __init__(
         self,
-        rule_generator: ResponseGenerator,
-        ollama_generator: ResponseGenerator,
-        validator: ResponseValidationService
+        response_generator: ResponseGenerator,
+        fallback_generator: ResponseGenerator,
+        response_validator: ResponseValidationService,
     ):
-        self.rule_generator = rule_generator
-        self.ollama_generator = ollama_generator
-        self.validator = validator
-        self.fallback_count = 0
+        self.response_generator = response_generator
+        self.fallback_generator = fallback_generator
+        self.response_validator = response_validator
+        self.metrics = FallbackMetrics()
 
     def generate(
         self,
         answer: VehicleAnswer,
     ) -> str:
+
+        self.metrics.total += 1
+
         try:
-            response = self.ollama_generator.generate(answer)
-
-            if self.validator.validate(answer, response):
-                return response
+            response = self.response_generator.generate(answer)
         except Exception:
-            pass        
+            self.metrics.fallback_count += 1
+            return self.fallback_generator.generate(answer)
 
-        self.fallback_count += 1
-        return self.rule_generator.generate(answer)
+        is_valid = self.response_validator.validate(
+            answer,
+            response,
+        )
 
-    @property
-    def fallback_call_count(self) -> int:
-        return self.fallback_count
+        if is_valid:
+            return response
+
+        self.metrics.fallback_count += 1
+
+        return self.fallback_generator.generate(answer)
+
+    def get_metrics(self) -> FallbackMetrics:
+        return self.metrics.model_copy()

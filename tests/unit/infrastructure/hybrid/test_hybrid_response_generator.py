@@ -1,6 +1,10 @@
 from unittest.mock import Mock
 
-from slm_assistentemanutencaocarro.application.ports.response_generator import ResponseGenerator
+import pytest
+
+from slm_assistentemanutencaocarro.application.ports.response_generator import (
+    ResponseGenerator,
+)
 from slm_assistentemanutencaocarro.application.services.response_validation_service import (
     ResponseValidationService,
 )
@@ -10,144 +14,176 @@ from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generat
 )
 
 
-def create_generator(rule_response, ollama_response):
-    rule_generator = Mock()
-    ollama_generator = Mock()
-    validator = ResponseValidationService()
+@pytest.fixture
+def vehicle_answer() -> VehicleAnswer:
+    return VehicleAnswer(
+        question="Qual óleo devo usar?",
+        answer="O óleo especificado é 5W-40.",
+    )
 
-    rule_generator.generate.return_value = rule_response
-    ollama_generator.generate.return_value = ollama_response
+
+def create_generator(
+    slm_response: str = "O óleo recomendado é 5W-40.",
+    fallback_response: str = "O óleo especificado é 5W-40.",
+    is_valid: bool = True,
+):
+    slm_generator = Mock(spec=ResponseGenerator)
+    fallback_generator = Mock(spec=ResponseGenerator)
+    response_validator = Mock(spec=ResponseValidationService)
+
+    slm_generator.generate.return_value = slm_response
+    fallback_generator.generate.return_value = fallback_response
+    response_validator.validate.return_value = is_valid
+
+    generator = HybridResponseGenerator(
+        response_generator=slm_generator,
+        fallback_generator=fallback_generator,
+        response_validator=response_validator,
+    )
 
     return (
-        HybridResponseGenerator(
-            rule_generator=rule_generator,
-            ollama_generator=ollama_generator,
-            validator=validator,
-        ),
-        rule_generator,
-        ollama_generator,
+        generator,
+        slm_generator,
+        fallback_generator,
+        response_validator,
     )
 
 
-def test_should_fallback_to_rule_generator_when_slm_fails():
-    rule_generator = Mock(spec=ResponseGenerator)
-    ollama_generator = Mock(spec=ResponseGenerator)
-    validator = Mock(spec=ResponseValidationService)
-
-    answer = VehicleAnswer(
-        question="Qual óleo devo usar?",
-        answer="O óleo especificado é 5W-40.",
+def test_should_use_slm_response_when_response_is_valid(vehicle_answer):
+    generator, slm_generator, fallback_generator, response_validator = (
+        create_generator(
+            slm_response="O óleo recomendado é 5W-40.",
+            is_valid=True,
+        )
     )
 
-    rule_generator.generate.return_value = "O óleo especificado é 5W-40."
-    ollama_generator.generate.side_effect = RuntimeError("Ollama indisponível")
+    result = generator.generate(vehicle_answer)
 
-    generator = HybridResponseGenerator(
-        rule_generator=rule_generator,
-        ollama_generator=ollama_generator,
-        validator=validator,
-    )
+    assert result == "O óleo recomendado é 5W-40."
 
-    result = generator.generate(answer)
+    slm_generator.generate.assert_called_once_with(vehicle_answer)
 
-    assert result == "O óleo especificado é 5W-40."
-    ollama_generator.generate.assert_called_once_with(answer)
-    rule_generator.generate.assert_called_once_with(answer)
-
-def test_should_fallback_when_response_is_invalid():
-    rule_generator = Mock(spec=ResponseGenerator)
-    ollama_generator = Mock(spec=ResponseGenerator)
-    validator = Mock(spec=ResponseValidationService)
-
-    answer = VehicleAnswer(
-        question="Qual óleo devo usar?",
-        answer="O óleo especificado é 5W-40.",
-    )
-
-    ollama_generator.generate.return_value = "Resposta inventada."
-    validator.validate.return_value = False
-    rule_generator.generate.return_value = "O óleo especificado é 5W-40."
-
-    generator = HybridResponseGenerator(
-        rule_generator=rule_generator, ollama_generator=ollama_generator, validator=validator
-    )
-
-    result = generator.generate(answer)
-
-    assert result == "O óleo especificado é 5W-40."
-    validator.validate.assert_called_once_with(
-        answer,
-        "Resposta inventada.",
-    )
-    rule_generator.generate.assert_called_once_with(answer)
-
-def test_should_use_ollama_when_response_is_valid():
-
-    hybrid_generator, rule_generator, ollama_generator = create_generator(
-        "O óleo especificado é 5W-40.",
-        "O óleo recomendado para o veículo é 5W-40.",
-    )
-
-    answer = VehicleAnswer(
-        question="Qual óleo usar?",
-        answer="O óleo especificado é 5W-40.",
-    )
-
-    result = hybrid_generator.generate(answer)
-
-    assert result == "O óleo recomendado para o veículo é 5W-40."
-
-    ollama_generator.generate.assert_called_once_with(answer)
-    rule_generator.generate.assert_not_called()
-
-
-def test_should_use_rule_based_when_response_is_invalid():
-
-    hybrid_generator, rule_generator, ollama_generator = create_generator(
-        "O óleo especificado é 5W-40.",
-        "O óleo recomendado para o veículo é 0W-20.",
-    )
-
-    answer = VehicleAnswer(
-        question="Qual óleo usar?",
-        answer="O óleo especificado é 5W-40.",
-    )
-
-    result = hybrid_generator.generate(answer)
-
-    assert result == "O óleo especificado é 5W-40."
-
-    ollama_generator.generate.assert_called_once_with(answer)
-    rule_generator.generate.assert_called_once_with(answer)
-
-def test_should_count_fallback():
-
-    generator, rule_generator, ollama_generator = create_generator(
-        "O óleo especificado é 5W-40.",
-        "O óleo recomendado é 0W-20.",
-    )
-
-    answer = VehicleAnswer(
-        question="Qual óleo usar?",
-        answer="O óleo especificado é 5W-40.",
-    )
-
-    generator.generate(answer)
-
-    assert generator.fallback_count == 1
-
-def test_should_not_count_valid_response_as_fallback():
-
-    generator, rule_generator, ollama_generator = create_generator(
-        "O óleo especificado é 5W-40.",
+    response_validator.validate.assert_called_once_with(
+        vehicle_answer,
         "O óleo recomendado é 5W-40.",
     )
 
-    answer = VehicleAnswer(
-        question="Qual óleo usar?",
-        answer="O óleo especificado é 5W-40.",
+    fallback_generator.generate.assert_not_called()
+
+
+def test_should_fallback_when_slm_response_is_invalid(vehicle_answer):
+    generator, slm_generator, fallback_generator, response_validator = (
+        create_generator(
+            slm_response="O óleo recomendado é 0W-20.",
+            fallback_response="O óleo especificado é 5W-40.",
+            is_valid=False,
+        )
     )
 
-    generator.generate(answer)
+    result = generator.generate(vehicle_answer)
 
-    assert generator.fallback_count == 0
+    assert result == "O óleo especificado é 5W-40."
+
+    slm_generator.generate.assert_called_once_with(vehicle_answer)
+
+    response_validator.validate.assert_called_once_with(
+        vehicle_answer,
+        "O óleo recomendado é 0W-20.",
+    )
+
+    fallback_generator.generate.assert_called_once_with(vehicle_answer)
+
+
+def test_should_fallback_when_slm_fails(vehicle_answer):
+    generator, slm_generator, fallback_generator, response_validator = (
+        create_generator()
+    )
+
+    slm_generator.generate.side_effect = RuntimeError(
+        "Ollama indisponível"
+    )
+
+    result = generator.generate(vehicle_answer)
+
+    assert result == "O óleo especificado é 5W-40."
+
+    slm_generator.generate.assert_called_once_with(vehicle_answer)
+    fallback_generator.generate.assert_called_once_with(vehicle_answer)
+
+    response_validator.validate.assert_not_called()
+
+
+def test_should_count_fallback_when_response_is_invalid(vehicle_answer):
+    generator, _, _, _ = create_generator(
+        slm_response="O óleo recomendado é 0W-20.",
+        is_valid=False,
+    )
+
+    generator.generate(vehicle_answer)
+
+    metrics = generator.get_metrics()
+
+    assert metrics.total == 1
+    assert metrics.fallback_count == 1
+    assert metrics.slm_count == 0
+    assert metrics.fallback_rate == 100.0
+
+
+def test_should_not_count_valid_response_as_fallback(vehicle_answer):
+    generator, _, _, _ = create_generator(
+        slm_response="O óleo recomendado é 5W-40.",
+        is_valid=True,
+    )
+
+    generator.generate(vehicle_answer)
+
+    metrics = generator.get_metrics()
+
+    assert metrics.total == 1
+    assert metrics.fallback_count == 0
+    assert metrics.slm_count == 1
+    assert metrics.fallback_rate == 0.0
+
+
+def test_should_count_fallback_when_slm_fails(vehicle_answer):
+    generator, slm_generator, _, _ = create_generator()
+
+    slm_generator.generate.side_effect = RuntimeError(
+        "Ollama indisponível"
+    )
+
+    generator.generate(vehicle_answer)
+
+    metrics = generator.get_metrics()
+
+    assert metrics.total == 1
+    assert metrics.fallback_count == 1
+    assert metrics.slm_count == 0
+    assert metrics.fallback_rate == 100.0
+
+
+def test_should_accumulate_fallback_metrics(vehicle_answer):
+    generator, _, _, response_validator = create_generator()
+
+    response_validator.validate.side_effect = [
+        True,
+        True,
+        False,
+        True,
+        False,
+        True,
+        True,
+        False,
+        True,
+        True,
+    ]
+
+    for _ in range(10):
+        generator.generate(vehicle_answer)
+
+    metrics = generator.get_metrics()
+
+    assert metrics.total == 10
+    assert metrics.slm_count == 7
+    assert metrics.fallback_count == 3
+    assert metrics.fallback_rate == pytest.approx(30.0)
