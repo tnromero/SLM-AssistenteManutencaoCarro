@@ -1,7 +1,12 @@
+from unittest.mock import Mock
+
+import pytest
+
 from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
     VehicleQueryService,
 )
 from slm_assistentemanutencaocarro.application.service.vehicle_service import VehicleService
+from slm_assistentemanutencaocarro.domain.exception import VehicleDataNotFoundError
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
@@ -42,10 +47,40 @@ def test_should_answer_tire_size():
 
     assert result.answer == ("A medida dos pneus é 205/55 R17.")
 
+def test_should_raise_when_engine_oil_data_is_missing():
+    vehicle_service = Mock(spec=VehicleService)
 
-def test_should_not_invent_maintenance_information():
-    service = create_vehicle_query_service()
+    vehicle_service.get_engine_oil.return_value = None
 
-    result: VehicleAnswer = service.answer("Devo trocar o filtro?", QuestionType.DESCONHECIDO)
+    service = VehicleQueryService(vehicle_service)
 
-    assert "não tenho conhecimento" not in result.answer.lower()
+    with pytest.raises(VehicleDataNotFoundError):
+        service.answer(
+            "Qual óleo devo usar?",
+            QuestionType.OLEO_MOTOR,
+        )
+
+def test_should_raise_when_tire_pressure_data_is_missing():
+    vehicle_service = Mock(spec=VehicleService)
+
+    vehicle_service.get_tire_pressure.return_value = None
+
+    service = VehicleQueryService(vehicle_service)
+
+    with pytest.raises(VehicleDataNotFoundError):
+        service.answer(
+            "Qual a pressão dos pneus?", QuestionType.PRESSAO_PNEUS
+        )
+
+def test_should_raise_when_tire_size_data_is_missing():
+    vehicle_service = Mock(spec=VehicleService)
+
+    vehicle_service.get_tire_size.return_value = None
+
+    service = VehicleQueryService(vehicle_service)
+
+    with pytest.raises(VehicleDataNotFoundError):
+        service.answer(
+            "Qual a medida dos pneus",
+            QuestionType.MEDIDA_PNEUS,
+        )

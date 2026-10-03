@@ -23,6 +23,10 @@ class AssistantService:
         "Ainda não tenho informações para responder essa pergunta sobre o veículo."
     )
 
+    DATA_NOT_FOUND_MESSAGE = (
+        "Não encontrei essa informação nos dados disponíveis do veículo."
+    )
+
     def __init__(
         self,
         intent_classifier: IntentClassifier,
@@ -53,6 +57,6 @@ class AssistantService:
                 question_classification.question_type,
             )
         except VehicleDataNotFoundError:
-            return "Informação não encontrada nos dados disponíveis deste veículo"
+            return self.DATA_NOT_FOUND_MESSAGE
 
         return self.response_generator.generate(vehicle_answer)

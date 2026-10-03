@@ -15,6 +15,7 @@ from slm_assistentemanutencaocarro.application.service.assistant_service import 
 from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
     VehicleQueryService,
 )
+from slm_assistentemanutencaocarro.domain.exception import VehicleDataNotFoundError
 from slm_assistentemanutencaocarro.domain.intent import Intent
 from slm_assistentemanutencaocarro.domain.intent_classification import IntentClassification
 from slm_assistentemanutencaocarro.domain.question_classification import QuestionClassification
@@ -222,3 +223,59 @@ def test_should_send_vehicle_answer_to_response_generator():
     response_generator.generate.assert_called_once_with(vehicle_answer)
 
     assert result == "Para esse veículo, utilize óleo 5W-40."
+
+def test_should_return_message_when_vehicle_data_is_not_found():
+    intent_classifier = Mock(spec=IntentClassifier)
+    question_classifier = Mock(spec=QuestionClassifier)
+    vehicle_query_service = Mock(spec=VehicleQueryService)
+    response_generator = Mock(spec=ResponseGenerator)
+
+    intent_classifier.classify.return_value = IntentClassification(
+        intent=Intent.ESPECIFICACAO
+    )
+
+    question_classifier.classify.return_value = QuestionClassification(
+        question_type=QuestionType.OLEO_MOTOR
+    )
+
+    vehicle_query_service.answer.side_effect = VehicleDataNotFoundError()
+
+    service = AssistantService(
+        intent_classifier=intent_classifier,
+        question_classifier=question_classifier,
+        vehicle_query_service=vehicle_query_service,
+        response_generator=response_generator,
+    )
+
+    result = service.answer("Qual óleo devo usar?")
+
+    assert result == service.DATA_NOT_FOUND_MESSAGE
+
+    response_generator.generate.assert_not_called()
+
+def test_should_return_message_when_question_type_is_not_supported():
+    intent_classifier = Mock(spec=IntentClassifier)
+    question_classifier = Mock(spec=QuestionClassifier)
+    vehicle_query_service = Mock(spec=VehicleQueryService)
+    response_generator = Mock(spec=ResponseGenerator)
+
+    intent_classifier.classify.return_value = IntentClassification(
+        intent=Intent.ESPECIFICACAO
+    )
+
+    question_classifier.classify.return_value = QuestionClassification(
+        question_type=QuestionType.DESCONHECIDO
+    )
+
+    service = AssistantService(
+        intent_classifier=intent_classifier,
+        question_classifier=question_classifier,
+        vehicle_query_service=vehicle_query_service,
+        response_generator=response_generator,
+    )
+
+    result = service.answer("Qual a capital da França?")
+
+    assert result == service.UNSUPPORTED_QUESTION_MESSAGE
+
+    vehicle_query_service.answer.assert_not_called()
