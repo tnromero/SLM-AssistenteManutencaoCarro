@@ -3,23 +3,30 @@
 ├── .env
 ├── .gitignore
 ├── .python-version
-├── .vscode
 ├── README.md
 ├── benchmark
 │   ├── __init__.py
-│   ├── benchmark_result.py
-│   ├── data
+│   ├── benchmark
+│   │   ├── __init__.py
+│   │   ├── benchmark.py
+│   │   ├── intent_classifier_benchmark.py
+│   │   ├── question_classifier_benchmark.py
+│   │   └── response_generator_benchmark.py
+│   ├── dataset
 │   │   ├── intents.csv
 │   │   ├── intents_generalization.csv
 │   │   ├── questions.csv
 │   │   ├── questions_generalization.csv
 │   │   └── responses.csv
-│   ├── evaluation.py
-│   ├── evaluation_questions.py
-│   ├── evaluation_questions_generalization.py
-│   ├── evaluation_response.py
-│   ├── intent_classifier_benchmark.py
-│   └── response_generator_benchmark.py
+│   ├── dataset_loader.py
+│   ├── model
+│   │   ├── __init__.py
+│   │   └── benchmark_result.py
+│   └── runner
+│       ├── __init__.py
+│       ├── run_intent_classifier_benchmark.py
+│       ├── run_question_classifier_benchmark.py
+│       └── run_response_generator_benchmark.py
 ├── data
 │   └── vehicle.json
 ├── gerador_contexto_projeto.sh
@@ -128,7 +135,7 @@
                 ├── test_rule_based_question_classifier.py
                 └── test_rule_based_response_generator.py
 
-34 directories, 94 files
+36 directories, 99 files
 
 ===== FILE CONTENT =====
 
@@ -156,6 +163,21 @@ FILE: ./data/vehicle.json
 FILE: ./README.md
 ============================================================
 # Repositorio
+
+## Objetivos de estudo
+
+Este projeto explora:
+
+- uso de SLM local;
+- classificação com modelos pequenos;
+- estratégias híbridas Rule Based + SLM;
+- validação de respostas geradas;
+- fallback determinístico;
+- avaliação de qualidade;
+- avaliação de latência;
+- avaliação de custo;
+- generalização;
+- integração de SLM em uma arquitetura Clean Architecture.
 
 ## Config
 
@@ -1269,7 +1291,6 @@ from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generat
 model_name = Settings().ollama_response_model
 
 
-@pytest.mark.integration
 def test_should_generate_response():
 
     generator = OllamaResponseGenerator(model=model_name)
@@ -2270,261 +2291,11 @@ FILE: ./tests/__init__.py
 ============================================================
 
 ============================================================
-FILE: ./benchmark/evaluation.py
-============================================================
-import csv
-
-from benchmark.benchmark_result import (
-    BenchmarkResult,
-)
-from benchmark.intent_classifier_benchmark import IntentClassifierBenchmark
-from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_intent_classifier import (
-    HybridIntentClassifier,
-)
-from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
-    OllamaIntentClassifier,
-)
-from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_intent_classifier import (
-    RuleBasedIntentClassifier,
-)
-
-# Modelos
-QWEN_3 = "qwen3:1.7b"
-LLAMA_3_2 = "llama3.2:1b"
-
-# Arquivos de testes/treinamentos
-csv_files = [
-    "benchmark/data/intents.csv",
-    "benchmark/data/intents_generalization.csv",
-]
-
-
-def load_test_cases(
-    csv_file_name: str, enconding_file: str = "utf-8", delimiter=","
-) -> list[dict[str, str]]:
-
-    test_cases: list[dict[str, str]]
-    with open(csv_file_name, encoding=enconding_file) as file:
-        reader = csv.DictReader(file, delimiter=delimiter)
-        test_cases = list(reader)
-
-    return test_cases
-
-
-def main():
-
-    for csv_file_name in csv_files:
-        test_case = load_test_cases(csv_file_name=csv_file_name)
-
-        result: BenchmarkResult = IntentClassifierBenchmark().evaluate(
-            "QWEN_3",
-            OllamaIntentClassifier(model=QWEN_3),
-            test_case,
-        )
-
-        result: BenchmarkResult = IntentClassifierBenchmark().evaluate(
-            "Hibrido",
-            HybridIntentClassifier(
-                rule_based_classifier=RuleBasedIntentClassifier(),
-                ollama_classifier=OllamaIntentClassifier(model=QWEN_3),
-            ),
-            test_case,
-        )
-        result.display("PT")
-
-        print()
-        print()
-        print("====================================================")
-
-
-if __name__ == "__main__":
-    main()
-
-============================================================
-FILE: ./benchmark/response_generator_benchmark.py
-============================================================
-import csv
-import time
-from pathlib import Path
-
-from benchmark.benchmark_result import BenchmarkResult
-from slm_assistentemanutencaocarro.application.ports.question_classifier import QuestionClassifier
-from slm_assistentemanutencaocarro.application.ports.response_generator import ResponseGenerator
-from slm_assistentemanutencaocarro.application.services.response_validation_service import (
-    ResponseValidationService,
-)
-from slm_assistentemanutencaocarro.application.services.vehicle_query_service import (
-    VehicleQueryService,
-)
-from slm_assistentemanutencaocarro.application.services.vehicle_service import VehicleService
-from slm_assistentemanutencaocarro.config.settings import Settings
-from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
-    HybridResponseGenerator,
-)
-from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
-    OllamaResponseGenerator,
-)
-from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
-    JsonVehicleReader,
-)
-from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
-    RuleBasedQuestionClassifier,
-)
-from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
-    RuleBasedResponseGenerator,
-)
-
-DATASET = Path("benchmark/data/responses.csv")
-VEHICLE_FILE = Path("data/vehicle.json")
-
-
-def load_dataset() -> list[dict]:
-    with DATASET.open(encoding="utf-8") as file:
-        return list(csv.DictReader(file))
-
-
-def create_vehicle_query_answer() -> VehicleQueryService:
-    vehicle_reader = JsonVehicleReader(str(VEHICLE_FILE))
-    vehicle_service = VehicleService(vehicle_reader)
-
-    return VehicleQueryService(vehicle_service)
-
-
-class ResponseGeneratorBenchamark:
-    @staticmethod
-    def evaluate(
-        evaluate_name: str,
-        response_generator: ResponseGenerator,
-        vehicle_query_service: VehicleQueryService,
-        question_classifier: QuestionClassifier,
-        verbose:bool = True
-    ) -> BenchmarkResult:
-        dataset = load_dataset()
-
-        correct = 0
-        total_time = 0.0
-
-        for row in dataset:
-            question = row["question"]
-            expected_answer = row["expected_answer"]
-
-            question_type = question_classifier.classify(question).question_type
-
-            vehicle_answer = vehicle_query_service.answer(
-                question,
-                question_type,
-            )
-
-            start = time.perf_counter()
-
-            response = response_generator.generate(vehicle_answer)
-
-            elapsed = time.perf_counter() - start
-            total_time += elapsed
-
-            if expected_answer.lower() in response.lower():
-                correct += 1
-                status = "✓"
-            else:
-                status = "✗"
-
-            if verbose:
-                print(f"\n{evaluate_name}")
-                print(f"{status}         : {question}")
-                print(f"  Esperado: {expected_answer}")
-                print(f"  Resposta: {response}")
-                print(f"  Tempo:    {elapsed}s")
-
-        return BenchmarkResult(
-            model=evaluate_name, correct=correct, total=len(dataset), elapsed=total_time
-        )
-
-
-def main():
-    settings = Settings()
-
-    vehicle_query_service = create_vehicle_query_answer()
-    question_classifier = RuleBasedQuestionClassifier()
-
-    rule_generator = RuleBasedResponseGenerator()
-
-    ollama_generator = OllamaResponseGenerator(model=settings.ollama_response_model)
-
-    hybrid_generator = HybridResponseGenerator(
-        rule_generator=rule_generator,
-        ollama_generator=ollama_generator,
-        validator=ResponseValidationService()
-    )
-
-    result = ResponseGeneratorBenchamark.evaluate(
-        "Rule Based", rule_generator, vehicle_query_service, question_classifier
-    )
-    print(result)
-
-    result = ResponseGeneratorBenchamark.evaluate(
-        "Ollama", ollama_generator, vehicle_query_service, question_classifier, False
-    )
-    print(result)
-
-    result = ResponseGeneratorBenchamark.evaluate(
-        "Hybrid", hybrid_generator, vehicle_query_service, question_classifier, False
-    )
-    print(result)
-
-
-if __name__ == "__main__":
-    main()
-
-============================================================
-FILE: ./benchmark/evaluation_questions_generalization.py
-============================================================
-from evaluation_questions import evaluate, load_dataset
-
-from slm_assistentemanutencaocarro.config.settings import Settings
-from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (
-    HybridQuestionClassifier,
-)
-from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
-    OllamaQuestionClassifier,
-)
-from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
-    RuleBasedQuestionClassifier,
-)
-
-settings = Settings()
-
-
-def main():
-    dataset = load_dataset("benchmark/data/questions_generalization.csv")
-
-    evaluate(
-        RuleBasedQuestionClassifier(),
-        dataset,
-    )
-
-    evaluate(
-        OllamaQuestionClassifier(model=settings.ollama_question_model),
-        dataset,
-    )
-
-    evaluate(
-        HybridQuestionClassifier(
-            RuleBasedQuestionClassifier(),
-            OllamaQuestionClassifier(model=settings.ollama_question_model),
-        ),
-        dataset,
-    )
-
-
-if __name__ == "__main__":
-    main()
-
-============================================================
 FILE: ./benchmark/__init__.py
 ============================================================
 
 ============================================================
-FILE: ./benchmark/data/intents.csv
+FILE: ./benchmark/dataset/intents.csv
 ============================================================
 description,expected_intent
 Quando devo trocar o óleo?,Manutenção
@@ -2552,7 +2323,7 @@ Bom dia,Outro
 Obrigado,Outro
 Quero falar sobre outra coisa,Outro
 ============================================================
-FILE: ./benchmark/data/intents_generalization.csv
+FILE: ./benchmark/dataset/intents_generalization.csv
 ============================================================
 description,expected_intent
 Preciso fazer a troca do óleo do meu carro,Manutenção
@@ -2570,7 +2341,7 @@ Boa noite,Outro
 Tudo bem?,Outro
 Quero fazer uma pergunta diferente,Outro
 ============================================================
-FILE: ./benchmark/data/responses.csv
+FILE: ./benchmark/dataset/responses.csv
 ============================================================
 question,expected_answer
 Qual óleo devo usar no motor?,O óleo especificado é 5W-40.
@@ -2581,8 +2352,9 @@ Qual óleo o motor utiliza?,5W-40
 Que pressão devo colocar nos pneus?,33 PSI
 Qual o tamanho do pneu?,205/55 R17
 Qual a medida dos pneus?,205/55 R17
+
 ============================================================
-FILE: ./benchmark/data/questions.csv
+FILE: ./benchmark/dataset/questions.csv
 ============================================================
 question,expected
 Qual óleo usar no motor?,Óleo do motor
@@ -2606,7 +2378,7 @@ Qual o modelo do carro?,Desconhecido
 Quanto pesa o carro?,Desconhecido
 Onde o carro foi fabricado?,Desconhecido
 ============================================================
-FILE: ./benchmark/data/questions_generalization.csv
+FILE: ./benchmark/dataset/questions_generalization.csv
 ============================================================
 question,expected
 Que óleo devo colocar?,Óleo do motor
@@ -2624,86 +2396,107 @@ Que tamanho devo comprar?,Medida dos pneus
 Quanto custa uma revisão?,Desconhecido
 Quando devo trocar o óleo?,Desconhecido
 ============================================================
-FILE: ./benchmark/evaluation_questions.py
+FILE: ./benchmark/runner/__init__.py
 ============================================================
-import csv
-import time
 
-from slm_assistentemanutencaocarro.config.settings import Settings
-from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (
-    HybridQuestionClassifier,
+============================================================
+FILE: ./benchmark/runner/run_question_classifier_benchmark.py
+============================================================
+from benchmark.benchmark.question_classifier_benchmark import (
+    QuestionClassifierBenchmark,
 )
+from benchmark.dataset_loader import DatasetLoader
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
     OllamaQuestionClassifier,
 )
-from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
-    RuleBasedQuestionClassifier,
-)
 
-settings = Settings()
-
-
-def load_dataset(path: str):
-    with open(path, encoding="utf-8") as file:
-        return list(csv.DictReader(file))
-
-
-def evaluate(classifier, dataset):
-    start = time.perf_counter()
-
-    correct = 0
-
-    for item in dataset:
-        result = classifier.classify(item["question"])
-
-        if result.question_type.value == item["expected"]:
-            correct += 1
-        else:
-            print(
-                f"ERRO [{classifier.__class__.__name__}]: "
-                f"{item['question']} | "
-                f"esperado={item['expected']} | "
-                f"obtido={result.question_type.value}"
-            )
-
-    elapsed = time.perf_counter() - start
-
-    total = len(dataset)
-
-    print(f"\n=== {classifier.__class__.__name__} ===")
-    print(f"Acurácia: {correct / total * 100:.2f}%")
-    print(f"Acertos: {correct}/{total}")
-    print(f"Tempo total: {elapsed:.2f}s")
-    print(f"Tempo médio: {elapsed / total:.3f}s")
-
+QWEN_3 = "qwen3:1.7b"
 
 def main():
-    dataset = load_dataset("benchmark/data/questions.csv")
+    loader = DatasetLoader()
 
-    evaluate(
-        RuleBasedQuestionClassifier(),
-        dataset,
+    dataset = loader.load("questions.csv")
+
+    question_classifier = OllamaQuestionClassifier(QWEN_3)
+
+    result = QuestionClassifierBenchmark.evaluate(
+        evaluate_name="QWEN_3",
+        question_classifier=question_classifier,
+        dataset=dataset,
     )
 
-    evaluate(
-        OllamaQuestionClassifier(model=settings.ollama_question_model),
-        dataset,
-    )
-
-    evaluate(
-        HybridQuestionClassifier(
-            RuleBasedQuestionClassifier(),
-            OllamaQuestionClassifier(model=settings.ollama_question_model),
-        ),
-        dataset,
-    )
+    result.display("PT")
 
 
 if __name__ == "__main__":
     main()
+============================================================
+FILE: ./benchmark/runner/run_intent_classifier_benchmark.py
+============================================================
+from benchmark.benchmark.intent_classifier_benchmark import (
+    IntentClassifierBenchmark,
+)
+from benchmark.dataset_loader import DatasetLoader
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
+    OllamaIntentClassifier,
+)
+
+QWEN_3 = "qwen3:1.7b"
+LLAMA_3_2 = "llama3.2:1b"
+
+def main():
+    dataset = DatasetLoader().load("intents.csv")
+
+    classifier = OllamaIntentClassifier(
+        model=QWEN_3,
+    )
+
+    result = IntentClassifierBenchmark.evaluate(
+        "QWEN_3",
+        classifier,
+        dataset,
+    )
+
+    result.display("PT")
+
+
+if __name__ == "__main__":
+    main()
+============================================================
+FILE: ./benchmark/runner/run_response_generator_benchmark.py
+============================================================
+from benchmark.benchmark.response_generator_benchmark import ResponseGeneratorBenchmark
+from benchmark.dataset_loader import DatasetLoader
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
+    OllamaResponseGenerator,
+)
+
+QWEN_3 = "qwen3:1.7b"
+
+def main():
+    loader = DatasetLoader()
+
+    dataset = loader.load("responses.csv")
+
+    response_generator = OllamaResponseGenerator(QWEN_3)
+
+    result = ResponseGeneratorBenchmark.evaluate(
+        evaluate_name="QWEN_3",
+        response_generator=response_generator,
+        dataset=dataset,
+    )
+
+    result.display("PT")
+
+
+if __name__ == "__main__":
+    main()
+============================================================
+FILE: ./benchmark/model/__init__.py
+============================================================
 
 ============================================================
-FILE: ./benchmark/benchmark_result.py
+FILE: ./benchmark/model/benchmark_result.py
 ============================================================
 from pydantic import BaseModel
 
@@ -2757,93 +2550,143 @@ class BenchmarkResult(BaseModel):
         print(f"Average Time: {self.average_time:.3f}s")
 
 ============================================================
-FILE: ./benchmark/evaluation_response.py
+FILE: ./benchmark/benchmark/response_generator_benchmark.py
 ============================================================
-import csv
+import time
 
-from benchmark.benchmark_result import (
-    BenchmarkResult,
+from benchmark.model.benchmark_result import BenchmarkResult
+from slm_assistentemanutencaocarro.application.ports.response_generator import (
+    ResponseGenerator,
 )
-from benchmark.response_generator_benchmark import ResponseGeneratorBenchamark
 from slm_assistentemanutencaocarro.application.services.response_validation_service import (
     ResponseValidationService,
 )
+from slm_assistentemanutencaocarro.config.settings import Settings
+from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
     HybridResponseGenerator,
 )
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
     OllamaResponseGenerator,
 )
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
+    RuleBasedQuestionClassifier,
+)
 from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
     RuleBasedResponseGenerator,
 )
 
-# Modelos
-QWEN_3 = "qwen3:1.7b"
-LLAMA_3_2 = "llama3.2:1b"
 
-# Arquivos de testes/treinamentos
-csv_files = [
-    "benchmark/data/responses.csv",
-]
+class ResponseGeneratorBenchmark:
+    @staticmethod
+    def evaluate(
+        evaluate_name: str,
+        response_generator: ResponseGenerator,
+        dataset: list[dict[str, str]],
+        verbose: bool = True,
+    ) -> BenchmarkResult:
 
+        correct = 0
+        total_time = 0.0
 
-def load_test_cases(
-    csv_file_name: str, enconding_file: str = "utf-8", delimiter=","
-) -> list[dict[str, str]]:
+        for row in dataset:
+            question = row["question"]
+            expected_answer = row["expected_answer"]
 
-    test_cases: list[dict[str, str]]
-    with open(csv_file_name, encoding=enconding_file) as file:
-        reader = csv.DictReader(file, delimiter=delimiter)
-        test_cases = list(reader)
+            vehicle_answer = VehicleAnswer(question=question, answer=expected_answer)
 
-    return test_cases
+            start = time.perf_counter()
 
+            response = response_generator.generate(vehicle_answer)
 
-def main():
+            elapsed = time.perf_counter() - start
+            total_time += elapsed
 
-    for csv_file_name in csv_files:
-        test_case = load_test_cases(csv_file_name=csv_file_name)
+            if expected_answer.lower() in response.lower():
+                correct += 1
+                status = "✓"
+            else:
+                status = "✗"
 
-        result: BenchmarkResult = ResponseGeneratorBenchamark().evaluate(
-            "QWEN_3",
-            OllamaResponseGenerator(model=QWEN_3),
-            test_case,
+            if verbose:
+                print(f"\n{evaluate_name}")
+                print(f"{status}         : {question}")
+                print(f"  Esperado: {expected_answer}")
+                print(f"  Resposta: {response}")
+                print(f"  Tempo:    {elapsed}s")
+
+        return BenchmarkResult(
+            model=evaluate_name,
+            correct=correct,
+            total=len(dataset),
+            elapsed=total_time
         )
-
-        result: BenchmarkResult = ResponseGeneratorBenchamark().evaluate(
-            "Hibrido",
-            HybridResponseGenerator(
-                rule_generator=RuleBasedResponseGenerator(),
-                ollama_generator=OllamaResponseGenerator(model=QWEN_3),
-                validator=ResponseValidationService(),
-                use_slm=True
-            ),
-            test_case,
-        )
-        result.display("PT")
-
-        print()
-        print()
-        print("====================================================")
-
-
-if __name__ == "__main__":
-    main()
 
 ============================================================
-FILE: ./benchmark/intent_classifier_benchmark.py
+FILE: ./benchmark/benchmark/question_classifier_benchmark.py
 ============================================================
 import time
 
-from benchmark.benchmark_result import BenchmarkResult
+from benchmark.model.benchmark_result import BenchmarkResult
+from slm_assistentemanutencaocarro.application.ports.question_classifier import (
+    QuestionClassifier,
+)
+
+
+class QuestionClassifierBenchmark:
+    @staticmethod
+    def evaluate(
+        evaluate_name: str,
+        question_classifier: QuestionClassifier,
+        dataset: list[dict[str, str]],
+    ) -> BenchmarkResult:
+        total = 0
+        correct = 0
+
+        start = time.perf_counter()
+
+        for row in dataset:
+            result = question_classifier.classify(row["question"])
+
+            total += 1
+
+            if result.question_type.value == row["expected"]:
+                correct += 1
+            else:
+                print(
+                    f"ERRO [{evaluate_name}]: "
+                    f"{row['question']} | "
+                    f"esperado={row['expected']} | "
+                    f"obtido={result.question_type.value}"
+                )
+
+        elapsed = time.perf_counter() - start
+
+        return BenchmarkResult(
+            model=evaluate_name,
+            correct=correct,
+            total=total,
+            elapsed=elapsed,
+        )
+============================================================
+FILE: ./benchmark/benchmark/__init__.py
+============================================================
+
+============================================================
+FILE: ./benchmark/benchmark/intent_classifier_benchmark.py
+============================================================
+import time
+
+from benchmark.model.benchmark_result import BenchmarkResult
 from slm_assistentemanutencaocarro.application.ports.intent_classifier import IntentClassifier
 
 
 class IntentClassifierBenchmark:
     @staticmethod
     def evaluate(
-        evaluate_name: str, intent_classifier: IntentClassifier, test_case: list[dict[str, str]]
+        evaluate_name: str, 
+        intent_classifier: IntentClassifier, 
+        dataset: list[dict[str, str]]
     ) -> BenchmarkResult:
 
         total = 0
@@ -2851,7 +2694,7 @@ class IntentClassifierBenchmark:
 
         start = time.perf_counter()
 
-        for row in test_case:
+        for row in dataset:
             result = intent_classifier.classify(row["description"])
 
             total += 1
@@ -2874,3 +2717,32 @@ class IntentClassifierBenchmark:
             total=total,
             elapsed=elapsed,
         )
+
+============================================================
+FILE: ./benchmark/benchmark/benchmark.py
+============================================================
+from abc import ABC, abstractmethod
+
+from benchmark.model.benchmark_result import BenchmarkResult
+
+
+class BenchmarkInterface(ABC):
+    @staticmethod
+    @abstractmethod
+    def evaluate() -> BenchmarkResult:
+        pass
+
+============================================================
+FILE: ./benchmark/dataset_loader.py
+============================================================
+import csv
+from pathlib import Path
+
+
+class DatasetLoader:
+
+    def load(self, filename: str, enconding:str = "utf=8") -> list[dict[str, str]]:
+        path = Path(__file__).parent / "dataset" / filename
+
+        with path.open(newline="", encoding=enconding) as file:
+            return list(csv.DictReader(file))

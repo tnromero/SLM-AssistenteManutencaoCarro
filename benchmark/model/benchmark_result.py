@@ -9,10 +9,16 @@ class BenchmarkResult(BaseModel):
 
     @property
     def average_time(self) -> float:
+        if self.total == 0:
+            return 0.0
+
         return self.elapsed / self.total
 
     @property
     def accuracy(self) -> float:
+        if self.total == 0:
+            return 0.0
+        
         return self.correct / self.total * 100
 
     def __str__(self) -> str:

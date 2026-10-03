@@ -1,7 +1,6 @@
-
-
 from benchmark.benchmark.response_generator_benchmark import ResponseGeneratorBenchmark
 from benchmark.dataset_loader import DatasetLoader
+from slm_assistentemanutencaocarro.application.services.response_validation_service import ResponseValidationService
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
     OllamaResponseGenerator,
 )
@@ -15,9 +14,12 @@ def main():
 
     response_generator = OllamaResponseGenerator(QWEN_3)
 
+    response_validator = ResponseValidationService()
+
     result = ResponseGeneratorBenchmark.evaluate(
         evaluate_name="QWEN_3",
         response_generator=response_generator,
+        response_validator=response_validator,
         dataset=dataset,
     )
 
