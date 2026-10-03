@@ -2,25 +2,24 @@
 
 ## Visão geral
 
-Este projeto tem como objetivo estudar o uso de **Small Language Models (SLMs)** em uma aplicação de assistência automotiva, combinando geração por modelo local, regras determinísticas, validação factual e fallback.
+Projeto de estudo voltado ao uso de **Small Language Models (SLMs)** em um assistente de manutenção automotiva.
 
-O projeto foi desenvolvido de forma incremental, com foco em:
+O objetivo é explorar uma arquitetura híbrida em que o SLM seja responsável pela geração de linguagem natural, enquanto fatos críticos permanecem ancorados em dados estruturados e mecanismos determinísticos.
+
+Princípios do projeto:
 
 - Clean Architecture simplificada
 - SOLID
 - Injeção de dependências
 - Separação entre domínio, aplicação, infraestrutura e apresentação
 - Testes unitários e de integração
-- Avaliação objetiva de qualidade, latência e fallback
-- Uso local de SLM via Ollama
-
-A proposta não é criar uma aplicação de produção completa, mas construir uma base arquitetural clara para estudar os limites e benefícios de SLMs em um fluxo controlado.
+- Benchmarks de qualidade, latência e fallback
+- Uso local de modelos via Ollama
+- Evolução incremental, evitando abstrações prematuras
 
 ---
 
-## Arquitetura atual
-
-Fluxo principal:
+# Arquitetura atual
 
 ```text
 CLI
@@ -37,126 +36,84 @@ AssistantService
        └─ Rule Based fallback
 ```
 
-Responsabilidades principais:
+## Componentes principais
 
-### `AssistantService`
+### AssistantService
 
 Orquestra o fluxo da aplicação:
 
-1. recebe a pergunta do usuário;
+1. recebe a pergunta;
 2. classifica a intenção;
-3. classifica o tipo de pergunta;
-4. consulta os dados estruturados do veículo;
-5. envia o `VehicleAnswer` para o `ResponseGenerator`;
+3. classifica o tipo da pergunta;
+4. consulta dados estruturados do veículo;
+5. envia um `VehicleAnswer` ao `ResponseGenerator`;
 6. retorna a resposta final.
 
-O serviço depende apenas das abstrações necessárias e não conhece Ollama, fallback ou detalhes de infraestrutura.
+Também trata:
 
-### `VehicleQueryService`
+- intents não suportados;
+- tipos de pergunta não suportados;
+- ausência de dados do veículo.
 
-Responsável por consultar os dados do veículo de acordo com o `QuestionType` identificado.
+### VehicleQueryService
 
-Retorna um `VehicleAnswer`, que contém:
+Consulta dados estruturados do veículo de acordo com `QuestionType`.
 
-- pergunta original;
-- resposta factual esperada.
+Atualmente suporta, entre outros:
 
-### `ResponseGenerator`
+- óleo do motor;
+- pressão dos pneus;
+- medida dos pneus.
 
-Porta da aplicação para geração de respostas.
+Quando o dado conhecido não está disponível, lança `VehicleDataNotFoundError`.
 
-Permite trocar a implementação concreta sem alterar o `AssistantService`.
-
-### `HybridResponseGenerator`
-
-Estratégia híbrida de geração:
+### HybridResponseGenerator
 
 ```text
 SLM
  ↓
 ResponseValidationService
- ├─ válido   → resposta do SLM
+ ├─ válido   → retorna resposta do SLM
  └─ inválido → fallback determinístico
 ```
 
-Também faz fallback quando o gerador principal lança exceção.
+Também executa fallback quando o gerador principal lança exceção.
 
-### `ResponseValidationService`
+### ResponseValidationService
 
-Valida a resposta gerada pelo SLM usando fatos extraídos da resposta esperada.
+Valida fatos presentes na resposta gerada.
 
-Atualmente cobre valores como:
+Cobertura atual:
 
-- viscosidade de óleo, por exemplo `5W-40`;
+- viscosidade de óleo (`5W-40`);
 - pressão em PSI;
 - pressão em bar;
-- medidas de pneus;
-- múltiplos valores factuais na mesma resposta.
+- medida de pneus;
+- múltiplos fatos na mesma resposta;
+- normalização simples, como `2,2 bar` e `2.2 bar`.
 
-Quando não existem fatos estruturados reconhecíveis, utiliza uma validação textual simples.
+### FallbackMetrics
 
-### `FallbackMetrics`
+Métricas atuais:
 
-Mantém métricas do comportamento híbrido:
-
-- total de respostas;
-- quantidade resolvida pelo SLM;
-- quantidade de fallbacks;
-- taxa de fallback.
-
-Exemplo:
-
-```text
-Total: 10
-SLM: 7
-Fallbacks: 3
-Fallback rate: 30%
-```
+- total;
+- respostas aceitas do SLM;
+- fallbacks;
+- fallback rate.
 
 ---
 
-## Composition Root
+# Composition Root
 
-A montagem das dependências está centralizada em:
+A montagem das dependências permanece centralizada em:
 
 ```text
 slm_assistentemanutencaocarro/infrastructure/composition.py
 ```
 
-O `composition.py` é responsável por criar e conectar as implementações concretas.
+O `composition.py` sabe **como montar** a aplicação.
 
-Exemplo conceitual:
-
-```python
-def build_assistant() -> AssistantService:
-    settings = Settings()
-
-    intent_classifier = ...
-    question_classifier = ...
-
-    vehicle_reader = ...
-    vehicle_service = ...
-    vehicle_query_service = ...
-
-    slm_generator = ...
-    fallback_generator = ...
-    response_validator = ...
-
-    response_generator = HybridResponseGenerator(
-        response_generator=slm_generator,
-        fallback_generator=fallback_generator,
-        response_validator=response_validator,
-    )
-
-    return AssistantService(
-        intent_classifier=intent_classifier,
-        question_classifier=question_classifier,
-        vehicle_query_service=vehicle_query_service,
-        response_generator=response_generator,
-    )
-```
-
-O entrypoint da aplicação permanece fino:
+O entrypoint apenas inicia o sistema:
 
 ```text
 main / __init__
@@ -166,38 +123,13 @@ build_assistant()
 CLI
 ```
 
----
-
-## CLI
-
-A aplicação possui uma interface de linha de comando responsável apenas pela interação com o usuário.
-
-Exemplo de fluxo:
-
-```text
-Assistente de Manutenção
-
-> Qual óleo devo usar?
-
-Para esse veículo, utilize óleo 5W-40.
-
-> sair
-```
-
-A CLI recebe um `AssistantService` pronto e não instancia dependências diretamente.
+`Settings()` continua sendo utilizado no composition root para configurações externas.
 
 ---
 
-## Benchmarks
+# Benchmarks
 
-A infraestrutura de benchmark foi reorganizada para separar:
-
-- datasets;
-- execução;
-- resultado;
-- implementação de cada benchmark.
-
-Estrutura:
+Estrutura consolidada:
 
 ```text
 benchmark/
@@ -205,92 +137,129 @@ benchmark/
 │   ├── intent_classifier_benchmark.py
 │   ├── question_classifier_benchmark.py
 │   └── response_generator_benchmark.py
-│
 ├── dataset/
 │   ├── intents.csv
 │   ├── questions.csv
 │   └── responses.csv
-│
 ├── model/
 │   └── benchmark_result.py
-│
 ├── runner/
 │   ├── run_intent_classifier_benchmark.py
 │   ├── run_question_classifier_benchmark.py
 │   └── run_response_generator_benchmark.py
-│
 └── dataset_loader.py
 ```
 
-### `BenchmarkResult`
+## BenchmarkResult
 
-Padroniza métricas como:
+Modelo único para resultados de benchmark.
 
-- total de casos;
-- acertos;
-- acurácia;
-- tempo total;
-- tempo médio.
+Métricas atuais:
 
-### Benchmark do `ResponseGenerator`
+- model;
+- strategy;
+- correct;
+- total;
+- accuracy;
+- elapsed;
+- average_time;
+- fallback_count quando aplicável;
+- fallback_rate quando aplicável.
 
-O benchmark recebe apenas:
+A estratégia é preenchida pelo runner, não pelo benchmark.
 
-- `ResponseGenerator`;
-- `ResponseValidationService`;
-- dataset.
+```text
+ResponseGeneratorBenchmark
+→ mede
 
-Ele não executa classificação de intenção, classificação de pergunta ou consulta ao veículo.
-
-Isso mantém o benchmark focado na responsabilidade que está sendo avaliada.
+Runner
+→ sabe qual estratégia está sendo executada
+```
 
 ---
 
-## Testes
+# Fase 6 — Avaliação de SLM
 
-### Testes unitários
+Dataset ampliado para **30 casos**.
 
-Foram organizados para testar cada responsabilidade isoladamente.
+Modelos comparados:
 
-Principais áreas:
+- `qwen3:1.7b`
+- `llama3.2:1b`
 
-- `IntentClassifier`
-- `QuestionClassifier`
-- `VehicleQueryService`
-- `ResponseValidationService`
-- `HybridResponseGenerator`
-- `AssistantService`
+Estratégias:
 
-### `HybridResponseGenerator`
+- Ollama puro;
+- Hybrid.
 
-Casos cobertos:
+| Modelo | Estratégia | Acurácia | Tempo médio | Fallback |
+|---|---|---:|---:|---:|
+| qwen3:1.7b | Ollama | 100.00% | 0.466s | — |
+| llama3.2:1b | Ollama | 66.67% | 0.372s | — |
+| qwen3:1.7b | Hybrid | 100.00% | 0.403s | 0.00% |
+| llama3.2:1b | Hybrid | 100.00% | 0.355s | 33.33% |
 
-- usa resposta do SLM quando válida;
-- usa fallback quando a resposta é factualmente inválida;
-- usa fallback quando o SLM lança exceção;
-- contabiliza fallback;
-- não contabiliza resposta válida como fallback;
-- contabiliza fallback em exceção;
-- acumula métricas corretamente.
+Principais conclusões:
 
-### `AssistantService`
+- `qwen3:1.7b` acertou 30/30 sem fallback;
+- `llama3.2:1b` acertou 20/30 sozinho;
+- no Hybrid, os 10 erros do `llama3.2:1b` foram recuperados pelo fallback;
+- os dois modelos chegaram a 100% de acurácia final no modo Hybrid;
+- diferenças pequenas de latência entre puro e Hybrid não devem ser interpretadas como ganho real sem múltiplas execuções;
+- o experimento demonstra o trade-off entre modelo menor/mais rápido e maior necessidade de fallback.
 
-Casos cobertos:
+Conclusão principal:
 
-- responde pergunta suportada;
-- classifica a pergunta antes de consultar o veículo;
-- envia o `VehicleAnswer` ao `ResponseGenerator`;
-- interrompe o fluxo quando o intent não é suportado.
+```text
+um SLM menor pode ser viável quando combinado
+com validação factual e fallback determinístico
+```
 
-### Testes de integração
+---
 
-Fluxo integrado cobre:
+# Testes
 
-1. resposta válida do SLM;
-2. resposta factualmente incorreta do SLM com fallback real;
-3. exceção do SLM com fallback real.
+## Unitários
 
-No teste de integração:
+Cobertura inclui:
+
+- IntentClassifier
+- QuestionClassifier
+- VehicleQueryService
+- ResponseValidationService
+- HybridResponseGenerator
+- AssistantService
+
+### HybridResponseGenerator
+
+- aceita resposta válida do SLM;
+- aciona fallback para resposta inválida;
+- aciona fallback quando o SLM lança exceção;
+- contabiliza métricas corretamente;
+- acumula métricas entre chamadas.
+
+### AssistantService
+
+- executa a orquestração na ordem correta;
+- encaminha o `VehicleAnswer` ao `ResponseGenerator`;
+- interrompe intents não suportados;
+- interrompe question types não suportados;
+- trata ausência de dados do veículo.
+
+### VehicleQueryService
+
+- retorna respostas estruturadas para dados conhecidos;
+- lança `VehicleDataNotFoundError` quando o dado não está disponível.
+
+## Integração
+
+Cenários cobertos:
+
+1. SLM retorna resposta factual válida;
+2. SLM retorna resposta factual inválida e o fallback é usado;
+3. SLM lança exceção e o fallback é usado.
+
+Fronteira atual:
 
 ```text
 AssistantService              REAL
@@ -303,210 +272,11 @@ RuleBased fallback            REAL
 SLM generator                 MOCK
 ```
 
-O SLM é mockado para manter o teste:
-
-- determinístico;
-- rápido;
-- independente do Ollama;
-- adequado para execução automática.
-
-Ollama real permanece para benchmark e teste manual.
+Ollama real permanece para benchmark e execução manual.
 
 ---
 
-## Estado atual do projeto
-
-```text
-[✓] IntentClassifier
-[✓] QuestionClassifier
-[✓] VehicleQueryService
-[✓] ResponseGenerator
-[✓] ResponseValidationService
-[✓] HybridResponseGenerator com fallback
-
-[✓] Benchmark de qualidade do ResponseGenerator
-[✓] Benchmark de latência
-[✓] Métrica de fallback
-[✓] Melhoria da validação factual
-
-[✓] Testes unitários do AssistantService
-[✓] Testes de integração do AssistantService
-[✓] CLI
-[✓] Composition Root
-```
-
----
-
-## Próximas etapas
-
-### 1. Tratamento de perguntas desconhecidas
-
-Objetivo:
-
-evitar que perguntas fora do domínio conhecido avancem indevidamente pelo pipeline.
-
-Exemplos:
-
-```text
-"Qual a capital da França?"
-"Quem ganhou a Copa?"
-"Me conte uma piada."
-```
-
-O sistema deve reconhecer que não possui suporte para responder essas perguntas.
-
-Aspectos a definir:
-
-- comportamento para `Intent.OUTRO`;
-- comportamento para `QuestionType` desconhecido;
-- mensagem padronizada ao usuário;
-- testes unitários;
-- testes de integração.
-
-### 2. Tratamento de respostas sem dados disponíveis
-
-Exemplo:
-
-```text
-Usuário:
-Qual o torque do parafuso X?
-
-Base do veículo:
-informação inexistente.
-```
-
-O sistema não deve fabricar uma resposta.
-
-Possíveis estratégias:
-
-- retornar uma resposta explícita de dado indisponível;
-- impedir o envio ao SLM;
-- diferenciar `unknown question` de `known question without data`.
-
-### 3. Avaliar qualidade do SLM com dataset maior
-
-Expandir `responses.csv` com:
-
-- diferentes formulações da mesma pergunta;
-- respostas factualmente incorretas;
-- respostas parcialmente corretas;
-- respostas prolixas;
-- múltiplos fatos;
-- casos ambíguos.
-
-Objetivo:
-
-medir melhor:
-
-- acurácia factual;
-- fallback rate;
-- latência;
-- diferença entre modelos.
-
-### 4. Comparação entre SLMs
-
-Executar o mesmo benchmark com múltiplos modelos.
-
-Exemplos:
-
-```text
-qwen3:1.7b
-qwen3:4b
-outro SLM compatível com o hardware
-```
-
-Comparar:
-
-- qualidade;
-- latência;
-- consumo de recursos;
-- taxa de fallback.
-
-### 5. Melhorar observabilidade
-
-Sem criar uma infraestrutura complexa, pode-se futuramente registrar:
-
-- modelo utilizado;
-- tempo de inferência;
-- resposta aceita/rejeitada;
-- motivo do fallback;
-- tipo da pergunta;
-- taxa de fallback por `QuestionType`.
-
-### 6. Persistência e conversa
-
-Etapa posterior.
-
-Possíveis objetivos:
-
-- histórico da sessão;
-- contexto mínimo de conversa;
-- referências a perguntas anteriores;
-- persistência opcional.
-
-Esta etapa deve ser adicionada apenas quando o fluxo stateless estiver suficientemente estável.
-
----
-
-## Decisões arquiteturais importantes
-
-### O benchmark não executa todo o pipeline
-
-Cada benchmark mede uma responsabilidade específica.
-
-Isso evita misturar erros de:
-
-- classificação;
-- consulta;
-- geração;
-- validação.
-
-### Ollama não participa dos testes automatizados de integração
-
-Ollama é tratado como infraestrutura externa.
-
-Nos testes automatizados, o `ResponseGenerator` do SLM é mockado.
-
-O modelo real é utilizado em:
-
-- benchmarks;
-- testes manuais;
-- CLI.
-
-### O fallback é parte do `HybridResponseGenerator`
-
-O `AssistantService` conhece apenas `ResponseGenerator`.
-
-Ele não precisa saber:
-
-- se existe SLM;
-- qual modelo está sendo usado;
-- se existe fallback;
-- como a validação funciona.
-
-### `composition.py` centraliza a montagem
-
-O código de aplicação não instancia implementações concretas.
-
-A composição acontece na borda da aplicação.
-
-### Não introduzir complexidade antecipadamente
-
-Por enquanto, o projeto evita:
-
-- RAG;
-- vector database;
-- agentes;
-- LLM-as-a-judge;
-- framework de observabilidade;
-- repository de métricas;
-- abstrações sem necessidade prática.
-
-Esses elementos só devem ser introduzidos quando houver uma necessidade concreta de estudo.
-
----
-
-## Roadmap resumido
+# Estado atual
 
 ```text
 FASE 1 — Classificação
@@ -537,15 +307,143 @@ FASE 4 — Aplicação
 FASE 5 — Robustez
 [✓] Perguntas desconhecidas
 [✓] Dados inexistentes
-[✓] Tratamento de erros de domínio
+[✓] Tratamento básico de erros de domínio
 
 FASE 6 — Avaliação de SLM
 [✓] Dataset ampliado
 [✓] Comparação entre modelos
-[✓] Análise de qualidade × latência × fallback
-
-FASE 7 — Evoluções futuras
-[ ] Persistência
-[ ] Contexto conversacional
-[ ] Observabilidade ampliada
+[✓] Qualidade factual
+[✓] Latência
+[✓] Fallback rate
+[✓] BenchmarkResult consolidado
 ```
+
+---
+
+# Decisão arquitetural — Multi-veículo antes de contexto conversacional
+
+Foi decidido introduzir suporte a múltiplos veículos **antes** de contexto conversacional e persistência.
+
+Motivo: o sistema atual trabalha com um conjunto fixo de dados de veículo. Contexto conversacional será mais útil quando existir um conceito explícito de **veículo ativo na sessão**.
+
+O SLM não precisa ser treinado novamente para cada carro.
+
+```text
+Pergunta
+ ↓
+veículo selecionado
+ ↓
+dados estruturados daquele veículo
+ ↓
+VehicleAnswer
+ ↓
+SLM
+```
+
+Os fatos continuam fora do modelo.
+
+---
+
+# FASE 7 — Multi-veículo
+
+Objetivo: permitir que a aplicação consulte diferentes veículos sem trocar código e sem criar um modelo de linguagem específico para cada carro.
+
+```text
+[ ] Criar identidade de veículo
+[ ] Adaptar fonte de dados para múltiplos veículos
+[ ] Consultar veículo pela identidade
+[ ] Modelar veículo selecionado
+[ ] Adaptar VehicleService / VehicleQueryService
+[ ] Adaptar composition root
+[ ] Permitir seleção/troca de veículo na CLI
+[ ] Criar testes unitários multi-veículo
+[ ] Criar testes de integração multi-veículo
+[ ] Revisar benchmarks se necessário
+```
+
+Princípios:
+
+```text
+SLM não conhece arquivo de veículo.
+
+VehicleQueryService não escolhe silenciosamente
+um veículo global.
+
+Identidade do veículo é independente do nome
+do arquivo onde seus dados estão armazenados.
+```
+
+## Fase 7.1 — Identidade do veículo
+
+Primeiro incremento: deixar de tratar o veículo apenas como “o conteúdo de `vehicle.json`” e introduzir identidade explícita.
+
+Exemplo conceitual:
+
+```text
+VehicleId
+→ t-cross-2022
+→ polo-2023
+→ nivus-2024
+```
+
+Critério de conclusão:
+
+```text
+[ ] existe uma identidade independente do arquivo
+[ ] dois veículos podem coexistir na fonte de dados
+[ ] um veículo pode ser recuperado pela identidade
+[ ] nenhum componente usa o nome do arquivo como identidade de negócio
+```
+
+---
+
+# FASE 8 — Contexto conversacional
+
+Depois do suporte multi-veículo:
+
+```text
+[ ] ConversationContext em memória
+[ ] Histórico de mensagens
+[ ] Veículo ativo na sessão
+[ ] Perguntas dependentes de contexto
+[ ] Limite de histórico enviado ao SLM
+[ ] Testes de contexto
+```
+
+Exemplo futuro:
+
+```text
+Usuário: Quero falar sobre meu T-Cross 2022.
+Usuário: Qual óleo ele usa?
+Usuário: E a pressão dos pneus?
+```
+
+---
+
+# FASE 9 — Persistência
+
+Somente após contexto em memória estar funcionando:
+
+```text
+[ ] Persistir sessão
+[ ] Persistir veículo selecionado
+[ ] Persistir histórico
+[ ] Recuperar sessão
+```
+
+A tecnologia de persistência ainda não foi definida.
+
+---
+
+# Evoluções futuras possíveis
+
+- dataset maior;
+- mais tipos de informação automotiva;
+- novos SLMs;
+- métricas por `QuestionType`;
+- motivo do fallback;
+- observabilidade;
+- recuperação de documentação externa;
+- eventual RAG.
+
+RAG, agentes, vector database e LLM-as-a-judge continuam fora do escopo atual até existir necessidade concreta.
