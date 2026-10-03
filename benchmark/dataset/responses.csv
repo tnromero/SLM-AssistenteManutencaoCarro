@@ -1,9 +1,31 @@
 question,expected_answer
 Qual óleo devo usar no motor?,O óleo especificado é 5W-40.
-Qual a pressão correta dos pneus?,33 PSI
-Qual o tamanho dos pneus?,205/55 R17
 Qual óleo devo usar?,5W-40
 Qual óleo o motor utiliza?,5W-40
+Qual óleo devo usar?,O óleo especificado é 5W-40.
+Qual é o óleo recomendado para o motor?,O óleo especificado é 5W-40.
+Que óleo vai nesse motor?,O óleo especificado é 5W-40.
+Posso usar 5W-40?,O óleo especificado é 5W-40.
+Qual a viscosidade correta do óleo?,O óleo especificado é 5W-40.
+"Me diga, qual óleo esse motor utiliza",Utiliza óleo motor 5W-40.
+Tem óleo certo para utilizar neste carro?,"Sim, deve-se utilizar o óleo motor 5W-40."
 Que pressão devo colocar nos pneus?,33 PSI
+Qual a pressão correta dos pneus?,33 PSI
+Qual a pressão dos pneus?,A pressão configurada é 32 PSI nos pneus dianteiros e 32 PSI nos traseiros.
+Quantas libras devo colocar nos pneus?,A pressão configurada é 32 PSI nos pneus dianteiros e 32 PSI nos traseiros.
+Qual a calibragem recomendada?,A pressão configurada é 32 PSI nos pneus dianteiros e 32 PSI nos traseiros.
+Com quanto devo calibrar os pneus?,A pressão deve ser de 32 PSI nos quatro pneus.
+Me fale com quanto devo calibrar?,A pressão deve ser de 32 PSI nos quatro pneus.
+Posso calibrar o pneu com 40PSI?,A pressão deve ser de 32 PSI nos quatro pneus.
+Posso calibrar os pneus com 40PSI?,A pressão deve ser de 32 PSI nos quatro pneus.
+Com quantas libras devo calibrar os pneus?,A pressão configurada é 32 PSI nos pneus dianteiros e 32 PSI nos traseiros.
+Qual o tamanho dos pneus?,205/55 R17
 Qual o tamanho do pneu?,205/55 R17
 Qual a medida dos pneus?,205/55 R17
+Os pneus são de qual tamanho?,A medida dos pneus é 205/55 R16.
+Qual o tamanho dos pneus?,A medida dos pneus é 205/55 R16.
+Qual a medida correta do pneu?,A medida dos pneus é 205/55 R16.
+Que pneu esse carro usa?,Utiliza pneus de medida 205/55 R16.
+O carro utiliza pneu R18?,Esta carro utiliza pneus de medida 205/55 R16.
+Qual pneu devo comprar?,A medida dos pneus deve ser 205/55 R16.
+Quais pneus devo comprar?,A medida dos pneus deve ser 205/55 R16.

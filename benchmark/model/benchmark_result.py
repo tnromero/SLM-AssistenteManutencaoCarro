@@ -6,6 +6,8 @@ class BenchmarkResult(BaseModel):
     correct: int
     total: int
     elapsed: float
+    strategy: str | None = None
+    fallback_count: int = 0
 
     @property
     def average_time(self) -> float:
@@ -21,36 +23,21 @@ class BenchmarkResult(BaseModel):
         
         return self.correct / self.total * 100
 
+    @property
+    def fallback_rate(self) -> float:
+
+        if self.total == 0:
+            return 0.0
+
+        return self.fallback_count / self.total * 100
+
     def __str__(self) -> str:
         return (
-            "========================================\n"
             f"Modelo: {self.model}\n"
+            f"  Estratégia : {self.strategy}\n"
             f"  Acertos    : {self.correct}/{self.total}\n"
             f"  Acurácia   : {self.accuracy:.2f}%\n"
             f"  Tempo total: {self.elapsed:.2f}s\n"
             f"  Tempo médio: {self.average_time:.3f}s\n"
-            "========================================"
+            f"  Fallbacks  : {self.fallback_rate:.2f}%\n"
         )
-
-    def display(self, lang: str = "PT") -> None:
-        print(f"=== {self.model} ===")
-        if lang == "PT":
-            self.__display_pt()
-        else:
-            self.__display_en()
-
-    def __display_pt(self):
-        print(f"Modelo: {self.model}")
-        print("----------------------------------------")
-        print(f"Acurácia: {self.accuracy:.2f}%")
-        print(f"Acertos: {self.correct}/{self.total}")
-        print(f"Tempo total: {self.elapsed:.2f}s")
-        print(f"Tempo médio: {self.average_time:.3f}s")
-
-    def __display_en(self):
-        print(f"Model: {self.model}")
-        print("----------------------------------------")
-        print(f"Accuracy: {self.accuracy:.2f}%")
-        print(f"Corrects: {self.correct}/{self.total}")
-        print(f"Elapsed: {self.elapsed:.2f}s")
-        print(f"Average Time: {self.average_time:.3f}s")

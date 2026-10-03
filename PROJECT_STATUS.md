@@ -540,9 +540,9 @@ FASE 5 — Robustez
 [✓] Tratamento de erros de domínio
 
 FASE 6 — Avaliação de SLM
-[ ] Dataset ampliado
-[ ] Comparação entre modelos
-[ ] Análise de qualidade × latência × fallback
+[✓] Dataset ampliado
+[✓] Comparação entre modelos
+[✓] Análise de qualidade × latência × fallback
 
 FASE 7 — Evoluções futuras
 [ ] Persistência

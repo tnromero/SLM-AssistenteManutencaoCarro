@@ -22,7 +22,7 @@ def main():
         dataset,
     )
 
-    result.display("PT")
+    print(result)
 
 
 if __name__ == "__main__":

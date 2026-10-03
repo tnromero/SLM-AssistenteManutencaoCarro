@@ -4,7 +4,9 @@ from benchmark.model.benchmark_result import BenchmarkResult
 from slm_assistentemanutencaocarro.application.ports.response_generator import (
     ResponseGenerator,
 )
-from slm_assistentemanutencaocarro.application.service.response_validation_service import ResponseValidationService
+from slm_assistentemanutencaocarro.application.service.response_validation_service import (
+    ResponseValidationService,
+)
 from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 
 
@@ -35,7 +37,7 @@ class ResponseGeneratorBenchmark:
             total_time += elapsed
 
             is_valid = response_validator.validate(
-                answer=vehicle_answer, response=response
+                answer=vehicle_answer, generated_response=response
             )
 
             if is_valid:
