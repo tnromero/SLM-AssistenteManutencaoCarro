@@ -349,16 +349,23 @@ Os fatos continuam fora do modelo.
 Objetivo: permitir que a aplicação consulte diferentes veículos sem trocar código e sem criar um modelo de linguagem específico para cada carro.
 
 ```text
-[ ] Criar identidade de veículo
-[ ] Adaptar fonte de dados para múltiplos veículos
-[ ] Consultar veículo pela identidade
-[ ] Modelar veículo selecionado
-[ ] Adaptar VehicleService / VehicleQueryService
-[ ] Adaptar composition root
-[ ] Permitir seleção/troca de veículo na CLI
-[ ] Criar testes unitários multi-veículo
-[ ] Criar testes de integração multi-veículo
-[ ] Revisar benchmarks se necessário
+FASE 7 — Multi-veículo
+
+[✓] VehicleId
+[✓] Vehicle como objeto de domínio
+[✓] Fonte com múltiplos veículos
+[✓] JsonVehicleReader por VehicleId
+[✓] list_vehicles()
+[✓] VehicleContext
+[✓] VehicleNotSelectedError
+[✓] VehicleService usa veículo ativo
+[✓] Troca de veículo sem recriar serviços
+[✓] Application container
+[✓] Composition Root atualizado
+[✓] CLI lista veículos
+[✓] CLI seleciona/troca veículo
+[✓] Testes unitários
+[✓] Testes de integração multi-veículo
 ```
 
 Princípios:

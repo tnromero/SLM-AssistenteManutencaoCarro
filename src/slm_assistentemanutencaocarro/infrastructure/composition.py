@@ -45,7 +45,7 @@ from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response
 )
 
 
-def build_assistant(json_file_vehicle: str) -> Application:
+def build_application(json_file_vehicle: str) -> Application:
 
     settings = Settings()
 

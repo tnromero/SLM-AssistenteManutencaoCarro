@@ -28,3 +28,4 @@ def test_should_switch_selected_vehicle():
     second_oil = service.get_engine_oil()
 
     assert first_oil != second_oil
+
