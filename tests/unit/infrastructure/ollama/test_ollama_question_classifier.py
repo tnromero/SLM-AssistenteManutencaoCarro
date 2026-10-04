@@ -1,6 +1,6 @@
 from unittest.mock import Mock, patch
 
-from slm_assistentemanutencaocarro.domain.question_classification import QuestionClassification
+from slm_assistentemanutencaocarro.application.model.question_classification import QuestionClassification
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
     SYSTEM_PROMPT,

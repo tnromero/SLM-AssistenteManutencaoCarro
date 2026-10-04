@@ -1,7 +1,7 @@
 from unittest.mock import Mock, patch
 
 from slm_assistentemanutencaocarro.domain.intent import Intent
-from slm_assistentemanutencaocarro.domain.intent_classification import IntentClassification
+from slm_assistentemanutencaocarro.application.model.intent_classification import IntentClassification
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
     SYSTEM_PROMPT,
     OllamaIntentClassifier,

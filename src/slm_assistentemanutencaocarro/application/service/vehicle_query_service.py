@@ -5,7 +5,7 @@ from slm_assistentemanutencaocarro.domain.exception import (
     VehicleDataNotFoundError,
 )
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 
 
 class VehicleQueryService:

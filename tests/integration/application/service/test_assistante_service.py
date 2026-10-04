@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, Mock
 
 from slm_assistentemanutencaocarro.application.context.vehicle_context import VehicleContext
-from slm_assistentemanutencaocarro.application.ports.response_generator import ResponseGenerator
+from slm_assistentemanutencaocarro.application.port.response_generator import ResponseGenerator
 from slm_assistentemanutencaocarro.application.service.assistant_service import AssistantService
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,

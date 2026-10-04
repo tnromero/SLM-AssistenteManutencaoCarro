@@ -3,6 +3,3 @@ class VehicleDataNotFoundError(Exception):
 
 class VehicleNotFoundError(Exception):
     pass
-
-class VehicleNotSelectedError(Exception):
-    pass

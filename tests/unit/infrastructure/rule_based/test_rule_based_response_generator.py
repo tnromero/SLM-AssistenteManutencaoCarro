@@ -1,4 +1,4 @@
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
     RuleBasedResponseGenerator,
 )

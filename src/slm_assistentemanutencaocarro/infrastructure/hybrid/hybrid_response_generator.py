@@ -1,11 +1,11 @@
-from slm_assistentemanutencaocarro.application.ports.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response_generator import (
     ResponseGenerator,
 )
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,
 )
-from slm_assistentemanutencaocarro.domain.fallback_metrics import FallbackMetrics
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.fallback_metrics import FallbackMetrics
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 
 
 class HybridResponseGenerator(ResponseGenerator):

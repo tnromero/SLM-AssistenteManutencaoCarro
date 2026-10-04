@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from slm_assistentemanutencaocarro.domain.question_classification import (
+from slm_assistentemanutencaocarro.application.model.question_classification import (
     QuestionClassification,
 )
 

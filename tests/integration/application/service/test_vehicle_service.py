@@ -1,8 +1,8 @@
 import pytest
 
 from slm_assistentemanutencaocarro.application.context.vehicle_context import VehicleContext
+from slm_assistentemanutencaocarro.application.exception import VehicleNotSelectedError
 from slm_assistentemanutencaocarro.application.service.vehicle_service import VehicleService
-from slm_assistentemanutencaocarro.domain.exception import VehicleNotSelectedError
 from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
     JsonVehicleReader,
 )

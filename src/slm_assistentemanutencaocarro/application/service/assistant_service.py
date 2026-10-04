@@ -1,10 +1,10 @@
-from slm_assistentemanutencaocarro.application.ports.intent_classifier import (
+from slm_assistentemanutencaocarro.application.port.intent_classifier import (
     IntentClassifier,
 )
-from slm_assistentemanutencaocarro.application.ports.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.question_classifier import (
     QuestionClassifier,
 )
-from slm_assistentemanutencaocarro.application.ports.response_generator import ResponseGenerator
+from slm_assistentemanutencaocarro.application.port.response_generator import ResponseGenerator
 from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
     VehicleQueryService,
 )

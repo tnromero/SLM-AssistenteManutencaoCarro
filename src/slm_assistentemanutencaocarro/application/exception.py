@@ -1,0 +1,2 @@
+class VehicleNotSelectedError(Exception):
+    pass

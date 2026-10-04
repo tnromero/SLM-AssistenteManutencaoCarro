@@ -9,7 +9,7 @@ from slm_assistentemanutencaocarro.application.service.vehicle_query_service imp
 from slm_assistentemanutencaocarro.application.service.vehicle_service import VehicleService
 from slm_assistentemanutencaocarro.domain.exception import VehicleDataNotFoundError
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
 from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
     JsonVehicleReader,
