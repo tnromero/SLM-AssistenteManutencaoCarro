@@ -5,11 +5,11 @@ from slm_assistentemanutencaocarro.presentation.cli import run
 
 
 def main():
-    assistant = build_assistant(
+    application = build_assistant(
         json_file_vehicle="data/vehicle.json",
     )
 
-    run(assistant)
+    run(application)
 
 
 if __name__ == "__main__":

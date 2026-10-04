@@ -1,3 +1,5 @@
+from slm_assistentemanutencaocarro.application.application import Application
+from slm_assistentemanutencaocarro.application.context.vehicle_context import VehicleContext
 from slm_assistentemanutencaocarro.application.service.assistant_service import (
     AssistantService,
 )
@@ -43,7 +45,7 @@ from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response
 )
 
 
-def build_assistant(json_file_vehicle: str) -> AssistantService:
+def build_assistant(json_file_vehicle: str) -> Application:
 
     settings = Settings()
 
@@ -56,25 +58,28 @@ def build_assistant(json_file_vehicle: str) -> AssistantService:
 
     question_classifier = HybridQuestionClassifier(
         rule_classifier=RuleBasedQuestionClassifier(),
-        slm_classifier=OllamaQuestionClassifier(
-            model=settings.ollama_question_model
-        )
+        slm_classifier=OllamaQuestionClassifier(model=settings.ollama_question_model),
     )
 
-    response_generator =  HybridResponseGenerator(
+    response_generator = HybridResponseGenerator(
         response_generator=RuleBasedResponseGenerator(),
         fallback_generator=OllamaResponseGenerator(
             model=settings.ollama_response_model,
         ),
-        response_validator=ResponseValidationService()
+        response_validator=ResponseValidationService(),
     )
 
-    vehicle_service = VehicleService(vehicle_reader)
+    vehicle_context = VehicleContext()
+    vehicle_service = VehicleService(vehicle_reader, vehicle_context)
     vehicle_query_service = VehicleQueryService(vehicle_service)
 
-    return AssistantService(
+    assistant = AssistantService(
         intent_classifier=intent_classifier,
         question_classifier=question_classifier,
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
+    )
+
+    return Application(
+        assistant=assistant, vehicle_context=vehicle_context, vehicle_reader=vehicle_reader
     )

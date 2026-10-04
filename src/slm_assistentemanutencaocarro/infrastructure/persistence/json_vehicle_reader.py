@@ -37,3 +37,12 @@ class JsonVehicleReader(VehicleReader):
             id=vehicle_id,
             **vehicle_data,
         )
+
+    def list_vehicles(self) -> list[Vehicle]:
+        return [
+            Vehicle(
+                id=VehicleId(value=vehicle_id),
+                **vehicle_data,
+            )
+            for vehicle_id, vehicle_data in self._vehicles.items()
+        ]

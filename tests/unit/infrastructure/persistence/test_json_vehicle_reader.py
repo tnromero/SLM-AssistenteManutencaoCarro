@@ -46,3 +46,18 @@ def test_should_raise_when_vehicle_id_does_not_exist():
 
     with pytest.raises(VehicleNotFoundError):
         reader.get_vehicle(creta_id)
+
+def test_should_list_available_vehicles():
+    reader = JsonVehicleReader("data/vehicle.json")
+
+    vehicles = reader.list_vehicles()
+
+    assert len(vehicles) == 7
+
+def test_should_raise_when_vehicle_does_not_exist():
+    reader = JsonVehicleReader("data/vehicle.json")
+
+    with pytest.raises(VehicleNotFoundError):
+        reader.get_vehicle(
+            VehicleId(value="invalid-vehicle")
+        )

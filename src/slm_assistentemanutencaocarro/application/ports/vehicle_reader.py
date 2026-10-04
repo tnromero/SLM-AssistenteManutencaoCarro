@@ -12,3 +12,7 @@ class VehicleReader(Protocol):
         vehicle_id: VehicleId,
     ) -> Vehicle:
         pass
+
+    @abstractmethod
+    def list_vehicles(self) -> list[Vehicle]:
+        pass
