@@ -41,7 +41,14 @@
 │       │   ├── context
 │       │   │   ├── __init__.py
 │       │   │   └── vehicle_context.py
-│       │   ├── ports
+│       │   ├── exception.py
+│       │   ├── model
+│       │   │   ├── __init__.py
+│       │   │   ├── fallback_metrics.py
+│       │   │   ├── intent_classification.py
+│       │   │   ├── question_classification.py
+│       │   │   └── vehicle_answer.py
+│       │   ├── port
 │       │   │   ├── __init__.py
 │       │   │   ├── intent_classifier.py
 │       │   │   ├── question_classifier.py
@@ -59,14 +66,10 @@
 │       ├── domain
 │       │   ├── __init__.py
 │       │   ├── exception.py
-│       │   ├── fallback_metrics.py
 │       │   ├── intent.py
-│       │   ├── intent_classification.py
-│       │   ├── question_classification.py
 │       │   ├── question_type.py
 │       │   ├── tire_pressure.py
 │       │   ├── vehicle.py
-│       │   ├── vehicle_answer.py
 │       │   └── vehicle_id.py
 │       ├── infrastructure
 │       │   ├── __init__.py
@@ -122,7 +125,7 @@
         │   ├── __init__.py
         │   ├── context
         │   │   └── __init__.py
-        │   ├── ports
+        │   ├── port
         │   │   └── __init__.py
         │   └── service
         │       ├── __init__.py
@@ -153,7 +156,7 @@
                 ├── test_rule_based_question_classifier.py
                 └── test_rule_based_response_generator.py
 
-40 directories, 113 files
+41 directories, 115 files
 
 ===== FILE CONTENT =====
 
@@ -877,26 +880,6 @@ FILE: ./src/slm_assistentemanutencaocarro/presentation/__init__.py
 ============================================================
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/domain/fallback_metrics.py
-============================================================
-from pydantic import BaseModel
-
-
-class FallbackMetrics(BaseModel):
-    total: int = 0
-    fallback_count: int = 0
-
-    @property
-    def slm_count(self) -> int:
-        return self.total - self.fallback_count
-
-    @property
-    def fallback_rate(self) -> float:
-        if self.total == 0:
-            return 0.0
-
-        return self.fallback_count / self.total * 100
-============================================================
 FILE: ./src/slm_assistentemanutencaocarro/domain/vehicle_id.py
 ============================================================
 from pydantic import BaseModel
@@ -909,26 +892,12 @@ FILE: ./src/slm_assistentemanutencaocarro/domain/__init__.py
 ============================================================
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/domain/intent_classification.py
-============================================================
-from pydantic import BaseModel
-
-from slm_assistentemanutencaocarro.domain.intent import Intent
-
-
-class IntentClassification(BaseModel):
-    intent: Intent
-
-============================================================
 FILE: ./src/slm_assistentemanutencaocarro/domain/exception.py
 ============================================================
 class VehicleDataNotFoundError(Exception):
     pass
 
 class VehicleNotFoundError(Exception):
-    pass
-
-class VehicleNotSelectedError(Exception):
     pass
 
 ============================================================
@@ -960,16 +929,6 @@ class TirePressure(BaseModel):
     front: float
     rear: float
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/domain/vehicle_answer.py
-============================================================
-from pydantic import BaseModel
-
-
-class VehicleAnswer(BaseModel):
-    question: str
-    answer: str
-
-============================================================
 FILE: ./src/slm_assistentemanutencaocarro/domain/intent.py
 ============================================================
 import enum
@@ -994,17 +953,6 @@ class QuestionType(enum.StrEnum):
     PRESSAO_PNEUS = "Pressão dos pneus"
     MEDIDA_PNEUS = "Medida dos pneus"
     DESCONHECIDO = "Desconhecido"
-
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/domain/question_classification.py
-============================================================
-from pydantic import BaseModel
-
-from slm_assistentemanutencaocarro.domain.question_type import QuestionType
-
-
-class QuestionClassification(BaseModel):
-    question_type: QuestionType
 
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/__init__.py
@@ -1037,7 +985,7 @@ FILE: ./src/slm_assistentemanutencaocarro/infrastructure/persistence/json_vehicl
 import json
 from pathlib import Path
 
-from slm_assistentemanutencaocarro.application.ports.vehicle_reader import VehicleReader
+from slm_assistentemanutencaocarro.application.port.vehicle_reader import VehicleReader
 from slm_assistentemanutencaocarro.domain.exception import VehicleNotFoundError
 from slm_assistentemanutencaocarro.domain.vehicle import Vehicle
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -1092,10 +1040,10 @@ FILE: ./src/slm_assistentemanutencaocarro/infrastructure/ollama/ollama_response_
 ============================================================
 import ollama
 
-from slm_assistentemanutencaocarro.application.ports.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response_generator import (
     ResponseGenerator,
 )
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 
 SYSTEM_PROMPT = """
 Você é um assistente de manutenção automotiva.
@@ -1150,10 +1098,10 @@ FILE: ./src/slm_assistentemanutencaocarro/infrastructure/ollama/ollama_question_
 import ollama
 from pydantic import ValidationError
 
-from slm_assistentemanutencaocarro.application.ports.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.question_classifier import (
     QuestionClassifier,
 )
-from slm_assistentemanutencaocarro.domain.question_classification import (
+from slm_assistentemanutencaocarro.application.model.question_classification import (
     QuestionClassification,
 )
 
@@ -1238,10 +1186,10 @@ FILE: ./src/slm_assistentemanutencaocarro/infrastructure/ollama/ollama_intent_cl
 import ollama
 from pydantic import ValidationError
 
-from slm_assistentemanutencaocarro.application.ports.intent_classifier import (
+from slm_assistentemanutencaocarro.application.port.intent_classifier import (
     IntentClassifier,
 )
-from slm_assistentemanutencaocarro.domain.intent_classification import (
+from slm_assistentemanutencaocarro.application.model.intent_classification import (
     IntentClassification,
 )
 
@@ -1340,10 +1288,10 @@ FILE: ./src/slm_assistentemanutencaocarro/infrastructure/hybrid/__init__.py
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/infrastructure/hybrid/hybrid_question_classifier.py
 ============================================================
-from slm_assistentemanutencaocarro.application.ports.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.question_classifier import (
     QuestionClassifier,
 )
-from slm_assistentemanutencaocarro.domain.question_classification import (
+from slm_assistentemanutencaocarro.application.model.question_classification import (
     QuestionClassification,
 )
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
@@ -1379,13 +1327,13 @@ class HybridQuestionClassifier(QuestionClassifier):
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/infrastructure/hybrid/hybrid_intent_classifier.py
 ============================================================
-from slm_assistentemanutencaocarro.application.ports.intent_classifier import (
+from slm_assistentemanutencaocarro.application.port.intent_classifier import (
     IntentClassifier,
 )
 from slm_assistentemanutencaocarro.domain.intent import (
     Intent,
 )
-from slm_assistentemanutencaocarro.domain.intent_classification import (
+from slm_assistentemanutencaocarro.application.model.intent_classification import (
     IntentClassification,
 )
 
@@ -1411,14 +1359,14 @@ class HybridIntentClassifier(IntentClassifier):
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/infrastructure/hybrid/hybrid_response_generator.py
 ============================================================
-from slm_assistentemanutencaocarro.application.ports.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response_generator import (
     ResponseGenerator,
 )
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,
 )
-from slm_assistentemanutencaocarro.domain.fallback_metrics import FallbackMetrics
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.fallback_metrics import FallbackMetrics
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 
 
 class HybridResponseGenerator(ResponseGenerator):
@@ -1467,10 +1415,10 @@ FILE: ./src/slm_assistentemanutencaocarro/infrastructure/__init__.py
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/infrastructure/rule_based/rule_based_question_classifier.py
 ============================================================
-from slm_assistentemanutencaocarro.application.ports.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.question_classifier import (
     QuestionClassifier,
 )
-from slm_assistentemanutencaocarro.domain.question_classification import (
+from slm_assistentemanutencaocarro.application.model.question_classification import (
     QuestionClassification,
 )
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
@@ -1502,10 +1450,10 @@ FILE: ./src/slm_assistentemanutencaocarro/infrastructure/rule_based/__init__.py
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/infrastructure/rule_based/rule_based_response_generator.py
 ============================================================
-from slm_assistentemanutencaocarro.application.ports.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response_generator import (
     ResponseGenerator,
 )
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 
 
 class RuleBasedResponseGenerator(ResponseGenerator):
@@ -1518,9 +1466,9 @@ class RuleBasedResponseGenerator(ResponseGenerator):
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/infrastructure/rule_based/rule_based_intent_classifier.py
 ============================================================
-from slm_assistentemanutencaocarro.application.ports.intent_classifier import IntentClassifier
+from slm_assistentemanutencaocarro.application.port.intent_classifier import IntentClassifier
 from slm_assistentemanutencaocarro.domain.intent import Intent
-from slm_assistentemanutencaocarro.domain.intent_classification import (
+from slm_assistentemanutencaocarro.application.model.intent_classification import (
     IntentClassification,
 )
 
@@ -1702,15 +1650,11 @@ class VehicleContext:
     def get_selected(self) -> VehicleId | None:
         return self._vehicle_id
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/__init__.py
-============================================================
-
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/ports/response_generator.py
+FILE: ./src/slm_assistentemanutencaocarro/application/port/response_generator.py
 ============================================================
 from abc import ABC, abstractmethod
 
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 
 
 class ResponseGenerator(ABC):
@@ -1722,11 +1666,11 @@ class ResponseGenerator(ABC):
         pass
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/ports/__init__.py
+FILE: ./src/slm_assistentemanutencaocarro/application/port/__init__.py
 ============================================================
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/ports/vehicle_reader.py
+FILE: ./src/slm_assistentemanutencaocarro/application/port/vehicle_reader.py
 ============================================================
 from abc import abstractmethod
 from typing import Protocol
@@ -1748,11 +1692,11 @@ class VehicleReader(Protocol):
         pass
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/ports/question_classifier.py
+FILE: ./src/slm_assistentemanutencaocarro/application/port/question_classifier.py
 ============================================================
 from abc import ABC, abstractmethod
 
-from slm_assistentemanutencaocarro.domain.question_classification import (
+from slm_assistentemanutencaocarro.application.model.question_classification import (
     QuestionClassification,
 )
 
@@ -1766,11 +1710,11 @@ class QuestionClassifier(ABC):
         pass
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/ports/intent_classifier.py
+FILE: ./src/slm_assistentemanutencaocarro/application/port/intent_classifier.py
 ============================================================
 from abc import ABC, abstractmethod
 
-from slm_assistentemanutencaocarro.domain.intent_classification import (
+from slm_assistentemanutencaocarro.application.model.intent_classification import (
     IntentClassification,
 )
 
@@ -1781,12 +1725,22 @@ class IntentClassifier(ABC):
         pass
 
 ============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/exception.py
+============================================================
+class VehicleNotSelectedError(Exception):
+    pass
+
+============================================================
 FILE: ./src/slm_assistentemanutencaocarro/application/application.py
 ============================================================
 from dataclasses import dataclass
 
 from slm_assistentemanutencaocarro.application.context.vehicle_context import VehicleContext
-from slm_assistentemanutencaocarro.application.ports.vehicle_reader import VehicleReader
+from slm_assistentemanutencaocarro.application.port.vehicle_reader import VehicleReader
 from slm_assistentemanutencaocarro.application.service.assistant_service import AssistantService
 
 
@@ -1805,7 +1759,7 @@ from slm_assistentemanutencaocarro.domain.exception import (
     VehicleDataNotFoundError,
 )
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 
 
 class VehicleQueryService:
@@ -1877,13 +1831,13 @@ FILE: ./src/slm_assistentemanutencaocarro/application/service/__init__.py
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/application/service/assistant_service.py
 ============================================================
-from slm_assistentemanutencaocarro.application.ports.intent_classifier import (
+from slm_assistentemanutencaocarro.application.port.intent_classifier import (
     IntentClassifier,
 )
-from slm_assistentemanutencaocarro.application.ports.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.question_classifier import (
     QuestionClassifier,
 )
-from slm_assistentemanutencaocarro.application.ports.response_generator import ResponseGenerator
+from slm_assistentemanutencaocarro.application.port.response_generator import ResponseGenerator
 from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
     VehicleQueryService,
 )
@@ -1946,11 +1900,9 @@ FILE: ./src/slm_assistentemanutencaocarro/application/service/vehicle_service.py
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.ports.vehicle_reader import (
+from slm_assistentemanutencaocarro.application.exception import VehicleNotSelectedError
+from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
     VehicleReader,
-)
-from slm_assistentemanutencaocarro.domain.exception import (
-    VehicleNotSelectedError,
 )
 from slm_assistentemanutencaocarro.domain.tire_pressure import TirePressure
 from slm_assistentemanutencaocarro.domain.vehicle import Vehicle
@@ -1986,7 +1938,7 @@ FILE: ./src/slm_assistentemanutencaocarro/application/service/response_validatio
 ============================================================
 import re
 
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 
 
 class ResponseValidationService:
@@ -2057,6 +2009,62 @@ class ResponseValidationService:
             .strip()
         )
 ============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/fallback_metrics.py
+============================================================
+from pydantic import BaseModel
+
+
+class FallbackMetrics(BaseModel):
+    total: int = 0
+    fallback_count: int = 0
+
+    @property
+    def slm_count(self) -> int:
+        return self.total - self.fallback_count
+
+    @property
+    def fallback_rate(self) -> float:
+        if self.total == 0:
+            return 0.0
+
+        return self.fallback_count / self.total * 100
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/intent_classification.py
+============================================================
+from pydantic import BaseModel
+
+from slm_assistentemanutencaocarro.domain.intent import Intent
+
+
+class IntentClassification(BaseModel):
+    intent: Intent
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/vehicle_answer.py
+============================================================
+from pydantic import BaseModel
+
+
+class VehicleAnswer(BaseModel):
+    question: str
+    answer: str
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/question_classification.py
+============================================================
+from pydantic import BaseModel
+
+from slm_assistentemanutencaocarro.domain.question_type import QuestionType
+
+
+class QuestionClassification(BaseModel):
+    question_type: QuestionType
+
+============================================================
 FILE: ./tests/integration/__init__.py
 ============================================================
 
@@ -2126,7 +2134,7 @@ FILE: ./tests/integration/infrastructure/ollama/test_ollama_response_generator.p
 import pytest
 
 from slm_assistentemanutencaocarro.config.settings import Settings
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
     OllamaResponseGenerator,
 )
@@ -2263,7 +2271,7 @@ FILE: ./tests/integration/application/service/test_assistante_service.py
 from unittest.mock import MagicMock, Mock
 
 from slm_assistentemanutencaocarro.application.context.vehicle_context import VehicleContext
-from slm_assistentemanutencaocarro.application.ports.response_generator import ResponseGenerator
+from slm_assistentemanutencaocarro.application.port.response_generator import ResponseGenerator
 from slm_assistentemanutencaocarro.application.service.assistant_service import AssistantService
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,
@@ -2463,8 +2471,8 @@ FILE: ./tests/integration/application/service/test_vehicle_service.py
 import pytest
 
 from slm_assistentemanutencaocarro.application.context.vehicle_context import VehicleContext
+from slm_assistentemanutencaocarro.application.exception import VehicleNotSelectedError
 from slm_assistentemanutencaocarro.application.service.vehicle_service import VehicleService
-from slm_assistentemanutencaocarro.domain.exception import VehicleNotSelectedError
 from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
     JsonVehicleReader,
 )
@@ -2496,7 +2504,7 @@ import pytest
 from pydantic import ValidationError
 
 from slm_assistentemanutencaocarro.domain.intent import Intent
-from slm_assistentemanutencaocarro.domain.intent_classification import (
+from slm_assistentemanutencaocarro.application.model.intent_classification import (
     IntentClassification,
 )
 
@@ -2597,7 +2605,7 @@ FILE: ./tests/unit/infrastructure/ollama/test_ollama_question_classifier.py
 ============================================================
 from unittest.mock import Mock, patch
 
-from slm_assistentemanutencaocarro.domain.question_classification import QuestionClassification
+from slm_assistentemanutencaocarro.application.model.question_classification import QuestionClassification
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
     SYSTEM_PROMPT,
@@ -2644,7 +2652,7 @@ FILE: ./tests/unit/infrastructure/ollama/test_ollama_response_generator.py
 ============================================================
 from unittest.mock import Mock, patch
 
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
     SYSTEM_PROMPT,
     OllamaResponseGenerator,
@@ -2690,7 +2698,7 @@ FILE: ./tests/unit/infrastructure/ollama/test_ollama_intent_classifier.py
 from unittest.mock import Mock, patch
 
 from slm_assistentemanutencaocarro.domain.intent import Intent
-from slm_assistentemanutencaocarro.domain.intent_classification import IntentClassification
+from slm_assistentemanutencaocarro.application.model.intent_classification import IntentClassification
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
     SYSTEM_PROMPT,
     OllamaIntentClassifier,
@@ -2732,8 +2740,8 @@ FILE: ./tests/unit/infrastructure/hybrid/test_hybrid_question_classifier.py
 ============================================================
 from unittest.mock import Mock
 
-from slm_assistentemanutencaocarro.application.ports.question_classifier import QuestionClassifier
-from slm_assistentemanutencaocarro.domain.question_classification import (
+from slm_assistentemanutencaocarro.application.port.question_classifier import QuestionClassifier
+from slm_assistentemanutencaocarro.application.model.question_classification import (
     QuestionClassification,
 )
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
@@ -2816,13 +2824,13 @@ from unittest.mock import Mock
 
 import pytest
 
-from slm_assistentemanutencaocarro.application.ports.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response_generator import (
     ResponseGenerator,
 )
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,
 )
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
     HybridResponseGenerator,
 )
@@ -3012,7 +3020,7 @@ FILE: ./tests/unit/infrastructure/__init__.py
 ============================================================
 FILE: ./tests/unit/infrastructure/rule_based/test_rule_based_response_generator.py
 ============================================================
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
     RuleBasedResponseGenerator,
 )
@@ -3133,11 +3141,11 @@ FILE: ./tests/unit/application/context/__init__.py
 ============================================================
 
 ============================================================
-FILE: ./tests/unit/application/__init__.py
+FILE: ./tests/unit/application/port/__init__.py
 ============================================================
 
 ============================================================
-FILE: ./tests/unit/application/ports/__init__.py
+FILE: ./tests/unit/application/__init__.py
 ============================================================
 
 ============================================================
@@ -3154,7 +3162,7 @@ from slm_assistentemanutencaocarro.application.service.vehicle_query_service imp
 from slm_assistentemanutencaocarro.application.service.vehicle_service import VehicleService
 from slm_assistentemanutencaocarro.domain.exception import VehicleDataNotFoundError
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
 from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
     JsonVehicleReader,
@@ -3241,13 +3249,20 @@ FILE: ./tests/unit/application/service/test_assistant_service.py
 ============================================================
 from unittest.mock import Mock, call
 
-from slm_assistentemanutencaocarro.application.ports.intent_classifier import (
+from slm_assistentemanutencaocarro.application.model.intent_classification import (
+    IntentClassification,
+)
+from slm_assistentemanutencaocarro.application.model.question_classification import (
+    QuestionClassification,
+)
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.port.intent_classifier import (
     IntentClassifier,
 )
-from slm_assistentemanutencaocarro.application.ports.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.question_classifier import (
     QuestionClassifier,
 )
-from slm_assistentemanutencaocarro.application.ports.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response_generator import (
     ResponseGenerator,
 )
 from slm_assistentemanutencaocarro.application.service.assistant_service import (
@@ -3258,10 +3273,7 @@ from slm_assistentemanutencaocarro.application.service.vehicle_query_service imp
 )
 from slm_assistentemanutencaocarro.domain.exception import VehicleDataNotFoundError
 from slm_assistentemanutencaocarro.domain.intent import Intent
-from slm_assistentemanutencaocarro.domain.intent_classification import IntentClassification
-from slm_assistentemanutencaocarro.domain.question_classification import QuestionClassification
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
 
 
 def test_should_answer_specification_question():
@@ -3524,7 +3536,7 @@ def test_should_return_message_when_question_type_is_not_supported():
 FILE: ./tests/unit/application/service/test_vehicle_service.py
 ============================================================
 from slm_assistentemanutencaocarro.application.context.vehicle_context import VehicleContext
-from slm_assistentemanutencaocarro.application.ports.vehicle_reader import VehicleReader
+from slm_assistentemanutencaocarro.application.port.vehicle_reader import VehicleReader
 from slm_assistentemanutencaocarro.application.service.vehicle_service import (
     VehicleService,
 )
@@ -3592,7 +3604,7 @@ FILE: ./tests/unit/application/service/test_response_validation_service.py
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,
 )
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 
 
 def test_should_accept_same_oil_viscosity():
@@ -4126,13 +4138,13 @@ FILE: ./benchmark/benchmark/response_generator_benchmark.py
 import time
 
 from benchmark.model.benchmark_result import BenchmarkResult
-from slm_assistentemanutencaocarro.application.ports.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response_generator import (
     ResponseGenerator,
 )
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,
 )
-from slm_assistentemanutencaocarro.domain.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 
 
 class ResponseGeneratorBenchmark:
@@ -4191,7 +4203,7 @@ FILE: ./benchmark/benchmark/question_classifier_benchmark.py
 import time
 
 from benchmark.model.benchmark_result import BenchmarkResult
-from slm_assistentemanutencaocarro.application.ports.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.question_classifier import (
     QuestionClassifier,
 )
 
@@ -4241,7 +4253,7 @@ FILE: ./benchmark/benchmark/intent_classifier_benchmark.py
 import time
 
 from benchmark.model.benchmark_result import BenchmarkResult
-from slm_assistentemanutencaocarro.application.ports.intent_classifier import IntentClassifier
+from slm_assistentemanutencaocarro.application.port.intent_classifier import IntentClassifier
 
 
 class IntentClassifierBenchmark:
