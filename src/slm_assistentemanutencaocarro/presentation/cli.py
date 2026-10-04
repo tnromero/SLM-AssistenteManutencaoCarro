@@ -10,16 +10,11 @@ def run(application: Application) -> None:
     print("Assistente de Manutenção")
     print("Comandos:")
     print(
-        "/sair  -> sair do chat"
-        "/exit  -> sair do chat"
-        "/quit  -> sair do chat"
-    )
-    print(
-        "/vehicles -> listar veiculos conhecidos"
-    )
-
-    print(
-        "/vehicle <id> -> selecionar um vehicle"
+        "/exit         -> sair do chat\n"
+        "/quit         -> sair do chat\n"
+        "/vehicles     -> listar veiculos\n"
+        "/vehicle <id> -> selecionar um veiculo\n"
+        "/clean        -> limpar historico da conversa\n"
     )
 
     while True:
@@ -60,6 +55,11 @@ def run(application: Application) -> None:
                 print()
                 continue
 
+            previous_vehicle_id = application.vehicle_context.get_selected()
+
+            if previous_vehicle_id != vehicle_id:
+                application.conversation_context.clear()
+
             application.vehicle_context.select(
                 vehicle_id
             )
@@ -68,6 +68,11 @@ def run(application: Application) -> None:
                 f"Veículo selecionado: {vehicle_id.value}"
             )
             print()
+            continue
+
+        if user_input.lower() == "/limpar":
+            application.conversation_context.clear()
+            print("Histórico da conversa limpo.\n")
             continue
 
         try:

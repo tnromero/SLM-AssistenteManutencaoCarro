@@ -1,5 +1,8 @@
 from unittest.mock import MagicMock, Mock
 
+from slm_assistentemanutencaocarro.application.context.conversation_context import (
+    ConversationContext,
+)
 from slm_assistentemanutencaocarro.application.context.vehicle_context import VehicleContext
 from slm_assistentemanutencaocarro.application.port.response_generator import ResponseGenerator
 from slm_assistentemanutencaocarro.application.service.assistant_service import AssistantService
@@ -55,11 +58,14 @@ def test_should_answer_using_hybrid_response_generator():
         response_validator=response_validator,
     )
 
+    conversation_context = ConversationContext()
+
     service = AssistantService(
         intent_classifier=intent_classifier,
         question_classifier=question_classifier,
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
+        conversation_context=conversation_context
     )
 
     result = service.answer("Qual óleo devo usar?")
@@ -96,11 +102,14 @@ def test_should_use_fallback_when_slm_response_is_factually_invalid():
         response_validator=response_validator,
     )
 
+    conversation_context = ConversationContext()
+
     service = AssistantService(
         intent_classifier=intent_classifier,
         question_classifier=question_classifier,
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
+        conversation_context=conversation_context
     )
 
     result = service.answer("Qual óleo devo usar?")
@@ -112,6 +121,11 @@ def test_should_use_fallback_when_slm_response_is_factually_invalid():
     fallback_response_generator.generate.assert_called_once_with(generated_answer)
 
     assert result == "O óleo especificado é 5W-40."
+
+    messages = conversation_context.get_messages()
+
+    assert messages[-2].content == "Qual óleo devo usar?"
+    assert messages[-1].content == "O óleo especificado é 5W-40."
 
 
 def test_should_use_fallback_when_slm_raises_exception():
@@ -142,11 +156,14 @@ def test_should_use_fallback_when_slm_raises_exception():
         response_validator=response_validator,
     )
 
+    conversation_context = ConversationContext()
+
     service = AssistantService(
         intent_classifier=intent_classifier,
         question_classifier=question_classifier,
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
+        conversation_context=conversation_context
     )
 
     result = service.answer("Qual óleo devo usar?")
@@ -184,11 +201,14 @@ def test_should_reject_question_outside_vehicle_domain():
         response_validator=response_validator,
     )
 
+    conversation_context = ConversationContext()
+    
     service = AssistantService(
         intent_classifier=intent_classifier,
         question_classifier=question_classifier,
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
+        conversation_context=conversation_context
     )
 
     result = service.answer("Qual a capital da França?")

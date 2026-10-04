@@ -1,4 +1,7 @@
 from slm_assistentemanutencaocarro.application.application import Application
+from slm_assistentemanutencaocarro.application.context.conversation_context import (
+    ConversationContext,
+)
 from slm_assistentemanutencaocarro.application.context.vehicle_context import VehicleContext
 from slm_assistentemanutencaocarro.application.service.assistant_service import (
     AssistantService,
@@ -73,13 +76,19 @@ def build_application(json_file_vehicle: str) -> Application:
     vehicle_service = VehicleService(vehicle_reader, vehicle_context)
     vehicle_query_service = VehicleQueryService(vehicle_service)
 
+    conversation_context = ConversationContext(max_turns=5)
+
     assistant = AssistantService(
         intent_classifier=intent_classifier,
         question_classifier=question_classifier,
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
+        conversation_context=conversation_context,
     )
 
     return Application(
-        assistant=assistant, vehicle_context=vehicle_context, vehicle_reader=vehicle_reader
+        assistant=assistant,
+        vehicle_context=vehicle_context,
+        vehicle_reader=vehicle_reader,
+        conversation_context=conversation_context,
     )
