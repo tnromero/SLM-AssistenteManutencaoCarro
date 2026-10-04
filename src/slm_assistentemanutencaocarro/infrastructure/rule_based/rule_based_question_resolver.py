@@ -2,9 +2,10 @@ from slm_assistentemanutencaocarro.application.model.conversation_message import
     ConversationMessage,
     MessageRole,
 )
+from slm_assistentemanutencaocarro.application.port.question_resolver import QuestionResolver
 
 
-class RuleBasedQuestionResolver:
+class RuleBasedQuestionResolver(QuestionResolver):
     REPEAT_REQUESTS = {
         "pode repetir",
         "repita",
