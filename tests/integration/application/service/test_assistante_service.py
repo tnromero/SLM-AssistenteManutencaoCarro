@@ -4,6 +4,7 @@ from slm_assistentemanutencaocarro.application.context.conversation_context impo
     ConversationContext,
 )
 from slm_assistentemanutencaocarro.application.context.vehicle_context import VehicleContext
+from slm_assistentemanutencaocarro.application.port.question_resolver import QuestionResolver
 from slm_assistentemanutencaocarro.application.port.response_generator import ResponseGenerator
 from slm_assistentemanutencaocarro.application.service.assistant_service import AssistantService
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
@@ -58,6 +59,11 @@ def test_should_answer_using_hybrid_response_generator():
         response_validator=response_validator,
     )
 
+    question_resolver = Mock(spec=QuestionResolver)
+    question_resolver.resolve.side_effect = (
+        lambda question, history: question
+    )
+
     conversation_context = ConversationContext()
 
     service = AssistantService(
@@ -65,7 +71,8 @@ def test_should_answer_using_hybrid_response_generator():
         question_classifier=question_classifier,
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
-        conversation_context=conversation_context
+        conversation_context=conversation_context,
+        question_resolver=question_resolver
     )
 
     result = service.answer("Qual óleo devo usar?")
@@ -102,6 +109,11 @@ def test_should_use_fallback_when_slm_response_is_factually_invalid():
         response_validator=response_validator,
     )
 
+    question_resolver = Mock(spec=QuestionResolver)
+    question_resolver.resolve.side_effect = (
+        lambda question, history: question
+    )
+
     conversation_context = ConversationContext()
 
     service = AssistantService(
@@ -109,7 +121,8 @@ def test_should_use_fallback_when_slm_response_is_factually_invalid():
         question_classifier=question_classifier,
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
-        conversation_context=conversation_context
+        conversation_context=conversation_context,
+        question_resolver=question_resolver
     )
 
     result = service.answer("Qual óleo devo usar?")
@@ -156,6 +169,12 @@ def test_should_use_fallback_when_slm_raises_exception():
         response_validator=response_validator,
     )
 
+    question_resolver = Mock(spec=QuestionResolver)
+    question_resolver.resolve.side_effect = (
+        lambda question, history: question
+    )
+
+
     conversation_context = ConversationContext()
 
     service = AssistantService(
@@ -163,7 +182,8 @@ def test_should_use_fallback_when_slm_raises_exception():
         question_classifier=question_classifier,
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
-        conversation_context=conversation_context
+        conversation_context=conversation_context,
+        question_resolver=question_resolver
     )
 
     result = service.answer("Qual óleo devo usar?")
@@ -201,6 +221,12 @@ def test_should_reject_question_outside_vehicle_domain():
         response_validator=response_validator,
     )
 
+    question_resolver = Mock(spec=QuestionResolver)
+    question_resolver.resolve.side_effect = (
+        lambda question, history: question
+    )
+
+
     conversation_context = ConversationContext()
     
     service = AssistantService(
@@ -208,7 +234,8 @@ def test_should_reject_question_outside_vehicle_domain():
         question_classifier=question_classifier,
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
-        conversation_context=conversation_context
+        conversation_context=conversation_context,
+        question_resolver=question_resolver
     )
 
     result = service.answer("Qual a capital da França?")

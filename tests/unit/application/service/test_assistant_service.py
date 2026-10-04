@@ -18,6 +18,7 @@ from slm_assistentemanutencaocarro.application.port.intent_classifier import (
 from slm_assistentemanutencaocarro.application.port.question_classifier import (
     QuestionClassifier,
 )
+from slm_assistentemanutencaocarro.application.port.question_resolver import QuestionResolver
 from slm_assistentemanutencaocarro.application.port.response_generator import (
     ResponseGenerator,
 )
@@ -52,6 +53,11 @@ def test_should_answer_specification_question():
 
     response_generator.generate.return_value = "Para esse veículo, utilize óleo 5W-40."
 
+    question_resolver = Mock(spec=QuestionResolver)
+    question_resolver.resolve.side_effect = (
+        lambda question, history: question
+    )
+
     conversation_context = ConversationContext()
 
     service = AssistantService(
@@ -60,6 +66,7 @@ def test_should_answer_specification_question():
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
         conversation_context=conversation_context,
+        question_resolver=question_resolver
     )
 
     question = "Qual óleo devo usar?"
@@ -81,6 +88,11 @@ def test_should_not_continue_when_intent_is_not_supported():
 
     intent_classifier.classify.return_value = IntentClassification(intent=Intent.OUTRO)
 
+    question_resolver = Mock(spec=QuestionResolver)
+    question_resolver.resolve.side_effect = (
+        lambda question, history: question
+    )
+
     conversation_context = ConversationContext()
 
     service = AssistantService(
@@ -89,6 +101,7 @@ def test_should_not_continue_when_intent_is_not_supported():
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
         conversation_context=conversation_context,
+        question_resolver=question_resolver
     )
 
     question = "Qual a capital da França?"
@@ -116,6 +129,11 @@ def test_should_not_continue_when_question_type_is_not_supported():
         question_type=QuestionType.DESCONHECIDO
     )
 
+    question_resolver = Mock(spec=QuestionResolver)
+    question_resolver.resolve.side_effect = (
+        lambda question, history: question
+    )
+
     conversation_context = ConversationContext()
 
     service = AssistantService(
@@ -124,6 +142,7 @@ def test_should_not_continue_when_question_type_is_not_supported():
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
         conversation_context=conversation_context,
+        question_resolver=question_resolver
     )
 
     result = service.answer("Qual o torque do parafuso do suporte do motor?")
@@ -174,6 +193,12 @@ def test_should_classify_question_before_querying_vehicle():
         "response_generator",
     )
 
+
+    question_resolver = Mock(spec=QuestionResolver)
+    question_resolver.resolve.side_effect = (
+        lambda question, history: question
+    )
+
     conversation_context = ConversationContext()
 
     service = AssistantService(
@@ -182,6 +207,7 @@ def test_should_classify_question_before_querying_vehicle():
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
         conversation_context=conversation_context,
+        question_resolver=question_resolver
     )
 
     result = service.answer("Qual óleo devo usar?")
@@ -222,6 +248,12 @@ def test_should_send_vehicle_answer_to_response_generator():
 
     response_generator.generate.return_value = "Para esse veículo, utilize óleo 5W-40."
 
+
+    question_resolver = Mock(spec=QuestionResolver)
+    question_resolver.resolve.side_effect = (
+        lambda question, history: question
+    )
+
     conversation_context = ConversationContext()
 
     service = AssistantService(
@@ -230,6 +262,7 @@ def test_should_send_vehicle_answer_to_response_generator():
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
         conversation_context=conversation_context,
+        question_resolver=question_resolver
     )
 
     result = service.answer("Qual óleo devo usar?")
@@ -253,6 +286,12 @@ def test_should_return_message_when_vehicle_data_is_not_found():
 
     vehicle_query_service.answer.side_effect = VehicleDataNotFoundError()
 
+
+    question_resolver = Mock(spec=QuestionResolver)
+    question_resolver.resolve.side_effect = (
+        lambda question, history: question
+    )
+
     conversation_context = ConversationContext()
 
     service = AssistantService(
@@ -261,6 +300,7 @@ def test_should_return_message_when_vehicle_data_is_not_found():
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
         conversation_context=conversation_context,
+        question_resolver=question_resolver
     )
 
     question = "Qual óleo devo usar?"
@@ -286,6 +326,11 @@ def test_should_return_message_when_question_type_is_not_supported():
         question_type=QuestionType.DESCONHECIDO
     )
 
+    question_resolver = Mock(spec=QuestionResolver)
+    question_resolver.resolve.side_effect = (
+        lambda question, history: question
+    )
+
     conversation_context = ConversationContext()
 
     service = AssistantService(
@@ -294,6 +339,7 @@ def test_should_return_message_when_question_type_is_not_supported():
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
         conversation_context=conversation_context,
+        question_resolver=question_resolver
     )
 
     result = service.answer("Qual a capital da França?")
@@ -333,6 +379,11 @@ def test_should_preserve_two_turns_in_order():
         for question in questions
     ]
     response_generator.generate.side_effect = expected_responses
+    
+    question_resolver = Mock(spec=QuestionResolver)
+    question_resolver.resolve.side_effect = (
+        lambda question, history: question
+    )
 
     context = ConversationContext()
     service = AssistantService(
@@ -341,6 +392,7 @@ def test_should_preserve_two_turns_in_order():
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
         conversation_context=context,
+        question_resolver=question_resolver
     )
 
     responses = [service.answer(question) for question in questions]
@@ -355,6 +407,12 @@ def test_should_preserve_two_turns_in_order():
 
 
 def test_propagates_exception_without_adding_turn():
+
+    question_resolver = Mock(spec=QuestionResolver)
+    question_resolver.resolve.side_effect = (
+        lambda question, history: question
+    )
+
     conversation_context = ConversationContext()
     conversation_context.add_turn(
         question="Pergunta anterior",
@@ -371,6 +429,7 @@ def test_propagates_exception_without_adding_turn():
         vehicle_query_service=Mock(spec=VehicleQueryService),
         response_generator=Mock(spec=ResponseGenerator),
         conversation_context=conversation_context,
+        question_resolver=question_resolver
     )
 
     with pytest.raises(RuntimeError, match="Falha na classificação"):

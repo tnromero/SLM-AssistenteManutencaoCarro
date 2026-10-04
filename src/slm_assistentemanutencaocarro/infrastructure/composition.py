@@ -43,6 +43,7 @@ from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_intent_c
 from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
     RuleBasedQuestionClassifier,
 )
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_resolver import RuleBasedQuestionResolver
 from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
     RuleBasedResponseGenerator,
 )
@@ -78,12 +79,14 @@ def build_application(json_file_vehicle: str) -> Application:
 
     conversation_context = ConversationContext(max_turns=5)
 
+
     assistant = AssistantService(
         intent_classifier=intent_classifier,
         question_classifier=question_classifier,
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
         conversation_context=conversation_context,
+        question_resolver=RuleBasedQuestionResolver(),
     )
 
     return Application(

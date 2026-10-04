@@ -7,6 +7,7 @@ from slm_assistentemanutencaocarro.application.port.intent_classifier import (
 from slm_assistentemanutencaocarro.application.port.question_classifier import (
     QuestionClassifier,
 )
+from slm_assistentemanutencaocarro.application.port.question_resolver import QuestionResolver
 from slm_assistentemanutencaocarro.application.port.response_generator import ResponseGenerator
 from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
     VehicleQueryService,
@@ -32,12 +33,14 @@ class AssistantService:
         vehicle_query_service: VehicleQueryService,
         response_generator: ResponseGenerator,
         conversation_context: ConversationContext,
+        question_resolver: QuestionResolver,
     ):
         self.intent_classifier = intent_classifier
         self.question_classifier = question_classifier
         self.vehicle_query_service = vehicle_query_service
         self.response_generator = response_generator
         self.conversation_context = conversation_context
+        self.question_resolver = question_resolver
 
     def _answer(self, question: str):
 
@@ -62,7 +65,11 @@ class AssistantService:
         return self.response_generator.generate(vehicle_answer)
 
     def answer(self, question: str) -> str:
-        response = self._answer(question)
+        resolved_question = self.question_resolver.resolve(
+            question=question,
+            history=self.conversation_context.get_messages(),
+        )
+        response = self._answer(resolved_question)
 
         self.conversation_context.add_turn(
             question=question,
