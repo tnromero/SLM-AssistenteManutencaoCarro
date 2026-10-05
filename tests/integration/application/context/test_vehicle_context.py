@@ -33,3 +33,10 @@ def test_should_switch_selected_vehicle():
 
     assert first_oil != second_oil
 
+def test_clears_selected_vehicle():
+    context = VehicleContext()
+    context.select(VehicleId(value="t-cross-2022"))
+
+    context.clear()
+
+    assert context.get_selected() is None

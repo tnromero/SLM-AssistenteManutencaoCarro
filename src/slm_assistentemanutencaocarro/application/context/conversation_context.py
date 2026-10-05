@@ -33,3 +33,21 @@ class ConversationContext:
 
     def clear(self) -> None:
         self._messages.clear()
+
+    def restore(
+        self,
+        messages: tuple[ConversationMessage, ...],
+    ) -> None:
+        if len(messages) % 2 != 0:
+            raise ValueError("O histórico deve conter turnos completos.")
+
+        for index in range(0, len(messages), 2):
+            if (
+                messages[index].role != MessageRole.USER
+                or messages[index + 1].role != MessageRole.ASSISTANT
+            ):
+                raise ValueError(
+                    "Cada turno deve conter uma pergunta e uma resposta."
+                )
+
+        self._messages = list(messages[-self._max_messages:])

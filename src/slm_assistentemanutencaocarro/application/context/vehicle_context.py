@@ -10,3 +10,6 @@ class VehicleContext:
 
     def get_selected(self) -> VehicleId | None:
         return self._vehicle_id
+
+    def clear(self) -> None:
+        self._vehicle_id = None
