@@ -2,7 +2,9 @@ from slm_assistentemanutencaocarro.application.application import Application
 from slm_assistentemanutencaocarro.application.context.conversation_context import (
     ConversationContext,
 )
-from slm_assistentemanutencaocarro.application.context.vehicle_context import VehicleContext
+from slm_assistentemanutencaocarro.application.context.vehicle_context import (
+    VehicleContext,
+)
 from slm_assistentemanutencaocarro.application.service.assistant_service import (
     AssistantService,
 )
@@ -22,6 +24,7 @@ from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_intent_classifie
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (
     HybridQuestionClassifier,
 )
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_resolver import HybridQuestionResolver
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
     HybridResponseGenerator,
 )
@@ -31,6 +34,7 @@ from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifie
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
     OllamaQuestionClassifier,
 )
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_resolver import OllamaQuestionResolver
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
     OllamaResponseGenerator,
 )
@@ -43,7 +47,9 @@ from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_intent_c
 from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
     RuleBasedQuestionClassifier,
 )
-from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_resolver import RuleBasedQuestionResolver
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_resolver import (
+    RuleBasedQuestionResolver,
+)
 from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
     RuleBasedResponseGenerator,
 )
@@ -79,6 +85,13 @@ def build_application(json_file_vehicle: str) -> Application:
 
     conversation_context = ConversationContext(max_turns=5)
 
+    question_resolver = HybridQuestionResolver(
+        rule_question_resolver=RuleBasedQuestionResolver(),
+        slm_question_resolver=OllamaQuestionResolver(
+            model=settings.ollama_resolver_model,
+            max_turns=5,
+        ),
+    )
 
     assistant = AssistantService(
         intent_classifier=intent_classifier,
@@ -86,7 +99,7 @@ def build_application(json_file_vehicle: str) -> Application:
         vehicle_query_service=vehicle_query_service,
         response_generator=response_generator,
         conversation_context=conversation_context,
-        question_resolver=RuleBasedQuestionResolver(),
+        question_resolver=question_resolver,
     )
 
     return Application(

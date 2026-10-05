@@ -6,7 +6,9 @@ from pydantic import BaseModel, ConfigDict, Field
 from slm_assistentemanutencaocarro.application.model.conversation_message import (
     ConversationMessage,
 )
-from slm_assistentemanutencaocarro.application.port.question_resolver import QuestionResolver
+from slm_assistentemanutencaocarro.application.port.question_resolver import (
+    QuestionResolver,
+)
 
 SYSTEM_PROMPT = """
 Você reescreve perguntas sobre veículos para torná-las independentes

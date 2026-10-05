@@ -2,7 +2,9 @@ from slm_assistentemanutencaocarro.application.model.conversation_message import
     ConversationMessage,
     MessageRole,
 )
-from slm_assistentemanutencaocarro.application.port.question_resolver import QuestionResolver
+from slm_assistentemanutencaocarro.application.port.question_resolver import (
+    QuestionResolver,
+)
 
 
 class RuleBasedQuestionResolver(QuestionResolver):
@@ -11,6 +13,9 @@ class RuleBasedQuestionResolver(QuestionResolver):
         "repita",
         "qual é mesmo",
         "qual era mesmo",
+        "de novo",
+        "novamente",
+        "mais uma vez"
     }
 
     def resolve(
@@ -21,13 +26,15 @@ class RuleBasedQuestionResolver(QuestionResolver):
         if not self._is_repeat_request(question):
             return question
 
+        # Retorna mensagem do histórico, caso encontre.
         for message in reversed(history):
             if (
                 message.role == MessageRole.USER
                 and not self._is_repeat_request(message.content)
             ):
                 return message.content
-
+        
+        # Devolve questão original
         return question
 
     def _is_repeat_request(self, question: str) -> bool:
