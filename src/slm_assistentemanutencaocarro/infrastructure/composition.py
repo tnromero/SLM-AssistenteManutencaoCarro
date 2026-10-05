@@ -24,7 +24,9 @@ from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_intent_classifie
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (
     HybridQuestionClassifier,
 )
-from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_resolver import HybridQuestionResolver
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_resolver import (
+    HybridQuestionResolver,
+)
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
     HybridResponseGenerator,
 )
@@ -34,7 +36,9 @@ from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifie
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
     OllamaQuestionClassifier,
 )
-from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_resolver import OllamaQuestionResolver
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_resolver import (
+    OllamaQuestionResolver,
+)
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
     OllamaResponseGenerator,
 )

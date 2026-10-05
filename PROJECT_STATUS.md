@@ -39,8 +39,8 @@ Projeto de estudo de SLM local com Ollama: dados estruturados fornecem os fatos;
 [✓] ConversationSession
 [✓] SessionRepository
 [✓] SessionPersistenceError
-[ ] JsonSessionRepository
-[ ] Testes de leitura e escrita
+[✓] JsonSessionRepository
+[✓] Testes de leitura e escrita
 [ ] Exportar/restaurar os contextos
 [ ] Serviço de sessão
 [ ] Integração com composition root e CLI

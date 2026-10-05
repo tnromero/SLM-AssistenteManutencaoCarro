@@ -21,6 +21,7 @@ from slm_assistentemanutencaocarro.domain.exception import (
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
 from slm_assistentemanutencaocarro.presentation.cli import run
 
+
 @pytest.fixture
 def application():
     vehicle_context = VehicleContext()
