@@ -13,6 +13,8 @@ def run(application: Application) -> None:
         "/vehicles     -> listar veiculos\n"
         "/vehicle <id> -> selecionar um veiculo\n"
         "/clean        -> limpar historico da conversa\n"
+        "/clear        -> limpar historico da conversa\n"
+        "/cls          -> limpar historico da conversa\n"
     )
 
     while True:
@@ -68,7 +70,7 @@ def run(application: Application) -> None:
             print()
             continue
 
-        if user_input.lower() == "/limpar":
+        if user_input.lower() in {"/clean", "/cls", "/clear"}:
             application.conversation_context.clear()
             print("Histórico da conversa limpo.\n")
             continue
