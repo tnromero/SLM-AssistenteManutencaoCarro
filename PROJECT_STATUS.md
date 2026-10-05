@@ -406,24 +406,28 @@ Critério de conclusão:
 
 # FASE 8 — Contexto conversacional
 
-Depois do suporte multi-veículo:
-
 ```text
-[ ] ConversationContext em memória
-[ ] Histórico de mensagens
-[ ] Veículo ativo na sessão
-[ ] Perguntas dependentes de contexto
-[ ] Limite de histórico enviado ao SLM
-[ ] Testes de contexto
+[✓] ConversationContext em memória
+[✓] Histórico com limite de turnos
+[✓] Registro da pergunta original e resposta final
+[✓] Veículo ativo na sessão
+[✓] Limpeza de histórico ao trocar de veículo
+[✓] Comando /limpar
+[✓] QuestionResolver
+[✓] Resolver por regras
+[✓] Resolver via Ollama
+[✓] Resolver híbrido com recuperação de falhas
+[✓] Testes unitários
+[✓] Testes de integração da conversa e sessão
+[✓] Avaliação manual com Ollama real
 ```
 
-Exemplo futuro:
+Limitações atuais:
 
-```text
-Usuário: Quero falar sobre meu T-Cross 2022.
-Usuário: Qual óleo ele usa?
-Usuário: E a pressão dos pneus?
-```
+- O limite é por quantidade de mensagens, sem orçamento de tokens.
+- A resolução de ambiguidade preserva a pergunta original.
+- Perguntas sobre pressão traseira ainda podem receber os dados dos dois eixos.
+- A preservação do significado pelo SLM depende da avaliação; validar o JSON não garante uma reescrita correta.
 
 ---
 
