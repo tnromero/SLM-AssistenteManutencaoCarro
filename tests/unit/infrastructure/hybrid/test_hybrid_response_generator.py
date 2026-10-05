@@ -2,13 +2,15 @@ from unittest.mock import Mock
 
 import pytest
 
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+    VehicleAnswer,
+)
 from slm_assistentemanutencaocarro.application.port.response_generator import (
     ResponseGenerator,
 )
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,
 )
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
     HybridResponseGenerator,
 )

@@ -1,8 +1,10 @@
 from unittest.mock import Mock
 
-from slm_assistentemanutencaocarro.application.port.question_classifier import QuestionClassifier
 from slm_assistentemanutencaocarro.application.model.question_classification import (
     QuestionClassification,
+)
+from slm_assistentemanutencaocarro.application.port.question_classifier import (
+    QuestionClassifier,
 )
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (

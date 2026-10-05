@@ -5,18 +5,30 @@ import pytest
 from slm_assistentemanutencaocarro.application.context.conversation_context import (
     ConversationContext,
 )
-from slm_assistentemanutencaocarro.application.model.conversation_message import MessageRole
+from slm_assistentemanutencaocarro.application.model.conversation_message import (
+    MessageRole,
+)
 from slm_assistentemanutencaocarro.application.model.intent_classification import (
     IntentClassification,
 )
 from slm_assistentemanutencaocarro.application.model.question_classification import (
     QuestionClassification,
 )
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
-from slm_assistentemanutencaocarro.application.port.intent_classifier import IntentClassifier
-from slm_assistentemanutencaocarro.application.port.question_classifier import QuestionClassifier
-from slm_assistentemanutencaocarro.application.port.response_generator import ResponseGenerator
-from slm_assistentemanutencaocarro.application.service.assistant_service import AssistantService
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+    VehicleAnswer,
+)
+from slm_assistentemanutencaocarro.application.port.intent_classifier import (
+    IntentClassifier,
+)
+from slm_assistentemanutencaocarro.application.port.question_classifier import (
+    QuestionClassifier,
+)
+from slm_assistentemanutencaocarro.application.port.response_generator import (
+    ResponseGenerator,
+)
+from slm_assistentemanutencaocarro.application.service.assistant_service import (
+    AssistantService,
+)
 from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
     VehicleQueryService,
 )

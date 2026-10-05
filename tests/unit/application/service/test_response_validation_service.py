@@ -1,7 +1,9 @@
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+    VehicleAnswer,
+)
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,
 )
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 
 
 def test_should_accept_same_oil_viscosity():

@@ -1,13 +1,15 @@
 import time
 
 from benchmark.model.benchmark_result import BenchmarkResult
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+    VehicleAnswer,
+)
 from slm_assistentemanutencaocarro.application.port.response_generator import (
     ResponseGenerator,
 )
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,
 )
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 
 
 class ResponseGeneratorBenchmark:

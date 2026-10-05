@@ -11,14 +11,18 @@ from slm_assistentemanutencaocarro.application.model.intent_classification impor
 from slm_assistentemanutencaocarro.application.model.question_classification import (
     QuestionClassification,
 )
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+    VehicleAnswer,
+)
 from slm_assistentemanutencaocarro.application.port.intent_classifier import (
     IntentClassifier,
 )
 from slm_assistentemanutencaocarro.application.port.question_classifier import (
     QuestionClassifier,
 )
-from slm_assistentemanutencaocarro.application.port.question_resolver import QuestionResolver
+from slm_assistentemanutencaocarro.application.port.question_resolver import (
+    QuestionResolver,
+)
 from slm_assistentemanutencaocarro.application.port.response_generator import (
     ResponseGenerator,
 )
@@ -28,7 +32,9 @@ from slm_assistentemanutencaocarro.application.service.assistant_service import 
 from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
     VehicleQueryService,
 )
-from slm_assistentemanutencaocarro.domain.exception import VehicleDataNotFoundError
+from slm_assistentemanutencaocarro.domain.exception import (
+    VehicleDataNotFoundError,
+)
 from slm_assistentemanutencaocarro.domain.intent import Intent
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 

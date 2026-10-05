@@ -1,6 +1,4 @@
 from slm_assistentemanutencaocarro.application.application import Application
-from slm_assistentemanutencaocarro.application.context.vehicle_context import VehicleContext
-from slm_assistentemanutencaocarro.application.service.assistant_service import AssistantService
 from slm_assistentemanutencaocarro.domain.exception import VehicleNotFoundError
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
 

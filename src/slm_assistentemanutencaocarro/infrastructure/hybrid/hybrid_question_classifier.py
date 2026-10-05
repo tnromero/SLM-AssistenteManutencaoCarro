@@ -1,8 +1,8 @@
-from slm_assistentemanutencaocarro.application.port.question_classifier import (
-    QuestionClassifier,
-)
 from slm_assistentemanutencaocarro.application.model.question_classification import (
     QuestionClassification,
+)
+from slm_assistentemanutencaocarro.application.port.question_classifier import (
+    QuestionClassifier,
 )
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 

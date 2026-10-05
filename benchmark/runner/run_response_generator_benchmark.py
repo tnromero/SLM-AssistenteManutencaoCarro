@@ -1,4 +1,6 @@
-from benchmark.benchmark.response_generator_benchmark import ResponseGeneratorBenchmark
+from benchmark.benchmark.response_generator_benchmark import (
+    ResponseGeneratorBenchmark,
+)
 from benchmark.dataset_loader import DatasetLoader
 from benchmark.model.benchmark_result import BenchmarkResult
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (

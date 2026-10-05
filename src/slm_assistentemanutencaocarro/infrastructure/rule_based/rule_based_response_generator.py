@@ -1,7 +1,9 @@
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+    VehicleAnswer,
+)
 from slm_assistentemanutencaocarro.application.port.response_generator import (
     ResponseGenerator,
 )
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 
 
 class RuleBasedResponseGenerator(ResponseGenerator):

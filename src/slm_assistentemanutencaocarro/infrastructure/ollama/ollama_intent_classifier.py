@@ -1,11 +1,11 @@
 import ollama
 from pydantic import ValidationError
 
-from slm_assistentemanutencaocarro.application.port.intent_classifier import (
-    IntentClassifier,
-)
 from slm_assistentemanutencaocarro.application.model.intent_classification import (
     IntentClassification,
+)
+from slm_assistentemanutencaocarro.application.port.intent_classifier import (
+    IntentClassifier,
 )
 
 FEW_SHOT_EXAMPLES = """

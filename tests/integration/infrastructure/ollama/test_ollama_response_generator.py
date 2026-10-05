@@ -1,7 +1,8 @@
-import pytest
 
+from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+    VehicleAnswer,
+)
 from slm_assistentemanutencaocarro.config.settings import Settings
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import VehicleAnswer
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
     OllamaResponseGenerator,
 )

@@ -1,5 +1,7 @@
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
-from slm_assistentemanutencaocarro.infrastructure.composition import build_application
+from slm_assistentemanutencaocarro.infrastructure.composition import (
+    build_application,
+)
 
 
 def test_should_answer_using_selected_vehicle():

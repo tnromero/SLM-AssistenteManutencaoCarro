@@ -3,17 +3,27 @@ from unittest.mock import MagicMock, Mock
 from slm_assistentemanutencaocarro.application.context.conversation_context import (
     ConversationContext,
 )
-from slm_assistentemanutencaocarro.application.context.vehicle_context import VehicleContext
-from slm_assistentemanutencaocarro.application.port.question_resolver import QuestionResolver
-from slm_assistentemanutencaocarro.application.port.response_generator import ResponseGenerator
-from slm_assistentemanutencaocarro.application.service.assistant_service import AssistantService
+from slm_assistentemanutencaocarro.application.context.vehicle_context import (
+    VehicleContext,
+)
+from slm_assistentemanutencaocarro.application.port.question_resolver import (
+    QuestionResolver,
+)
+from slm_assistentemanutencaocarro.application.port.response_generator import (
+    ResponseGenerator,
+)
+from slm_assistentemanutencaocarro.application.service.assistant_service import (
+    AssistantService,
+)
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,
 )
 from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
     VehicleQueryService,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_service import VehicleService
+from slm_assistentemanutencaocarro.application.service.vehicle_service import (
+    VehicleService,
+)
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
     HybridResponseGenerator,
