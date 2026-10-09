@@ -28,21 +28,12 @@ Projeto de estudo de SLM local com Ollama: dados estruturados fornecem os fatos;
 | 9 | Persistência | Salvar e recuperar veículo ativo e histórico em JSON | Concluída |
 | 10 | Base de conhecimento | Documentos automotivos e organização das fontes | Concluída |
 | 11 | Embeddings e busca semântica | Chunks, embeddings e recuperação em memória | Concluída |
-| 12 | RAG | Integrar recuperação documental à geração | Planejada |
+| 12 | RAG | Integrar recuperação documental à geração | Em andamento |
 | 13 | Banco vetorial | Persistir e consultar embeddings | Planejada |
 | 14 | Avaliação do RAG | Recall@K, relevância, chunks, latência e alucinação | Planejada |
 | 15 | Tools e MCP | Ferramentas automotivas; contrato na aplicação e MCP na infraestrutura | Planejada |
 | 16 | Observabilidade | Logging, falhas e métricas de desempenho | Planejada |
 
-## FASE 11 — Embeddings e busca semântica
+## FASE 12 — RAG
 
-[✓] Chunks com origem e veículo
-[✓] Divisão por palavras com sobreposição
-[✓] Contrato e geração de embeddings via Ollama
-[✓] Índice vetorial em memória
-[✓] Ranking por similaridade de cosseno
-[✓] Filtro pelo veículo ativo
-[✓] Serviço de indexação e busca
-[✓] Comandos /indexar e /buscar
-[✓] Testes unitários e de integração
-[✓] Validação inicial com embeddings reais
+
