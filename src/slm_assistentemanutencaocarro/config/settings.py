@@ -26,3 +26,7 @@ class Settings:
         "KNOWLEDGE_MANIFEST_FILE",
         "data/knowledge/manifest.json",
     )
+    ollama_embedding_model: str = os.getenv(
+        "OLLAMA_EMBEDDING_MODEL",
+        "embeddinggemma:300m",
+    )

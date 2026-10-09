@@ -12,6 +12,9 @@ from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
 from slm_assistentemanutencaocarro.application.service.assistant_service import (
     AssistantService,
 )
+from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (
+    KnowledgeSearchService,
+)
 from slm_assistentemanutencaocarro.application.service.knowledge_service import (
     KnowledgeService,
 )
@@ -28,3 +31,4 @@ class Application:
     conversation_context: ConversationContext
     session_service: SessionService
     knowledge_service: KnowledgeService
+    knowledge_search_service: KnowledgeSearchService

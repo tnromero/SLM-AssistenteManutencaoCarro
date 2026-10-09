@@ -13,7 +13,6 @@ from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_embedding_genera
     OllamaEmbeddingGenerator,
 )
 
-
 MODULE = (
     "slm_assistentemanutencaocarro.infrastructure.ollama."
     "ollama_embedding_generator"

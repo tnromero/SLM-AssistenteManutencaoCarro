@@ -1,5 +1,7 @@
 from slm_assistentemanutencaocarro.application.application import Application
 from slm_assistentemanutencaocarro.application.exception import (
+    EmbeddingGenerationError,
+    KnowledgeIndexNotReadyError,
     KnowledgeReadError,
     SessionPersistenceError,
 )
@@ -12,16 +14,18 @@ def run(application: Application) -> None:
     print("Assistente de Manutenção")
     print("Comandos:")
     print(
-        "/exit         -> sair do chat\n"
-        "/quit         -> sair do chat\n"
-        "/vehicles     -> listar veiculos\n"
-        "/vehicle <id> -> selecionar um veiculo\n"
-        "/docs         -> listar documentos disponíveis\n"
-        "/clean        -> limpar historico da conversa\n"
-        "/clear        -> limpar historico da conversa\n"
-        "/cls          -> limpar historico da conversa\n"
-        "/save         -> salvar veículo e historico\n"
-        "/load         -> restaurar a sessao salva\n"
+        "/exit              -> sair do chat\n"
+        "/quit              -> sair do chat\n"
+        "/vehicles          -> listar veiculos\n"
+        "/vehicle <id>      -> selecionar um veiculo\n"
+        "/docs              -> listar documentos disponíveis\n"
+        "/index             -> construir o índice de documentos\n"
+        "/search <pergunta> -> pequisar trechos dos documentos\n"
+        "/clean             -> limpar historico da conversa\n"
+        "/clear             -> limpar historico da conversa\n"
+        "/cls               -> limpar historico da conversa\n"
+        "/save              -> salvar veículo e historico\n"
+        "/load              -> restaurar a sessao salva\n"
     )
 
     try:
@@ -89,6 +93,53 @@ def run(application: Application) -> None:
                         f"- {document.id}: {document.title} "
                         f"[{scope}] | Fonte: {document.source}"
                     )
+
+            print()
+            continue
+
+        if user_input.lower() == "/index":
+            try:
+                count = application.knowledge_search_service.build_index()
+            except (KnowledgeReadError, EmbeddingGenerationError, ValueError) as exc:
+                print(f"Não foi possível indexar os documentos: {exc}")
+            else:
+                print(f"Índice preparado com {count} chunks.")
+
+            print()
+            continue
+
+        command, _, argument = user_input.partition(" ")
+
+        if command.lower() == "/search":
+            question = argument.strip()
+
+            if not question:
+                print("Uso: /search <pergunta>\n")
+                continue
+
+            try:
+                results = application.knowledge_search_service.search(
+                    question=question,
+                    top_k=3,
+                )
+            except (
+                KnowledgeIndexNotReadyError,
+                EmbeddingGenerationError,
+                ValueError,
+            ) as exc:
+                print(f"Não foi possível pesquisar: {exc}")
+            else:
+                if not results:
+                    print("Nenhum trecho disponível para o veículo ativo.")
+
+                for position, result in enumerate(results, start=1):
+                    chunk = result.chunk
+
+                    print(f"\n{position}. {chunk.title}")
+                    print(f"Similaridade: {result.score:.4f}")
+                    print(f"Fonte: {chunk.source}")
+                    print(f"Chunk: {chunk.id}")
+                    print(chunk.content)
 
             print()
             continue

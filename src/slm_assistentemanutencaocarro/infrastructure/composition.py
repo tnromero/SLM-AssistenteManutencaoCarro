@@ -8,6 +8,9 @@ from slm_assistentemanutencaocarro.application.context.vehicle_context import (
 from slm_assistentemanutencaocarro.application.service.assistant_service import (
     AssistantService,
 )
+from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (
+    KnowledgeSearchService,
+)
 from slm_assistentemanutencaocarro.application.service.knowledge_service import (
     KnowledgeService,
 )
@@ -35,6 +38,15 @@ from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_resolve
 )
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
     HybridResponseGenerator,
+)
+from slm_assistentemanutencaocarro.infrastructure.knowledge.in_memory_vector_index import (
+    InMemoryVectorIndex,
+)
+from slm_assistentemanutencaocarro.infrastructure.knowledge.word_document_chunker import (
+    WordDocumentChunker,
+)
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_embedding_generator import (
+    OllamaEmbeddingGenerator,
 )
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
     OllamaIntentClassifier,
@@ -129,10 +141,25 @@ def build_application(json_file_vehicle: str) -> Application:
         question_resolver=question_resolver,
     )
 
+    knowledge_reader = MarkdownKnowledgeReader(
+        manifest_path=settings.knowledge_manifest_file,
+    )
+
     knowledge_service = KnowledgeService(
-        knowledge_reader=MarkdownKnowledgeReader(
-            manifest_path=settings.knowledge_manifest_file,
+        knowledge_reader=knowledge_reader,
+        vehicle_context=vehicle_context,
+    )
+
+    knowledge_search_service = KnowledgeSearchService(
+        knowledge_reader=knowledge_reader,
+        chunker=WordDocumentChunker(
+            chunk_size=120,
+            overlap=20,
         ),
+        embedding_generator=OllamaEmbeddingGenerator(
+            model=settings.ollama_embedding_model,
+        ),
+        vector_index=InMemoryVectorIndex(),
         vehicle_context=vehicle_context,
     )
 
@@ -143,4 +170,5 @@ def build_application(json_file_vehicle: str) -> Application:
         conversation_context=conversation_context,
         session_service=session_service,
         knowledge_service=knowledge_service,
+        knowledge_search_service=knowledge_search_service,
     )

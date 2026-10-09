@@ -5,10 +5,19 @@ import pytest
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.exception import EmbeddingGenerationError, KnowledgeIndexNotReadyError
-from slm_assistentemanutencaocarro.application.model.embedded_chunk import EmbeddedChunk
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import KnowledgeChunk
-from slm_assistentemanutencaocarro.application.model.knowledge_document import KnowledgeDocument
+from slm_assistentemanutencaocarro.application.exception import (
+    EmbeddingGenerationError,
+    KnowledgeIndexNotReadyError,
+)
+from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
+    EmbeddedChunk,
+)
+from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+    KnowledgeChunk,
+)
+from slm_assistentemanutencaocarro.application.model.knowledge_document import (
+    KnowledgeDocument,
+)
 from slm_assistentemanutencaocarro.application.port.document_chunker import (
     DocumentChunker,
 )

@@ -1,9 +1,15 @@
 import pytest
 
-from slm_assistentemanutencaocarro.application.model.embedded_chunk import EmbeddedChunk
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import KnowledgeChunk
+from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
+    EmbeddedChunk,
+)
+from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+    KnowledgeChunk,
+)
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
-from slm_assistentemanutencaocarro.infrastructure.knowledge.in_memory_vector_index import InMemoryVectorIndex
+from slm_assistentemanutencaocarro.infrastructure.knowledge.in_memory_vector_index import (
+    InMemoryVectorIndex,
+)
 
 
 def make_entry(

@@ -13,14 +13,23 @@ from slm_assistentemanutencaocarro.application.exception import (
     KnowledgeReadError,
     SessionPersistenceError,
 )
+from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+    KnowledgeChunk,
+)
 from slm_assistentemanutencaocarro.application.model.knowledge_document import (
     KnowledgeDocument,
+)
+from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (
+    KnowledgeSearchResult,
 )
 from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
     VehicleReader,
 )
 from slm_assistentemanutencaocarro.application.service.assistant_service import (
     AssistantService,
+)
+from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (
+    KnowledgeSearchService,
 )
 from slm_assistentemanutencaocarro.application.service.knowledge_service import (
     KnowledgeService,
@@ -51,6 +60,7 @@ def application():
     )
 
     knowledge_service = Mock(spec=KnowledgeService)
+    knowledge_search_service = Mock(spec=KnowledgeSearchService)
 
     return Application(
         assistant=Mock(spec=AssistantService),
@@ -59,6 +69,7 @@ def application():
         conversation_context=conversation_context,
         session_service=session_service,
         knowledge_service=knowledge_service,
+        knowledge_search_service=knowledge_search_service,
     )
 
 @pytest.mark.parametrize(
@@ -246,3 +257,61 @@ def test_document_read_failure_allows_cli_to_continue(application, capsys):
         in capsys.readouterr().out
     )
     application.session_service.save.assert_called_once_with()
+
+def test_indexes_documents(application, capsys):
+    application.knowledge_search_service.build_index.return_value = 2
+
+    with patch(
+        "builtins.input",
+        side_effect=["/index", "/exit"],
+    ):
+        run(application)
+
+    application.knowledge_search_service.build_index.assert_called_once_with()
+    assert "Índice preparado com 2 chunks" in capsys.readouterr().out
+    application.assistant.answer.assert_not_called()
+    application.session_service.save.assert_not_called()
+
+
+def test_searches_documents(application, capsys):
+    application.knowledge_search_service.search.return_value = [
+        KnowledgeSearchResult(
+            chunk=KnowledgeChunk(
+                id="pneus:chunk:0",
+                document_id="pneus",
+                title="Cuidados com os pneus",
+                content="Consulte os dados do veículo.",
+                source="Material de teste",
+                position=0,
+            ),
+            score=0.8,
+        )
+    ]
+
+    with patch(
+        "builtins.input",
+        side_effect=["/search Como consultar a pressão?", "/exit"],
+    ):
+        run(application)
+
+    application.knowledge_search_service.search.assert_called_once_with(
+        question="Como consultar a pressão?",
+        top_k=3,
+    )
+
+    output = capsys.readouterr().out
+    assert "Cuidados com os pneus" in output
+    assert "Fonte: Material de teste" in output
+    assert "0.8000" in output
+    application.assistant.answer.assert_not_called()
+
+
+def test_search_requires_question(application, capsys):
+    with patch(
+        "builtins.input",
+        side_effect=["/search", "/exit"],
+    ):
+        run(application)
+
+    application.knowledge_search_service.search.assert_not_called()
+    assert "Uso: /search <pergunta>" in capsys.readouterr().out
