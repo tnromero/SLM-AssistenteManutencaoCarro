@@ -1,0 +1,18 @@
+{
+  "documents": [
+    {
+      "id": "cuidados-pneus",
+      "title": "Cuidados com os pneus",
+      "file": "cuidados_pneus.md",
+      "source": "Material de estudo do projeto",
+      "vehicle_id": null
+    },
+    {
+      "id": "verificacao-oleo",
+      "title": "Consulta de informações sobre óleo",
+      "file": "verificacao_oleo.md",
+      "source": "Material de estudo do projeto",
+      "vehicle_id": null
+    }
+  ]
+}

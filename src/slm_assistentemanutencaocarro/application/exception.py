@@ -3,3 +3,6 @@ class VehicleNotSelectedError(Exception):
 
 class SessionPersistenceError(Exception):
     pass
+
+class KnowledgeReadError(Exception):
+    pass
