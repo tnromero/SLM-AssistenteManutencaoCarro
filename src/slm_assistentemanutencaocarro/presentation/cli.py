@@ -1,4 +1,5 @@
 from slm_assistentemanutencaocarro.application.application import Application
+from slm_assistentemanutencaocarro.application.exception import SessionPersistenceError
 from slm_assistentemanutencaocarro.domain.exception import VehicleNotFoundError
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
 
@@ -15,7 +16,22 @@ def run(application: Application) -> None:
         "/clean        -> limpar historico da conversa\n"
         "/clear        -> limpar historico da conversa\n"
         "/cls          -> limpar historico da conversa\n"
+        "/save         -> salvar veículo e historico\n"
+        "/load         -> restaurar a sessao salva\n"
     )
+
+    try:
+        restored = application.session_service.restore()
+    except SessionPersistenceError as exc:
+        print(f"Não foi possível restaurar a sessão: {exc}")
+    else:
+        if restored:
+            vehicle_id = application.vehicle_context.get_selected()
+
+            if vehicle_id is None:
+                print("Sessão restaurada sem veículo selecionado.")
+            else:
+                print(f"Sessão restaurada. Veículo: {vehicle_id.value}")
 
     while True:
         user_input = input("> ").strip()
@@ -23,6 +39,31 @@ def run(application: Application) -> None:
         if user_input.lower() in {"/sair", "/exit", "/quit"}:
             print("Até mais!")
             break
+
+        if user_input.lower() == "/save":
+            try:
+                application.session_service.save()
+            except SessionPersistenceError as exc:
+                print(f"Não foi possível salvar a sessão: {exc}")
+            else:
+                print("Sessão salva.")
+
+            print()
+            continue
+
+        if user_input.lower() == "/load":
+            try:
+                restored = application.session_service.restore()
+            except SessionPersistenceError as exc:
+                print(f"Não foi possível carregar a sessão: {exc}")
+            else:
+                if restored:
+                    print("Sessão carregada.")
+                else:
+                    print("Não existe sessão salva.")
+
+            print()
+            continue
 
         if user_input == "/vehicles":
             vehicles = application.vehicle_reader.list_vehicles()

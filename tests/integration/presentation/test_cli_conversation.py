@@ -9,12 +9,14 @@ from slm_assistentemanutencaocarro.application.context.conversation_context impo
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
+from slm_assistentemanutencaocarro.application.exception import SessionPersistenceError
 from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
     VehicleReader,
 )
 from slm_assistentemanutencaocarro.application.service.assistant_service import (
     AssistantService,
 )
+from slm_assistentemanutencaocarro.application.service.session_service import SessionService
 from slm_assistentemanutencaocarro.domain.exception import (
     VehicleNotFoundError,
 )
@@ -24,6 +26,10 @@ from slm_assistentemanutencaocarro.presentation.cli import run
 
 @pytest.fixture
 def application():
+
+    session_service = Mock(spec=SessionService)
+    session_service.restore.return_value = False
+
     vehicle_context = VehicleContext()
     vehicle_context.select(VehicleId(value="t-cross-2022"))
 
@@ -38,6 +44,7 @@ def application():
         vehicle_reader=Mock(spec=VehicleReader),
         vehicle_context=vehicle_context,
         conversation_context=conversation_context,
+        session_service=session_service,
     )
 
 @pytest.mark.parametrize(
@@ -105,3 +112,40 @@ def test_clear_command_preserves_selected_vehicle(application):
     assert application.conversation_context.get_messages() == ()
     assert application.vehicle_context.get_selected() == previous_vehicle
     application.assistant.answer.assert_not_called()
+
+def test_save_command(application):
+    with patch(
+        "builtins.input",
+        side_effect=["/save", "/exit"],
+    ):
+        run(application)
+
+    application.session_service.save.assert_called_once_with()
+    application.assistant.answer.assert_not_called()
+
+
+def test_load_command(application):
+    with patch(
+        "builtins.input",
+        side_effect=["/load", "/exit"],
+    ):
+        run(application)
+
+    # Uma chamada no início e outra pelo comando.
+    assert application.session_service.restore.call_count == 2
+    application.assistant.answer.assert_not_called()
+
+
+def test_restore_failure_allows_cli_to_continue(application, capsys):
+    application.session_service.restore.side_effect = (
+        SessionPersistenceError("Arquivo inválido")
+    )
+
+    with patch(
+        "builtins.input",
+        side_effect=["/save", "/exit"],
+    ):
+        run(application)
+
+    assert "Não foi possível restaurar" in capsys.readouterr().out
+    application.session_service.save.assert_called_once_with()

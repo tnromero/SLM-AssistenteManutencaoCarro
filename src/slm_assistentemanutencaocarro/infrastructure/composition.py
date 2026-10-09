@@ -11,6 +11,7 @@ from slm_assistentemanutencaocarro.application.service.assistant_service import 
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,
 )
+from slm_assistentemanutencaocarro.application.service.session_service import SessionService
 from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
     VehicleQueryService,
 )
@@ -42,6 +43,7 @@ from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_resolve
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
     OllamaResponseGenerator,
 )
+from slm_assistentemanutencaocarro.infrastructure.persistence.json_session_repository import JsonSessionRepository
 from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
     JsonVehicleReader,
 )
@@ -89,6 +91,17 @@ def build_application(json_file_vehicle: str) -> Application:
 
     conversation_context = ConversationContext(max_turns=5)
 
+    session_repository = JsonSessionRepository(
+        path=settings.session_file,
+    )
+
+    session_service = SessionService(
+        repository=session_repository,
+        vehicle_reader=vehicle_reader,
+        vehicle_context=vehicle_context,
+        conversation_context=conversation_context,
+    )
+
     question_resolver = HybridQuestionResolver(
         rule_question_resolver=RuleBasedQuestionResolver(),
         slm_question_resolver=OllamaQuestionResolver(
@@ -111,4 +124,5 @@ def build_application(json_file_vehicle: str) -> Application:
         vehicle_context=vehicle_context,
         vehicle_reader=vehicle_reader,
         conversation_context=conversation_context,
+        session_service=session_service,
     )

@@ -192,3 +192,7 @@ tempCodeRunnerFile.py
 
 # PyPI configuration file
 .pypirc
+
+# Temp files
+/data/session.json
+/data/.session.json.*.tmp

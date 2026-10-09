@@ -12,6 +12,9 @@ from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
 from slm_assistentemanutencaocarro.application.service.assistant_service import (
     AssistantService,
 )
+from slm_assistentemanutencaocarro.application.service.session_service import (
+    SessionService,
+)
 
 
 @dataclass
@@ -20,3 +23,4 @@ class Application:
     vehicle_context: VehicleContext
     vehicle_reader: VehicleReader
     conversation_context: ConversationContext
+    session_service: SessionService
