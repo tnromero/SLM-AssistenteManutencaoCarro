@@ -14,6 +14,7 @@ from slm_assistentemanutencaocarro.application.service.knowledge_search_service 
 from slm_assistentemanutencaocarro.application.service.knowledge_service import (
     KnowledgeService,
 )
+from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import RagResponseValidationService
 from slm_assistentemanutencaocarro.application.service.rag_service import RagService
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,
@@ -170,6 +171,7 @@ def build_application(json_file_vehicle: str) -> Application:
         response_generator=OllamaRagResponseGenerator(
             model=settings.ollama_rag_model,
         ),
+        response_validator=RagResponseValidationService(),
     )
 
     return Application(

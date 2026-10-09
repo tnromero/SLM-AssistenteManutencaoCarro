@@ -12,6 +12,7 @@ from slm_assistentemanutencaocarro.application.port.rag_response_generator impor
 from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (
     KnowledgeSearchService,
 )
+from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import RagResponseValidationService
 from slm_assistentemanutencaocarro.application.service.rag_service import (
     RagService,
 )
@@ -25,6 +26,7 @@ def rag_setup():
     service = RagService(
         knowledge_search_service=search_service,
         response_generator=generator,
+        response_validator=RagResponseValidationService(),
     )
 
     return service, search_service, generator
@@ -102,3 +104,37 @@ def test_rejects_invalid_input(rag_setup, question, top_k):
 
     search_service.search.assert_not_called()
     generator.generate.assert_not_called()
+
+@pytest.mark.parametrize(
+    "response",
+    [
+        "Consulte os dados do veículo.",
+        "Consulte o documento [2].",
+    ],
+)
+def test_rejects_invalid_citations(rag_setup, response):
+    service, search_service, generator = rag_setup
+
+    search_service.search.return_value = [
+        Mock(spec=KnowledgeSearchResult)
+    ]
+    generator.generate.return_value = response
+
+    with pytest.raises(RagGenerationError):
+        service.answer("Onde consultar a pressão?")
+
+def test_accepts_insufficient_information_response(rag_setup):
+    service, search_service, generator = rag_setup
+
+    search_service.search.return_value = [
+        Mock(spec=KnowledgeSearchResult)
+    ]
+    generator.generate.return_value = (
+        RagResponseValidationService.INSUFFICIENT_INFORMATION_MESSAGE
+    )
+
+    answer = service.answer("Qual o torque das rodas?")
+
+    assert answer.response == (
+        RagResponseValidationService.INSUFFICIENT_INFORMATION_MESSAGE
+    )

@@ -1,3 +1,4 @@
+from slm_assistentemanutencaocarro.application.exception import RagGenerationError
 from slm_assistentemanutencaocarro.application.model.rag_answer import (
     RagAnswer,
 )
@@ -10,6 +11,7 @@ from slm_assistentemanutencaocarro.application.port.rag_response_generator impor
 from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (
     KnowledgeSearchService,
 )
+from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import RagResponseValidationService
 
 
 class RagService:
@@ -21,9 +23,11 @@ class RagService:
         self,
         knowledge_search_service: KnowledgeSearchService,
         response_generator: RagResponseGenerator,
+        response_validator: RagResponseValidationService,
     ):
         self.knowledge_search_service = knowledge_search_service
         self.response_generator = response_generator
+        self.response_validator = response_validator
 
     def answer(
         self,
@@ -54,7 +58,17 @@ class RagService:
             results=results,
         )
 
+        response = self.response_generator.generate(context)
+
+        if not self.response_validator.validate(
+            context=context,
+            response=response,
+        ):
+            raise RagGenerationError(
+                "A resposta documental contém citações inválidas ou ausentes."
+            )
+
         return RagAnswer(
-            response=self.response_generator.generate(context),
+            response=response,
             results=results,
         )
