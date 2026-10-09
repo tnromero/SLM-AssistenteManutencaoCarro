@@ -36,11 +36,9 @@ Projeto de estudo de SLM local com Ollama: dados estruturados fornecem os fatos;
 
 ## FASE 10 — Base de conhecimento
 
-[✓] Escopo documental
-[✓] Documentos iniciais de estudo
-[✓] KnowledgeDocument
-[✓] KnowledgeReader
-[ ] Manifesto de documentos e fontes
-[ ] Leitor de documentos Markdown
-[ ] Testes de carregamento
-[ ] Associação de documentos ao veículo
+[✓] KnowledgeDocument e KnowledgeReader
+[✓] Manifesto com identidade, origem e veículo
+[✓] Leitor Markdown com validação
+[✓] Filtro pelo veículo ativo
+[✓] Comando /documentos
+[✓] Testes unitários e de integração

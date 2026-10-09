@@ -10,7 +10,11 @@ from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
 from slm_assistentemanutencaocarro.application.exception import (
+    KnowledgeReadError,
     SessionPersistenceError,
+)
+from slm_assistentemanutencaocarro.application.model.knowledge_document import (
+    KnowledgeDocument,
 )
 from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
     VehicleReader,
@@ -202,3 +206,43 @@ def test_save_failure_preserves_response(application, capsys):
 
     assert "Utilize óleo 5W-40." in output
     assert "A sessão não foi salva" in output
+
+def test_lists_documents_without_calling_assistant(application, capsys):
+    application.knowledge_service.list_documents.return_value = [
+        KnowledgeDocument(
+            id="cuidados-pneus",
+            title="Cuidados com os pneus",
+            content="Conteúdo de teste.",
+            source="Material de estudo",
+        )
+    ]
+
+    with patch(
+        "builtins.input",
+        side_effect=["/docs", "/exit"],
+    ):
+        run(application)
+
+    output = capsys.readouterr().out
+
+    assert "cuidados-pneus: Cuidados com os pneus" in output
+    assert "Fonte: Material de estudo" in output
+    application.assistant.answer.assert_not_called()
+    application.session_service.save.assert_not_called()
+
+def test_document_read_failure_allows_cli_to_continue(application, capsys):
+    application.knowledge_service.list_documents.side_effect = (
+        KnowledgeReadError("Documento inexistente")
+    )
+
+    with patch(
+        "builtins.input",
+        side_effect=["/docs", "/save", "/exit"],
+    ):
+        run(application)
+
+    assert (
+        "Não foi possível listar os documentos"
+        in capsys.readouterr().out
+    )
+    application.session_service.save.assert_called_once_with()
