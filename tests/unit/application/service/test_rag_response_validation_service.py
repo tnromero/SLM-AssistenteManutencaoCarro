@@ -2,13 +2,13 @@ from unittest.mock import Mock
 
 import pytest
 
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (
+from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
 )
 from slm_assistentemanutencaocarro.application.model.rag_context import (
     RagContext,
 )
-from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import (
+from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import (  # noqa: E501
     RagResponseValidationService,
 )
 

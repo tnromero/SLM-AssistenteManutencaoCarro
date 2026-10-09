@@ -7,30 +7,32 @@ import pytest
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.exception import RagGenerationError
+from slm_assistentemanutencaocarro.application.exception import (
+    RagGenerationError,
+)
 from slm_assistentemanutencaocarro.application.port.embedding_generator import (
     EmbeddingGenerator,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (
+from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import (
+from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import (  # noqa: E501
     RagResponseValidationService,
 )
 from slm_assistentemanutencaocarro.application.service.rag_service import (
     RagService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
-from slm_assistentemanutencaocarro.infrastructure.knowledge.in_memory_vector_index import (
+from slm_assistentemanutencaocarro.infrastructure.knowledge.in_memory_vector_index import (  # noqa: E501
     InMemoryVectorIndex,
 )
-from slm_assistentemanutencaocarro.infrastructure.knowledge.word_document_chunker import (
+from slm_assistentemanutencaocarro.infrastructure.knowledge.word_document_chunker import (  # noqa: E501
     WordDocumentChunker,
 )
-from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_rag_response_generator import (
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_rag_response_generator import (  # noqa: E501
     OllamaRagResponseGenerator,
 )
-from slm_assistentemanutencaocarro.infrastructure.persistence.markdown_knowledge_reader import (
+from slm_assistentemanutencaocarro.infrastructure.persistence.markdown_knowledge_reader import (  # noqa: E501
     MarkdownKnowledgeReader,
 )
 

@@ -1,87 +1,93 @@
 from slm_assistentemanutencaocarro.application.application import Application
-from slm_assistentemanutencaocarro.application.context.conversation_context import (
+from slm_assistentemanutencaocarro.application.context.conversation_context import (  # noqa: E501
     ConversationContext,
 )
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.service.assistant_service import (
+from slm_assistentemanutencaocarro.application.service.assistant_service import (  # noqa: E501
     AssistantService,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (
+from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_service import (
+from slm_assistentemanutencaocarro.application.service.knowledge_service import (  # noqa: E501
     KnowledgeService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import RagResponseValidationService
-from slm_assistentemanutencaocarro.application.service.rag_service import RagService
-from slm_assistentemanutencaocarro.application.service.response_validation_service import (
+from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import (  # noqa: E501
+    RagResponseValidationService,
+)
+from slm_assistentemanutencaocarro.application.service.rag_service import (
+    RagService,
+)
+from slm_assistentemanutencaocarro.application.service.response_validation_service import (  # noqa: E501
     ResponseValidationService,
 )
 from slm_assistentemanutencaocarro.application.service.session_service import (
     SessionService,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (  # noqa: E501
     VehicleQueryService,
 )
 from slm_assistentemanutencaocarro.application.service.vehicle_service import (
     VehicleService,
 )
 from slm_assistentemanutencaocarro.config.settings import Settings
-from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_intent_classifier import (
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_intent_classifier import (  # noqa: E501
     HybridIntentClassifier,
 )
-from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_classifier import (  # noqa: E501
     HybridQuestionClassifier,
 )
-from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_resolver import (
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_resolver import (  # noqa: E501
     HybridQuestionResolver,
 )
-from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
+from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (  # noqa: E501
     HybridResponseGenerator,
 )
-from slm_assistentemanutencaocarro.infrastructure.knowledge.in_memory_vector_index import (
+from slm_assistentemanutencaocarro.infrastructure.knowledge.in_memory_vector_index import (  # noqa: E501
     InMemoryVectorIndex,
 )
-from slm_assistentemanutencaocarro.infrastructure.knowledge.word_document_chunker import (
+from slm_assistentemanutencaocarro.infrastructure.knowledge.word_document_chunker import (  # noqa: E501
     WordDocumentChunker,
 )
-from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_embedding_generator import (
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_embedding_generator import (  # noqa: E501
     OllamaEmbeddingGenerator,
 )
-from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_intent_classifier import (  # noqa: E501
     OllamaIntentClassifier,
 )
-from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classifier import (  # noqa: E501
     OllamaQuestionClassifier,
 )
-from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_resolver import (
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_resolver import (  # noqa: E501
     OllamaQuestionResolver,
 )
-from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_rag_response_generator import OllamaRagResponseGenerator
-from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_rag_response_generator import (  # noqa: E501
+    OllamaRagResponseGenerator,
+)
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (  # noqa: E501
     OllamaResponseGenerator,
 )
-from slm_assistentemanutencaocarro.infrastructure.persistence.json_session_repository import (
+from slm_assistentemanutencaocarro.infrastructure.persistence.json_session_repository import (  # noqa: E501
     JsonSessionRepository,
 )
-from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
+from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (  # noqa: E501
     JsonVehicleReader,
 )
-from slm_assistentemanutencaocarro.infrastructure.persistence.markdown_knowledge_reader import (
+from slm_assistentemanutencaocarro.infrastructure.persistence.markdown_knowledge_reader import (  # noqa: E501
     MarkdownKnowledgeReader,
 )
-from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_intent_classifier import (
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_intent_classifier import (  # noqa: E501
     RuleBasedIntentClassifier,
 )
-from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_classifier import (  # noqa: E501
     RuleBasedQuestionClassifier,
 )
-from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_resolver import (
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_question_resolver import (  # noqa: E501
     RuleBasedQuestionResolver,
 )
-from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
+from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (  # noqa: E501
     RuleBasedResponseGenerator,
 )
 

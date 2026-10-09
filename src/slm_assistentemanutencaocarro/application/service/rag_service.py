@@ -1,17 +1,21 @@
-from slm_assistentemanutencaocarro.application.exception import RagGenerationError
+from slm_assistentemanutencaocarro.application.exception import (
+    RagGenerationError,
+)
 from slm_assistentemanutencaocarro.application.model.rag_answer import (
     RagAnswer,
 )
 from slm_assistentemanutencaocarro.application.model.rag_context import (
     RagContext,
 )
-from slm_assistentemanutencaocarro.application.port.rag_response_generator import (
+from slm_assistentemanutencaocarro.application.port.rag_response_generator import (  # noqa: E501
     RagResponseGenerator,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (
+from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import RagResponseValidationService
+from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import (  # noqa: E501
+    RagResponseValidationService,
+)
 
 
 class RagService:

@@ -16,7 +16,7 @@ Projeto de estudo de SLM local com Ollama: dados estruturados fornecem os fatos;
 ## Roadmap
 
 | Fase | Tema | Escopo principal | Estado |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | 1 | Classificação | Intenção, tipo de pergunta e benchmarks | Concluída |
 | 2 | Consulta e geração | Consulta estruturada; respostas por regras e Ollama | Concluída |
 | 3 | Confiabilidade | Validação factual, fallback e métricas | Concluída |

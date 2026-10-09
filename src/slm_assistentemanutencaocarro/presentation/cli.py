@@ -102,7 +102,11 @@ def run(application: Application) -> None:
         if user_input.lower() == "/index":
             try:
                 count = application.knowledge_search_service.build_index()
-            except (KnowledgeReadError, EmbeddingGenerationError, ValueError) as exc:
+            except (
+                KnowledgeReadError, 
+                EmbeddingGenerationError, 
+                ValueError
+            ) as exc:
                 print(f"Não foi possível indexar os documentos: {exc}")
             else:
                 print(f"Índice preparado com {count} chunks.")
