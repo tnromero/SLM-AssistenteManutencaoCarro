@@ -12,3 +12,6 @@ class EmbeddingGenerationError(Exception):
 
 class KnowledgeIndexNotReadyError(Exception):
     pass
+
+class RagGenerationError(Exception):
+    pass
