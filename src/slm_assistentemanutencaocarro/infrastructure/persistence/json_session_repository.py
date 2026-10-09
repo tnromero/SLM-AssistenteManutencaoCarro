@@ -1,5 +1,7 @@
 import json
+from contextlib import suppress
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 
 from pydantic import BaseModel, ConfigDict, ValidationError
 
@@ -51,12 +53,8 @@ class JsonSessionRepository:
                 ],
             )
 
-            self.path.parent.mkdir(parents=True, exist_ok=True)
-
-            self.path.write_text(
-                stored_session.model_dump_json(indent=2),
-                encoding="utf-8",
-            )
+            self._write_file(stored_session.model_dump_json(indent=2))
+            
         except (OSError, ValidationError) as exc:
             raise SessionPersistenceError(
                 "Não foi possível salvar a sessão."
@@ -93,3 +91,26 @@ class JsonSessionRepository:
             raise SessionPersistenceError(
                 "O arquivo de sessão é inválido."
             ) from exc
+
+    def _write_file(self, content: str) -> None:
+        temporary_path: Path | None = None
+
+        try:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+
+            with NamedTemporaryFile(
+                mode="w",
+                encoding="utf-8",
+                dir=self.path.parent,
+                prefix=f".{self.path.name}.",
+                suffix=".tmp",
+                delete=False,
+            ) as temporary_file:
+                temporary_path = Path(temporary_file.name)
+                temporary_file.write(content)
+
+            temporary_path.replace(self.path)
+        finally:
+            if temporary_path is not None:
+                with suppress(OSError):
+                    temporary_path.unlink(missing_ok=True)

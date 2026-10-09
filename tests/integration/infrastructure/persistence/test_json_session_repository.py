@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 from slm_assistentemanutencaocarro.application.exception import (
@@ -88,3 +90,28 @@ def test_wraps_write_failure(tmp_path):
 
     with pytest.raises(SessionPersistenceError):
         repository.save(session)
+
+def test_failed_replacement_preserves_previous_file(tmp_path, monkeypatch):
+    path = tmp_path / "session.json"
+    repository = JsonSessionRepository(path)
+
+    previous_session = ConversationSession(
+        vehicle_id=VehicleId(value="t-cross-2022"),
+        messages=(),
+    )
+    repository.save(previous_session)
+    previous_bytes = path.read_bytes()
+
+    def fail_replace(self, target):
+        raise OSError("Falha ao substituir arquivo")
+
+    monkeypatch.setattr(Path, "replace", fail_replace)
+
+    with pytest.raises(SessionPersistenceError):
+        repository.save(
+            ConversationSession(vehicle_id=None, messages=())
+        )
+
+    assert path.read_bytes() == previous_bytes
+    assert repository.load() == previous_session
+    assert list(tmp_path.glob("*.tmp")) == []
