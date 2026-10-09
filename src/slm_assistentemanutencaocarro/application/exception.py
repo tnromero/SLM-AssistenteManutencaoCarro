@@ -6,3 +6,6 @@ class SessionPersistenceError(Exception):
 
 class KnowledgeReadError(Exception):
     pass
+
+class EmbeddingGenerationError(Exception):
+    pass
