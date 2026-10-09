@@ -18,6 +18,9 @@ from slm_assistentemanutencaocarro.application.service.knowledge_search_service 
 from slm_assistentemanutencaocarro.application.service.knowledge_service import (
     KnowledgeService,
 )
+from slm_assistentemanutencaocarro.application.service.rag_service import (
+    RagService,
+)
 from slm_assistentemanutencaocarro.application.service.session_service import (
     SessionService,
 )
@@ -32,3 +35,4 @@ class Application:
     session_service: SessionService
     knowledge_service: KnowledgeService
     knowledge_search_service: KnowledgeSearchService
+    rag_service: RagService

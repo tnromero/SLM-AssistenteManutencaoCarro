@@ -30,3 +30,8 @@ class Settings:
         "OLLAMA_EMBEDDING_MODEL",
         "embeddinggemma:300m",
     )
+    ollama_rag_model: str = os.getenv(
+        "OLLAMA_RAG_MODEL",
+        "qwen3:1.7b",
+    )
+    

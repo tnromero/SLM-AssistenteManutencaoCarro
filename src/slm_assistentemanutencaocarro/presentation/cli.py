@@ -3,6 +3,7 @@ from slm_assistentemanutencaocarro.application.exception import (
     EmbeddingGenerationError,
     KnowledgeIndexNotReadyError,
     KnowledgeReadError,
+    RagGenerationError,
     SessionPersistenceError,
 )
 from slm_assistentemanutencaocarro.domain.exception import VehicleNotFoundError
@@ -21,6 +22,7 @@ def run(application: Application) -> None:
         "/docs              -> listar documentos disponíveis\n"
         "/index             -> construir o índice de documentos\n"
         "/search <pergunta> -> pequisar trechos dos documentos\n"
+        "/rag <pergunta>    -> responder usando documentos\n"
         "/clean             -> limpar historico da conversa\n"
         "/clear             -> limpar historico da conversa\n"
         "/cls               -> limpar historico da conversa\n"
@@ -143,6 +145,43 @@ def run(application: Application) -> None:
 
             print()
             continue
+
+        if command.lower() == "/rag":
+            question = argument.strip()
+
+            if not question:
+                print("Uso: /rag <pergunta>\n")
+                continue
+
+            try:
+                answer = application.rag_service.answer(
+                    question=question,
+                    top_k=3,
+                )
+            except (
+                KnowledgeIndexNotReadyError,
+                EmbeddingGenerationError,
+                RagGenerationError,
+                ValueError,
+            ) as exc:
+                print(f"Não foi possível responder com documentos: {exc}")
+            else:
+                print(answer.response)
+
+                if answer.results:
+                    print("\nReferências recuperadas:")
+
+                    for position, result in enumerate(answer.results, start=1):
+                        chunk = result.chunk
+
+                        print(
+                            f"[{position}] {chunk.title} "
+                            f"| Fonte: {chunk.source} "
+                            f"| Chunk: {chunk.id}"
+                        )
+
+            print()
+            continue
         
         if user_input == "/vehicles":
             vehicles = application.vehicle_reader.list_vehicles()
@@ -193,6 +232,8 @@ def run(application: Application) -> None:
             _save_session(application)
             print("Histórico da conversa limpo.\n")
             continue
+
+        
 
         try:
             response = application.assistant.answer(user_input)

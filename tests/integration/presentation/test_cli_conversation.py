@@ -11,6 +11,7 @@ from slm_assistentemanutencaocarro.application.context.vehicle_context import (
 )
 from slm_assistentemanutencaocarro.application.exception import (
     KnowledgeReadError,
+    RagGenerationError,
     SessionPersistenceError,
 )
 from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
@@ -22,6 +23,7 @@ from slm_assistentemanutencaocarro.application.model.knowledge_document import (
 from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (
     KnowledgeSearchResult,
 )
+from slm_assistentemanutencaocarro.application.model.rag_answer import RagAnswer
 from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
     VehicleReader,
 )
@@ -33,6 +35,9 @@ from slm_assistentemanutencaocarro.application.service.knowledge_search_service 
 )
 from slm_assistentemanutencaocarro.application.service.knowledge_service import (
     KnowledgeService,
+)
+from slm_assistentemanutencaocarro.application.service.rag_service import (
+    RagService,
 )
 from slm_assistentemanutencaocarro.application.service.session_service import (
     SessionService,
@@ -61,6 +66,7 @@ def application():
 
     knowledge_service = Mock(spec=KnowledgeService)
     knowledge_search_service = Mock(spec=KnowledgeSearchService)
+    rag_service = Mock(spec=RagService)
 
     return Application(
         assistant=Mock(spec=AssistantService),
@@ -70,6 +76,7 @@ def application():
         session_service=session_service,
         knowledge_service=knowledge_service,
         knowledge_search_service=knowledge_search_service,
+        rag_service=rag_service,
     )
 
 @pytest.mark.parametrize(
@@ -315,3 +322,69 @@ def test_search_requires_question(application, capsys):
 
     application.knowledge_search_service.search.assert_not_called()
     assert "Uso: /search <pergunta>" in capsys.readouterr().out
+
+def test_rag_command_displays_answer_and_references(application, capsys):
+    result = KnowledgeSearchResult(
+        chunk=KnowledgeChunk(
+            id="pneus:chunk:0",
+            document_id="pneus",
+            title="Cuidados com os pneus",
+            content="Consulte os dados do veículo.",
+            source="Material de teste",
+            position=0,
+        ),
+        score=0.8,
+    )
+
+    application.rag_service.answer.return_value = RagAnswer(
+        response="Consulte os dados do veículo [1].",
+        results=(result,),
+    )
+
+    with patch(
+        "builtins.input",
+        side_effect=["/rag Onde consultar a pressão?", "/exit"],
+    ):
+        run(application)
+
+    application.rag_service.answer.assert_called_once_with(
+        question="Onde consultar a pressão?",
+        top_k=3,
+    )
+
+    output = capsys.readouterr().out
+    assert "Consulte os dados do veículo [1]." in output
+    assert "[1] Cuidados com os pneus" in output
+    assert "Fonte: Material de teste" in output
+
+    application.assistant.answer.assert_not_called()
+    application.session_service.save.assert_not_called()
+
+
+def test_rag_requires_question(application, capsys):
+    with patch(
+        "builtins.input",
+        side_effect=["/rag", "/exit"],
+    ):
+        run(application)
+
+    application.rag_service.answer.assert_not_called()
+    assert "Uso: /rag <pergunta>" in capsys.readouterr().out
+
+
+def test_rag_failure_allows_cli_to_continue(application, capsys):
+    application.rag_service.answer.side_effect = RagGenerationError(
+        "Ollama indisponível"
+    )
+
+    with patch(
+        "builtins.input",
+        side_effect=["/rag Onde consultar a pressão?", "/save", "/exit"],
+    ):
+        run(application)
+
+    assert (
+        "Não foi possível responder com documentos"
+        in capsys.readouterr().out
+    )
+    application.session_service.save.assert_called_once_with()

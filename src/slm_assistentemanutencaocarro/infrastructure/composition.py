@@ -14,6 +14,7 @@ from slm_assistentemanutencaocarro.application.service.knowledge_search_service 
 from slm_assistentemanutencaocarro.application.service.knowledge_service import (
     KnowledgeService,
 )
+from slm_assistentemanutencaocarro.application.service.rag_service import RagService
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,
 )
@@ -57,6 +58,7 @@ from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_classif
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_resolver import (
     OllamaQuestionResolver,
 )
+from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_rag_response_generator import OllamaRagResponseGenerator
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
     OllamaResponseGenerator,
 )
@@ -163,6 +165,13 @@ def build_application(json_file_vehicle: str) -> Application:
         vehicle_context=vehicle_context,
     )
 
+    rag_service = RagService(
+        knowledge_search_service=knowledge_search_service,
+        response_generator=OllamaRagResponseGenerator(
+            model=settings.ollama_rag_model,
+        ),
+    )
+
     return Application(
         assistant=assistant,
         vehicle_context=vehicle_context,
@@ -171,4 +180,5 @@ def build_application(json_file_vehicle: str) -> Application:
         session_service=session_service,
         knowledge_service=knowledge_service,
         knowledge_search_service=knowledge_search_service,
+        rag_service=rag_service,
     )
