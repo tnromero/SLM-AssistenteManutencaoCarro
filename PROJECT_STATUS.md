@@ -25,9 +25,9 @@ Projeto de estudo de SLM local com Ollama: dados estruturados fornecem os fatos;
 | 6 | Avaliação de SLM | Qualidade, latência e fallback; comparação de modelos | Concluída |
 | 7 | Multi-veículo | Identidade, seleção e troca do veículo ativo | Concluída |
 | 8 | Contexto conversacional | Histórico limitado, resolução contextual e testes da sessão | Concluída |
-| 9 | Persistência | Salvar e recuperar veículo ativo e histórico em JSON | Em Andamento |
-| 10 | Base de conhecimento | Documentos automotivos e organização das fontes | Planejada |
-| 11 | Embeddings e busca semântica | Chunks, embeddings e recuperação em memória | Planejada |
+| 9 | Persistência | Salvar e recuperar veículo ativo e histórico em JSON | Concluída |
+| 10 | Base de conhecimento | Documentos automotivos e organização das fontes | Concluída |
+| 11 | Embeddings e busca semântica | Chunks, embeddings e recuperação em memória | Em andamento |
 | 12 | RAG | Integrar recuperação documental à geração | Planejada |
 | 13 | Banco vetorial | Persistir e consultar embeddings | Planejada |
 | 14 | Avaliação do RAG | Recall@K, relevância, chunks, latência e alucinação | Planejada |
