@@ -1,5 +1,6 @@
 from slm_assistentemanutencaocarro.application.application import Application
 from slm_assistentemanutencaocarro.application.exception import (
+    KnowledgeReadError,
     SessionPersistenceError,
 )
 from slm_assistentemanutencaocarro.domain.exception import VehicleNotFoundError
@@ -15,6 +16,7 @@ def run(application: Application) -> None:
         "/quit         -> sair do chat\n"
         "/vehicles     -> listar veiculos\n"
         "/vehicle <id> -> selecionar um veiculo\n"
+        "/docs         -> listar documentos disponíveis\n"
         "/clean        -> limpar historico da conversa\n"
         "/clear        -> limpar historico da conversa\n"
         "/cls          -> limpar historico da conversa\n"
@@ -67,6 +69,30 @@ def run(application: Application) -> None:
             print()
             continue
 
+        if user_input.lower() == "/docs":
+            try:
+                documents = application.knowledge_service.list_documents()
+            except KnowledgeReadError as exc:
+                print(f"Não foi possível listar os documentos: {exc}")
+            else:
+                if not documents:
+                    print("Nenhum documento disponível.")
+
+                for document in documents:
+                    scope = (
+                        document.vehicle_id.value
+                        if document.vehicle_id is not None
+                        else "geral"
+                    )
+
+                    print(
+                        f"- {document.id}: {document.title} "
+                        f"[{scope}] | Fonte: {document.source}"
+                    )
+
+            print()
+            continue
+        
         if user_input == "/vehicles":
             vehicles = application.vehicle_reader.list_vehicles()
             print("\nVeículos disponíveis:")

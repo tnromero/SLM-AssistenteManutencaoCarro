@@ -18,6 +18,9 @@ from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
 from slm_assistentemanutencaocarro.application.service.assistant_service import (
     AssistantService,
 )
+from slm_assistentemanutencaocarro.application.service.knowledge_service import (
+    KnowledgeService,
+)
 from slm_assistentemanutencaocarro.application.service.session_service import (
     SessionService,
 )
@@ -43,12 +46,15 @@ def application():
         response="Utilize óleo 5W-40.",
     )
 
+    knowledge_service = Mock(spec=KnowledgeService)
+
     return Application(
         assistant=Mock(spec=AssistantService),
         vehicle_reader=Mock(spec=VehicleReader),
         vehicle_context=vehicle_context,
         conversation_context=conversation_context,
         session_service=session_service,
+        knowledge_service=knowledge_service,
     )
 
 @pytest.mark.parametrize(

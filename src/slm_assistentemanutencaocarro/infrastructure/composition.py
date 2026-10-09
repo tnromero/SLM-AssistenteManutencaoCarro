@@ -8,6 +8,9 @@ from slm_assistentemanutencaocarro.application.context.vehicle_context import (
 from slm_assistentemanutencaocarro.application.service.assistant_service import (
     AssistantService,
 )
+from slm_assistentemanutencaocarro.application.service.knowledge_service import (
+    KnowledgeService,
+)
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,
 )
@@ -50,6 +53,9 @@ from slm_assistentemanutencaocarro.infrastructure.persistence.json_session_repos
 )
 from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
     JsonVehicleReader,
+)
+from slm_assistentemanutencaocarro.infrastructure.persistence.markdown_knowledge_reader import (
+    MarkdownKnowledgeReader,
 )
 from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_intent_classifier import (
     RuleBasedIntentClassifier,
@@ -123,10 +129,18 @@ def build_application(json_file_vehicle: str) -> Application:
         question_resolver=question_resolver,
     )
 
+    knowledge_service = KnowledgeService(
+        knowledge_reader=MarkdownKnowledgeReader(
+            manifest_path=settings.knowledge_manifest_file,
+        ),
+        vehicle_context=vehicle_context,
+    )
+
     return Application(
         assistant=assistant,
         vehicle_context=vehicle_context,
         vehicle_reader=vehicle_reader,
         conversation_context=conversation_context,
         session_service=session_service,
+        knowledge_service=knowledge_service,
     )

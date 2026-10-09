@@ -22,3 +22,7 @@ class Settings:
         "SESSION_FILE",
         "data/session.json",
     )
+    knowledge_manifest_file: str = os.getenv(
+        "KNOWLEDGE_MANIFEST_FILE",
+        "data/knowledge/manifest.json",
+    )
