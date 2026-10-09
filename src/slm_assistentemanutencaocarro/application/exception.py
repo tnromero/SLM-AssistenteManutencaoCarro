@@ -9,3 +9,6 @@ class KnowledgeReadError(Exception):
 
 class EmbeddingGenerationError(Exception):
     pass
+
+class KnowledgeIndexNotReadyError(Exception):
+    pass
