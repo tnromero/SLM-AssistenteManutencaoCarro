@@ -36,4 +36,12 @@ Projeto de estudo de SLM local com Ollama: dados estruturados fornecem os fatos;
 
 ## FASE 12 — RAG
 
-
+FASE 12 — RAG
+[✓] RagContext e RagResponseGenerator
+[✓] Gerador Ollama com trechos numerados
+[✓] RagService e RagAnswer
+[✓] Tratamento de ausência de resultados
+[✓] Validação dos identificadores de citações
+[✓] Comando /rag
+[✓] Testes unitários e de integração
+[✓] Validação inicial com Ollama real
