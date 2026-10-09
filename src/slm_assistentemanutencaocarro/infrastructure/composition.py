@@ -11,7 +11,9 @@ from slm_assistentemanutencaocarro.application.service.assistant_service import 
 from slm_assistentemanutencaocarro.application.service.response_validation_service import (
     ResponseValidationService,
 )
-from slm_assistentemanutencaocarro.application.service.session_service import SessionService
+from slm_assistentemanutencaocarro.application.service.session_service import (
+    SessionService,
+)
 from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
     VehicleQueryService,
 )
@@ -43,7 +45,9 @@ from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_question_resolve
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
     OllamaResponseGenerator,
 )
-from slm_assistentemanutencaocarro.infrastructure.persistence.json_session_repository import JsonSessionRepository
+from slm_assistentemanutencaocarro.infrastructure.persistence.json_session_repository import (
+    JsonSessionRepository,
+)
 from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
     JsonVehicleReader,
 )

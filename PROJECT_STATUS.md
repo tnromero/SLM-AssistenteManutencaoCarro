@@ -36,12 +36,11 @@ Projeto de estudo de SLM local com Ollama: dados estruturados fornecem os fatos;
 
 ## FASE 9 — Persistência
 
-[✓] ConversationSession
-[✓] SessionRepository
-[✓] SessionPersistenceError
-[✓] JsonSessionRepository
-[✓] Testes de leitura e escrita
-[ ] Exportar/restaurar os contextos
-[ ] Serviço de sessão
-[ ] Integração com composition root e CLI
-[ ] Recuperação da sessão ao reiniciar
+[✓] Modelo e contrato de sessão
+[✓] Repositório JSON com substituição por arquivo temporário
+[✓] Exportação e restauração dos contextos
+[✓] SessionService
+[✓] Restauração ao iniciar
+[✓] Comandos /salvar e /carregar
+[✓] Salvamento automático
+[✓] Testes de persistência e recuperação

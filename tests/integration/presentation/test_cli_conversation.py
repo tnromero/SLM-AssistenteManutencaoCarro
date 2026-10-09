@@ -9,14 +9,18 @@ from slm_assistentemanutencaocarro.application.context.conversation_context impo
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.exception import SessionPersistenceError
+from slm_assistentemanutencaocarro.application.exception import (
+    SessionPersistenceError,
+)
 from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
     VehicleReader,
 )
 from slm_assistentemanutencaocarro.application.service.assistant_service import (
     AssistantService,
 )
-from slm_assistentemanutencaocarro.application.service.session_service import SessionService
+from slm_assistentemanutencaocarro.application.service.session_service import (
+    SessionService,
+)
 from slm_assistentemanutencaocarro.domain.exception import (
     VehicleNotFoundError,
 )
@@ -149,3 +153,46 @@ def test_restore_failure_allows_cli_to_continue(application, capsys):
 
     assert "Não foi possível restaurar" in capsys.readouterr().out
     application.session_service.save.assert_called_once_with()
+
+def test_saves_after_answer(application):
+    application.assistant.answer.return_value = "Utilize óleo 5W-40."
+
+    with patch(
+        "builtins.input",
+        side_effect=["Qual óleo devo usar?", "/exit"],
+    ):
+        run(application)
+
+    application.session_service.save.assert_called_once_with()
+
+
+def test_does_not_save_when_answer_fails(application):
+    application.assistant.answer.side_effect = RuntimeError(
+        "Falha ao responder"
+    )
+
+    with patch(
+        "builtins.input",
+        side_effect=["Qual óleo devo usar?", "/exit"],
+    ):
+        run(application)
+
+    application.session_service.save.assert_not_called()
+
+
+def test_save_failure_preserves_response(application, capsys):
+    application.assistant.answer.return_value = "Utilize óleo 5W-40."
+    application.session_service.save.side_effect = (
+        SessionPersistenceError("Falha na gravação")
+    )
+
+    with patch(
+        "builtins.input",
+        side_effect=["Qual óleo devo usar?", "/exit"],
+    ):
+        run(application)
+
+    output = capsys.readouterr().out
+
+    assert "Utilize óleo 5W-40." in output
+    assert "A sessão não foi salva" in output

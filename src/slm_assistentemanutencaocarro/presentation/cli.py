@@ -1,5 +1,7 @@
 from slm_assistentemanutencaocarro.application.application import Application
-from slm_assistentemanutencaocarro.application.exception import SessionPersistenceError
+from slm_assistentemanutencaocarro.application.exception import (
+    SessionPersistenceError,
+)
 from slm_assistentemanutencaocarro.domain.exception import VehicleNotFoundError
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
 
@@ -100,10 +102,8 @@ def run(application: Application) -> None:
 
             if previous_vehicle_id != vehicle_id:
                 application.conversation_context.clear()
-
-            application.vehicle_context.select(
-                vehicle_id
-            )
+                application.vehicle_context.select(vehicle_id)
+                _save_session(application)
 
             print(
                 f"Veículo selecionado: {vehicle_id.value}"
@@ -113,13 +113,22 @@ def run(application: Application) -> None:
 
         if user_input.lower() in {"/clean", "/cls", "/clear"}:
             application.conversation_context.clear()
+            _save_session(application)
             print("Histórico da conversa limpo.\n")
             continue
 
         try:
             response = application.assistant.answer(user_input)
-            print(response)
         except Exception as exc:
             print(f"Erro ao processar pergunta: {exc}")
+        else:
+            print(response)
+            _save_session(application)
 
         print()
+
+def _save_session(application: Application) -> None:
+    try:
+        application.session_service.save()
+    except SessionPersistenceError as exc:
+        print(f"A sessão não foi salva: {exc}")
