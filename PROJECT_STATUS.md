@@ -34,13 +34,13 @@ Projeto de estudo de SLM local com Ollama: dados estruturados fornecem os fatos;
 | 15 | Tools e MCP | Ferramentas automotivas; contrato na aplicação e MCP na infraestrutura | Planejada |
 | 16 | Observabilidade | Logging, falhas e métricas de desempenho | Planejada |
 
-## FASE 9 — Persistência
+## FASE 10 — Base de conhecimento
 
-[✓] Modelo e contrato de sessão
-[✓] Repositório JSON com substituição por arquivo temporário
-[✓] Exportação e restauração dos contextos
-[✓] SessionService
-[✓] Restauração ao iniciar
-[✓] Comandos /salvar e /carregar
-[✓] Salvamento automático
-[✓] Testes de persistência e recuperação
+[✓] Escopo documental
+[✓] Documentos iniciais de estudo
+[✓] KnowledgeDocument
+[✓] KnowledgeReader
+[ ] Manifesto de documentos e fontes
+[ ] Leitor de documentos Markdown
+[ ] Testes de carregamento
+[ ] Associação de documentos ao veículo
