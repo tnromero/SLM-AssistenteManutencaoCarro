@@ -34,4 +34,13 @@ class Settings:
         "OLLAMA_RAG_MODEL",
         "qwen3:1.7b",
     )
+    vector_db_path: str = os.getenv(
+        "VECTOR_DB_PATH",
+        "data/vector_db",
+    )
+
+    vector_collection_name: str = os.getenv(
+        "VECTOR_COLLECTION_NAME",
+        "vehicle-knowledge",
+    )
     
