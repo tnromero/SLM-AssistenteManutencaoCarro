@@ -28,20 +28,10 @@ Projeto de estudo de SLM local com Ollama: dados estruturados fornecem os fatos;
 | 9 | Persistência | Salvar e recuperar veículo ativo e histórico em JSON | Concluída |
 | 10 | Base de conhecimento | Documentos automotivos e organização das fontes | Concluída |
 | 11 | Embeddings e busca semântica | Chunks, embeddings e recuperação em memória | Concluída |
-| 12 | RAG | Integrar recuperação documental à geração | Em andamento |
-| 13 | Banco vetorial | Persistir e consultar embeddings | Planejada |
-| 14 | Avaliação do RAG | Recall@K, relevância, chunks, latência e alucinação | Planejada |
+| 12 | RAG | Integrar recuperação documental à geração | Concluída |
+| 13 | Banco vetorial | Persistir e consultar embeddings | Concluída |
+| 14 | Avaliação do RAG | Recall@K, relevância, chunks, latência e alucinação | Em andamento |
 | 15 | Tools e MCP | Ferramentas automotivas; contrato na aplicação e MCP na infraestrutura | Planejada |
 | 16 | Observabilidade | Logging, falhas e métricas de desempenho | Planejada |
 
-## FASE 12 — RAG
-
-FASE 12 — RAG
-[✓] RagContext e RagResponseGenerator
-[✓] Gerador Ollama com trechos numerados
-[✓] RagService e RagAnswer
-[✓] Tratamento de ausência de resultados
-[✓] Validação dos identificadores de citações
-[✓] Comando /rag
-[✓] Testes unitários e de integração
-[✓] Validação inicial com Ollama real
+## FASE 14 - Avaliação do RAG

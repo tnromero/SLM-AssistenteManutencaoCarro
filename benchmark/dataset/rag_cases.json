@@ -1,0 +1,74 @@
+{
+  "cases": [
+    {
+      "id": "pressure-source-direct",
+      "question": "Onde consultar a pressão dos pneus?",
+      "expected_document_ids": ["cuidados-pneus"],
+      "answerable": true,
+      "expected_answer": "Consultar os dados do veículo selecionado ou a documentação do fabricante."
+    },
+    {
+      "id": "pressure-source-paraphrase",
+      "question": "Onde encontro a calibragem recomendada?",
+      "expected_document_ids": ["cuidados-pneus"],
+      "answerable": true,
+      "expected_answer": "Consultar os dados do veículo selecionado ou a documentação do fabricante."
+    },
+    {
+      "id": "pressure-source-explicit",
+      "question": "Segundo o documento, onde devo consultar a pressão indicada?",
+      "expected_document_ids": ["cuidados-pneus"],
+      "answerable": true,
+      "expected_answer": "Consultar os dados do veículo selecionado ou a documentação do fabricante."
+    },
+    {
+      "id": "pressure-versus-size",
+      "question": "Qual a diferença entre pressão e medida dos pneus?",
+      "expected_document_ids": ["cuidados-pneus"],
+      "answerable": true,
+      "expected_answer": "A medida identifica dimensões do pneu; a pressão indica sua calibragem."
+    },
+    {
+      "id": "oil-source",
+      "question": "Onde devo consultar a especificação do óleo?",
+      "expected_document_ids": ["verificacao-oleo"],
+      "answerable": true,
+      "expected_answer": "Consultar os dados do veículo selecionado e a documentação do fabricante."
+    },
+    {
+      "id": "oil-change-interval-inference",
+      "question": "Conhecer a viscosidade permite definir o intervalo de troca do óleo?",
+      "expected_document_ids": ["verificacao-oleo"],
+      "answerable": true,
+      "expected_answer": "Não. Conhecer a viscosidade não permite concluir o intervalo de troca."
+    },
+    {
+      "id": "oil-cost-inference",
+      "question": "Saber a viscosidade permite concluir o custo da manutenção?",
+      "expected_document_ids": ["verificacao-oleo"],
+      "answerable": true,
+      "expected_answer": "Não. Conhecer a viscosidade não permite concluir o custo da manutenção."
+    },
+    {
+      "id": "wheel-torque-missing",
+      "question": "Qual é o torque de aperto das rodas?",
+      "expected_document_ids": [],
+      "answerable": false,
+      "expected_answer": "Informação insuficiente nos documentos."
+    },
+    {
+      "id": "pressure-value-missing",
+      "question": "Quantos PSI devo colocar nos pneus do meu T-Cross?",
+      "expected_document_ids": [],
+      "answerable": false,
+      "expected_answer": "Informação insuficiente nos documentos para fornecer um valor de pressão."
+    },
+    {
+      "id": "oil-value-missing",
+      "question": "Qual viscosidade de óleo meu T-Cross utiliza?",
+      "expected_document_ids": [],
+      "answerable": false,
+      "expected_answer": "Informação insuficiente nos documentos para fornecer a viscosidade."
+    }
+  ]
+}
