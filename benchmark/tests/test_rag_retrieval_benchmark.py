@@ -7,7 +7,7 @@ from benchmark.benchmark.rag_retrieval_benchmark import (
     RagRetrievalBenchmark,
 )
 from benchmark.model.rag_case import RagCase
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (
+from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
 
