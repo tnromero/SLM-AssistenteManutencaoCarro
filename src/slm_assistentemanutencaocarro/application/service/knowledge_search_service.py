@@ -7,7 +7,7 @@ from slm_assistentemanutencaocarro.application.exception import (
 from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
     EmbeddedChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (
+from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
 )
 from slm_assistentemanutencaocarro.application.port.document_chunker import (
@@ -25,6 +25,7 @@ from slm_assistentemanutencaocarro.application.port.vector_index import (
 
 
 class KnowledgeSearchService:
+    
     def __init__(
         self,
         knowledge_reader: KnowledgeReader,
@@ -38,9 +39,6 @@ class KnowledgeSearchService:
         self.embedding_generator = embedding_generator
         self.vector_index = vector_index
         self.vehicle_context = vehicle_context
-
-        self._ready = False
-        self._chunk_count = 0
 
     def build_index(self) -> int:
         chunks = [
@@ -64,28 +62,25 @@ class KnowledgeSearchService:
 
         self.vector_index.replace(entries)
 
-        self._chunk_count = len(entries)
-        self._ready = True
-
-        return self._chunk_count
+        return len(entries)
 
     def search(
         self,
         question: str,
         top_k: int = 3,
     ) -> list[KnowledgeSearchResult]:
-        if not self._ready:
-            raise KnowledgeIndexNotReadyError(
-                "A base de conhecimento ainda não foi indexada."
-            )
-
         if not question.strip():
             raise ValueError("A pergunta não pode ser vazia.")
 
         if top_k < 1:
             raise ValueError("top_k deve ser maior que zero.")
 
-        if self._chunk_count == 0:
+        if not self.vector_index.is_ready():
+            raise KnowledgeIndexNotReadyError(
+                "A base de conhecimento ainda não foi indexada."
+            )
+
+        if self.vector_index.count() == 0:
             return []
 
         query_vector = self.embedding_generator.embed_query(question)

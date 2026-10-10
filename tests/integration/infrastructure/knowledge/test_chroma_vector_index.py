@@ -170,3 +170,23 @@ def test_reopens_active_index(tmp_path):
     results = restored.search([1.0, 0.0], vehicle_id=None)
 
     assert results[0].chunk.id == "persistido"
+    assert restored.is_ready() is True
+    assert restored.count() == 1
+
+def test_empty_replacement_creates_ready_index(tmp_path):
+    index = ChromaVectorIndex(
+        client=chromadb.PersistentClient(
+            path=str(tmp_path / "vector_db")
+        ),
+        collection_name="test-knowledge",
+        embedding_model="test-model",
+    )
+
+    assert index.is_ready() is False
+    assert index.count() == 0
+
+    index.replace([])
+
+    assert index.is_ready() is True
+    assert index.count() == 0
+    assert index.search([1.0, 0.0], vehicle_id=None) == []

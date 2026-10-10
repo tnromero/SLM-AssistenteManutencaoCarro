@@ -11,6 +11,9 @@ from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
 from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
 )
+from slm_assistentemanutencaocarro.application.port.vector_index import (
+    VectorIndex,
+)
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
 from slm_assistentemanutencaocarro.infrastructure.knowledge.chroma_chunk_mapper import (  # noqa: E501
     deserialize_chunk,
@@ -18,7 +21,7 @@ from slm_assistentemanutencaocarro.infrastructure.knowledge.chroma_chunk_mapper 
 )
 
 
-class ChromaVectorIndex:
+class ChromaVectorIndex(VectorIndex):
     
     def __init__(
         self,
@@ -202,3 +205,14 @@ class ChromaVectorIndex:
         )
 
         self._collection = candidate
+
+    def is_ready(self) -> bool:
+        return self._collection is not None
+
+    def count(self) -> int:
+        collection = self._collection
+
+        if collection is None:
+            return 0
+
+        return collection.count()

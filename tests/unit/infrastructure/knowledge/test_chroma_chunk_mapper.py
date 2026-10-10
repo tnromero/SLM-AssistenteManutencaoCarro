@@ -4,7 +4,7 @@ from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
     KnowledgeChunk,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
-from slm_assistentemanutencaocarro.infrastructure.knowledge.chroma_chunk_mapper import (
+from slm_assistentemanutencaocarro.infrastructure.knowledge.chroma_chunk_mapper import (  # noqa: E501
     deserialize_chunk,
     serialize_metadata,
 )

@@ -3,16 +3,21 @@ from math import hypot, isfinite
 from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
     EmbeddedChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (
+from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
+)
+from slm_assistentemanutencaocarro.application.port.vector_index import (
+    VectorIndex,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
 
 
-class InMemoryVectorIndex:
+class InMemoryVectorIndex(VectorIndex):
+
     def __init__(self):
         self._entries: tuple[EmbeddedChunk, ...] = ()
         self._dimension: int | None = None
+        self._ready = False
 
     def replace(self, entries: list[EmbeddedChunk]) -> None:
         dimension = len(entries[0].vector) if entries else None
@@ -32,6 +37,7 @@ class InMemoryVectorIndex:
         # Substitui somente após validar todo o novo conteúdo.
         self._entries = tuple(entries)
         self._dimension = dimension
+        self._ready = True
 
     def search(
         self,
@@ -95,3 +101,9 @@ class InMemoryVectorIndex:
             raise ValueError("O vetor deve ter norma finita e maior que zero.")
 
         return norm
+
+    def is_ready(self) -> bool:
+        return self._ready
+
+    def count(self) -> int:
+        return len(self._entries)

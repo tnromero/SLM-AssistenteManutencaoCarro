@@ -30,7 +30,7 @@ from slm_assistentemanutencaocarro.application.port.knowledge_reader import (
 from slm_assistentemanutencaocarro.application.port.vector_index import (
     VectorIndex,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (
+from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -43,6 +43,9 @@ def search_setup():
     generator = Mock(spec=EmbeddingGenerator)
     index = Mock(spec=VectorIndex)
     context = VehicleContext()
+
+    index.is_ready.return_value = False
+    index.count.return_value = 0
 
     service = KnowledgeSearchService(
         knowledge_reader=reader,
@@ -92,6 +95,8 @@ def test_search_uses_current_vehicle_without_rebuilding(search_setup):
     generator.embed_documents.return_value = [[1.0, 0.0]]
     generator.embed_query.return_value = [0.8, 0.2]
     index.search.return_value = []
+    index.is_ready.return_value = True
+    index.count.return_value = 1
 
     service.build_index()
 
@@ -121,6 +126,8 @@ def test_search_requires_built_index(search_setup):
 def test_empty_collection_skips_embeddings(search_setup):
     service, reader, _, generator, index, _ = search_setup
     reader.list_documents.return_value = []
+    index.is_ready.return_value = True
+    index.count.return_value = 0
 
     assert service.build_index() == 0
     assert service.search("Qual óleo?") == []
@@ -142,3 +149,20 @@ def test_embedding_failure_does_not_replace_index(search_setup):
         service.build_index()
 
     index.replace.assert_not_called()
+
+def test_search_uses_existing_index_without_rebuilding(search_setup):
+    service, reader, chunker, generator, index, _ = search_setup
+
+    index.is_ready.return_value = True
+    index.count.return_value = 2
+    index.search.return_value = []
+    generator.embed_query.return_value = [1.0, 0.0]
+
+    assert service.search("Onde consultar a pressão?") == []
+
+    reader.list_documents.assert_not_called()
+    chunker.split.assert_not_called()
+    generator.embed_documents.assert_not_called()
+    generator.embed_query.assert_called_once_with(
+        "Onde consultar a pressão?"
+    )
