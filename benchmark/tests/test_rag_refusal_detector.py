@@ -1,6 +1,6 @@
 import pytest
 
-from benchmark.rag_refusal_detector import RagRefusalDetector
+from benchmark.rag_refusal_dector import RagRefusalDetector
 
 
 @pytest.mark.parametrize(

@@ -41,6 +41,7 @@ class RagGenerationBenchmark:
             response = None
             refused = None
             citations_valid = None
+            refusal_format_valid = None
             retrieval_time = 0.0
             generation_time = 0.0
             error = None
@@ -80,7 +81,7 @@ class RagGenerationBenchmark:
 
                     refusal_format_valid = (
                         response.strip()
-                        == RagResponseValidationService.INSUFFICIENT_INFORMATION_MESSAGE
+                        == RagResponseValidationService.INSUFFICIENT_INFORMATION_MESSAGE  # noqa: E501
                         if refused
                         else None
                     )
@@ -105,9 +106,11 @@ class RagGenerationBenchmark:
                     question=case.question,
                     answerable=case.answerable,
                     expected_answer=case.expected_answer,
-                    retrieved_document_ids=tuple(dict.fromkeys(
-                        result.chunk.document_id for result in results
-                    )),
+                    retrieved_document_ids=tuple(
+                        dict.fromkeys(
+                            result.chunk.document_id for result in results
+                        )
+                    ),
                     response=response,
                     refused=refused,
                     citations_valid=citations_valid,
