@@ -26,6 +26,9 @@ dev = [
     "ruff>=0.16.8",
 ]
 
+[tool.pytest.ini_options]
+testpaths = ["tests", "benchmark/tests"]
+
 [tool.ruff]
 line-length = 80
 target-version = "py313"
