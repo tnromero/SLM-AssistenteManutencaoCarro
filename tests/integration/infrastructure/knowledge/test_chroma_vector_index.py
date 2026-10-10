@@ -1,29 +1,23 @@
+from unittest.mock import patch
+
 import chromadb
 import pytest
 
+from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
+    EmbeddedChunk,
+)
 from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
     KnowledgeChunk,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
-from slm_assistentemanutencaocarro.infrastructure.knowledge.chroma_chunk_mapper import (
-    serialize_metadata,
-)
-from slm_assistentemanutencaocarro.infrastructure.knowledge.chroma_vector_index import (
+from slm_assistentemanutencaocarro.infrastructure.knowledge.chroma_vector_index import (  # noqa: E501
     ChromaVectorIndex,
 )
 
 
 @pytest.fixture
 def vector_index(tmp_path):
-    client = chromadb.PersistentClient(
-        path=str(tmp_path / "vector_db")
-    )
-
-    collection = client.create_collection(
-        name="test-knowledge",
-        embedding_function=None,
-        configuration={"hnsw": {"space": "cosine"}},
-    )
+    client = chromadb.PersistentClient(path=str(tmp_path / "vector_db"))
 
     records = [
         ("geral", None, [0.0, 1.0]),
@@ -40,22 +34,32 @@ def vector_index(tmp_path):
             source="Material de teste",
             position=0,
             vehicle_id=(
-                VehicleId(value=vehicle_id)
-                if vehicle_id is not None
-                else None
+                VehicleId(value=vehicle_id) if vehicle_id is not None else None
             ),
         )
         for document_id, vehicle_id, _ in records
     ]
 
-    collection.add(
-        ids=[chunk.id for chunk in chunks],
-        documents=[chunk.content for chunk in chunks],
-        embeddings=[vector for _, _, vector in records],
-        metadatas=[serialize_metadata(chunk) for chunk in chunks],
+    index = ChromaVectorIndex(
+        client=client,
+        collection_name="test-knowledge",
+        embedding_model="test-model",
     )
 
-    return ChromaVectorIndex(collection)
+    index.replace([
+        EmbeddedChunk(
+            chunk=chunk,
+            vector=tuple(vector),
+        )
+        for chunk, (_, _, vector) in zip(
+            chunks,
+            records,
+            strict=True,
+        )
+    ])
+
+    return index
+
 
 def test_without_vehicle_returns_only_general_chunks(vector_index):
     results = vector_index.search(
@@ -66,6 +70,7 @@ def test_without_vehicle_returns_only_general_chunks(vector_index):
     assert [result.chunk.document_id for result in results] == ["geral"]
     assert results[0].score == pytest.approx(0.0, abs=1e-6)
 
+
 def test_filters_vehicle_before_selecting_top_k(vector_index):
     results = vector_index.search(
         query_vector=[1.0, 0.0],
@@ -75,9 +80,8 @@ def test_filters_vehicle_before_selecting_top_k(vector_index):
 
     # Polo tem o maior score global, mas não é elegível.
     assert results[0].chunk.document_id == "t-cross"
-    assert results[0].chunk.vehicle_id == VehicleId(
-        value="t-cross-2022"
-    )
+    assert results[0].chunk.vehicle_id == VehicleId(value="t-cross-2022")
+
 
 def test_returns_ranked_results_with_similarity_scores(vector_index):
     results = vector_index.search(
@@ -96,6 +100,7 @@ def test_returns_ranked_results_with_similarity_scores(vector_index):
     )
     assert results[0].chunk.source == "Material de teste"
 
+
 @pytest.mark.parametrize(
     "query_vector",
     [
@@ -110,3 +115,58 @@ def test_rejects_invalid_query_vector(vector_index, query_vector):
             query_vector=query_vector,
             vehicle_id=None,
         )
+
+def make_entry(chunk_id: str) -> EmbeddedChunk:
+    return EmbeddedChunk(
+        chunk=KnowledgeChunk(
+            id=chunk_id,
+            document_id=chunk_id,
+            title=chunk_id,
+            content="Conteúdo de teste.",
+            source="Teste",
+            position=0,
+        ),
+        vector=(1.0, 0.0),
+    )
+def test_replaces_active_index(vector_index):
+    vector_index.replace([make_entry("novo")])
+
+    results = vector_index.search([1.0, 0.0], vehicle_id=None)
+
+    assert [result.chunk.id for result in results] == ["novo"]
+
+def test_write_failure_preserves_previous_index(vector_index):
+    previous = vector_index.search([1.0, 0.0], vehicle_id=None)
+
+    with patch.object(
+        chromadb.Collection,
+        "add",
+        side_effect=RuntimeError("Falha na gravação"),
+    ):
+        with pytest.raises(RuntimeError):
+            vector_index.replace([make_entry("novo")])
+
+    assert (
+        vector_index.search([1.0, 0.0], vehicle_id=None)
+        == previous
+    )
+
+def test_reopens_active_index(tmp_path):
+    path = str(tmp_path / "vector_db")
+
+    first = ChromaVectorIndex(
+        client=chromadb.PersistentClient(path=path),
+        collection_name="test-knowledge",
+        embedding_model="test-model",
+    )
+    first.replace([make_entry("persistido")])
+
+    restored = ChromaVectorIndex(
+        client=chromadb.PersistentClient(path=path),
+        collection_name="test-knowledge",
+        embedding_model="test-model",
+    )
+
+    results = restored.search([1.0, 0.0], vehicle_id=None)
+
+    assert results[0].chunk.id == "persistido"

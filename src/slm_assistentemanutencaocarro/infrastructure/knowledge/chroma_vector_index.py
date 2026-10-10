@@ -1,20 +1,60 @@
 from math import hypot, isfinite
+from uuid import uuid4
 
+from chromadb.api import ClientAPI
 from chromadb.api.models.Collection import Collection
 from chromadb.api.types import Where
 
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (
+from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
+    EmbeddedChunk,
+)
+from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
-from slm_assistentemanutencaocarro.infrastructure.knowledge.chroma_chunk_mapper import (
+from slm_assistentemanutencaocarro.infrastructure.knowledge.chroma_chunk_mapper import (  # noqa: E501
     deserialize_chunk,
+    serialize_metadata,
 )
 
 
 class ChromaVectorIndex:
-    def __init__(self, collection: Collection):
-        self._collection = collection
+    
+    def __init__(
+        self,
+        client: ClientAPI,
+        collection_name: str,
+        embedding_model: str,
+    ):
+        self._client = client
+        self._collection_name = collection_name
+        self._embedding_model = embedding_model
+
+        self._registry = client.get_or_create_collection(
+            name=f"{collection_name}-registry",
+            embedding_function=None,
+            metadata={"active_collection": ""},
+        )
+
+        metadata = self._registry.metadata or {}
+        active_name = metadata.get("active_collection", "")
+
+        if not isinstance(active_name, str):
+            raise ValueError("Referência do índice ativo inválida.")
+
+        self._collection: Collection | None = None
+
+        if active_name:
+            if metadata.get("embedding_model") != embedding_model:
+                raise ValueError(
+                    "O índice foi criado com outro modelo de embeddings. "
+                    "Use uma coleção lógica diferente para o novo modelo."
+                )
+
+            self._collection = client.get_collection(
+                name=active_name,
+                embedding_function=None,
+            )
 
     def search(
         self,
@@ -37,7 +77,12 @@ class ChromaVectorIndex:
 
         where = self._vehicle_filter(vehicle_id)
 
-        eligible = self._collection.get(
+        collection = self._collection
+
+        if collection is None:
+            return []
+
+        eligible = collection.get(
             where=where,
             include=[],
         )
@@ -46,7 +91,7 @@ class ChromaVectorIndex:
         if eligible_count == 0:
             return []
 
-        response = self._collection.query(
+        response = collection.query(
             query_embeddings=[query_vector],
             where=where,
             n_results=min(top_k, eligible_count),
@@ -57,11 +102,7 @@ class ChromaVectorIndex:
         metadatas = response["metadatas"]
         distances = response["distances"]
 
-        if (
-            documents is None
-            or metadatas is None
-            or distances is None
-        ):
+        if documents is None or metadatas is None or distances is None:
             raise ValueError("O Chroma retornou resultados incompletos.")
 
         results = []
@@ -105,3 +146,59 @@ class ChromaVectorIndex:
                 },
             ]
         }
+
+    def replace(self, entries: list[EmbeddedChunk]) -> None:
+        dimension = len(entries[0].vector) if entries else 0
+        known_ids: set[str] = set()
+        metadatas = []
+
+        for entry in entries:
+            vector = entry.vector
+
+            if not vector or not all(isfinite(value) for value in vector):
+                raise ValueError("Embedding inválido.")
+
+            norm = hypot(*vector)
+
+            if norm == 0 or not isfinite(norm):
+                raise ValueError("Embedding com norma inválida.")
+
+            if len(vector) != dimension:
+                raise ValueError("Dimensões inconsistentes.")
+
+            if entry.chunk.id in known_ids:
+                raise ValueError("Identidade de chunk duplicada.")
+
+            known_ids.add(entry.chunk.id)
+            metadatas.append(serialize_metadata(entry.chunk))
+
+        candidate = self._client.create_collection(
+            name=f"{self._collection_name}-{uuid4().hex}",
+            embedding_function=None,
+            configuration={"hnsw": {"space": "cosine"}},
+        )
+
+        batch_size = self._client.get_max_batch_size()
+
+        for start in range(0, len(entries), batch_size):
+            batch = entries[start : start + batch_size]
+
+            candidate.add(
+                ids=[entry.chunk.id for entry in batch],
+                documents=[entry.chunk.content for entry in batch],
+                embeddings=[list(entry.vector) for entry in batch],
+                metadatas=metadatas[start : start + batch_size],
+            )
+
+        if candidate.count() != len(entries):
+            raise ValueError("A gravação do novo índice ficou incompleta.")
+
+        self._registry.modify(
+            metadata={
+                "active_collection": candidate.name,
+                "embedding_model": self._embedding_model,
+                "dimension": dimension,
+            }
+        )
+
+        self._collection = candidate
