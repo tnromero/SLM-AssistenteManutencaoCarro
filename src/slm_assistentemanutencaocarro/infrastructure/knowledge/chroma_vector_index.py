@@ -29,10 +29,12 @@ class ChromaVectorIndex(VectorIndex):
         client: ClientAPI,
         collection_name: str,
         embedding_model: str,
+        index_signature: str,
     ):
         self._client = client
         self._collection_name = collection_name
         self._embedding_model = embedding_model
+        self._index_signature = index_signature
 
         self._registry = client.get_or_create_collection(
             name=f"{collection_name}-registry",
@@ -55,6 +57,12 @@ class ChromaVectorIndex(VectorIndex):
                     "Use uma coleção lógica diferente para o novo modelo."
                 )
 
+            if metadata.get("index_signature") != index_signature:
+                raise ValueError(
+                    "O índice foi criado com outra configuração. "
+                    "Use uma coleção lógica diferente e execute /index."
+                )
+            
             self._collection = client.get_collection(
                 name=active_name,
                 embedding_function=None,
@@ -201,6 +209,7 @@ class ChromaVectorIndex(VectorIndex):
             metadata={
                 "active_collection": candidate.name,
                 "embedding_model": self._embedding_model,
+                "index_signature": self._index_signature,
                 "dimension": dimension,
             }
         )

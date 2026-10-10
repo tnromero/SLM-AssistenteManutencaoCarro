@@ -38,9 +38,8 @@ class Settings:
         "VECTOR_DB_PATH",
         "data/vector_db",
     )
-
     vector_collection_name: str = os.getenv(
         "VECTOR_COLLECTION_NAME",
-        "vehicle-knowledge",
+        "vehicle-knowledge-v2",
     )
     

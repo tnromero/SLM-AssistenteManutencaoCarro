@@ -51,6 +51,9 @@ from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generat
 from slm_assistentemanutencaocarro.infrastructure.knowledge.chroma_vector_index import (  # noqa: E501
     ChromaVectorIndex,
 )
+from slm_assistentemanutencaocarro.infrastructure.knowledge.index_signature import (  # noqa: E501
+    build_index_signature,
+)
 from slm_assistentemanutencaocarro.infrastructure.knowledge.word_document_chunker import (  # noqa: E501
     WordDocumentChunker,
 )
@@ -162,6 +165,15 @@ def build_application(json_file_vehicle: str) -> Application:
         vehicle_context=vehicle_context,
     )
 
+    chunk_size = 120
+    overlap = 20
+
+    index_signature = build_index_signature(
+        embedding_model=settings.ollama_embedding_model,
+        chunk_size=chunk_size,
+        overlap=overlap,
+    )
+
     try:
         vector_client = chromadb.PersistentClient(
             path=settings.vector_db_path,
@@ -171,6 +183,7 @@ def build_application(json_file_vehicle: str) -> Application:
             client=vector_client,
             collection_name=settings.vector_collection_name,
             embedding_model=settings.ollama_embedding_model,
+            index_signature=index_signature,
         )
     except Exception as exc:
         raise VectorIndexError(
@@ -180,8 +193,8 @@ def build_application(json_file_vehicle: str) -> Application:
     knowledge_search_service = KnowledgeSearchService(
         knowledge_reader=knowledge_reader,
         chunker=WordDocumentChunker(
-            chunk_size=120,
-            overlap=20,
+            chunk_size=chunk_size,
+            overlap=overlap,
         ),
         embedding_generator=OllamaEmbeddingGenerator(
             model=settings.ollama_embedding_model,

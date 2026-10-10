@@ -388,3 +388,13 @@ def test_rag_failure_allows_cli_to_continue(application, capsys):
         in capsys.readouterr().out
     )
     application.session_service.save.assert_called_once_with()
+
+def test_unknown_command(application):
+    with patch(
+        "builtins.input",
+        side_effect=["/zxpto", "/exit"],
+    ):
+        run(application)
+
+    application.assistant.answer.assert_not_called()
+    application.rag_service.answer.assert_not_called()

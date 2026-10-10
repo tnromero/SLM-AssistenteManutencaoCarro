@@ -60,6 +60,7 @@ def vector_index(tmp_path):
         client=client,
         collection_name="test-knowledge",
         embedding_model="test-model",
+        index_signature="test-v1",
     )
 
     index.replace([
@@ -174,6 +175,7 @@ def test_reopens_active_index(tmp_path):
         client=chromadb.PersistentClient(path=path),
         collection_name="test-knowledge",
         embedding_model="test-model",
+        index_signature="test-v1",
     )
     first.replace([make_entry("persistido")])
 
@@ -181,6 +183,7 @@ def test_reopens_active_index(tmp_path):
         client=chromadb.PersistentClient(path=path),
         collection_name="test-knowledge",
         embedding_model="test-model",
+        index_signature="test-v1",
     )
 
     results = restored.search([1.0, 0.0], vehicle_id=None)
@@ -196,6 +199,7 @@ def test_empty_replacement_creates_ready_index(tmp_path):
         ),
         collection_name="test-knowledge",
         embedding_model="test-model",
+        index_signature="test-v1",
     )
 
     assert index.is_ready() is False
@@ -214,6 +218,7 @@ def test_service_searches_persisted_index_without_rebuilding(tmp_path):
         client=chromadb.PersistentClient(path=path),
         collection_name="test-knowledge",
         embedding_model="test-model",
+        index_signature="test-v1",
     )
     first_index.replace([make_entry("persistido")])
 
@@ -221,6 +226,7 @@ def test_service_searches_persisted_index_without_rebuilding(tmp_path):
         client=chromadb.PersistentClient(path=path),
         collection_name="test-knowledge",
         embedding_model="test-model",
+        index_signature="test-v1",
     )
 
     reader = Mock(spec=KnowledgeReader)
@@ -244,3 +250,45 @@ def test_service_searches_persisted_index_without_rebuilding(tmp_path):
     chunker.split.assert_not_called()
     generator.embed_documents.assert_not_called()
     generator.embed_query.assert_called_once_with("Pergunta de teste")
+
+def test_rejects_incompatible_index_configuration(tmp_path):
+    client = chromadb.PersistentClient(
+        path=str(tmp_path / "vector_db")
+    )
+
+    index = ChromaVectorIndex(
+        client=client,
+        collection_name="test-knowledge",
+        embedding_model="test-model",
+        index_signature="configuration-v1",
+    )
+    index.replace([make_entry("persistido")])
+
+    with pytest.raises(ValueError, match="outra configuração"):
+        ChromaVectorIndex(
+            client=client,
+            collection_name="test-knowledge",
+            embedding_model="test-model",
+            index_signature="configuration-v2",
+        )
+
+def test_rejects_different_embedding_model(tmp_path):
+    client = chromadb.PersistentClient(
+        path=str(tmp_path / "vector_db")
+    )
+
+    index = ChromaVectorIndex(
+        client=client,
+        collection_name="test-knowledge",
+        embedding_model="model-a",
+        index_signature="test-v1",
+    )
+    index.replace([make_entry("persistido")])
+
+    with pytest.raises(ValueError, match="outro modelo"):
+        ChromaVectorIndex(
+            client=client,
+            collection_name="test-knowledge",
+            embedding_model="model-b",
+            index_signature="test-v1",
+        )
