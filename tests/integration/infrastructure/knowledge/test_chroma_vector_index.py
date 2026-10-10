@@ -1,13 +1,29 @@
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import chromadb
 import pytest
 
+from slm_assistentemanutencaocarro.application.context.vehicle_context import (
+    VehicleContext,
+)
+from slm_assistentemanutencaocarro.application.exception import VectorIndexError
 from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
     EmbeddedChunk,
 )
 from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
     KnowledgeChunk,
+)
+from slm_assistentemanutencaocarro.application.port.document_chunker import (
+    DocumentChunker,
+)
+from slm_assistentemanutencaocarro.application.port.embedding_generator import (
+    EmbeddingGenerator,
+)
+from slm_assistentemanutencaocarro.application.port.knowledge_reader import (
+    KnowledgeReader,
+)
+from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+    KnowledgeSearchService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
 from slm_assistentemanutencaocarro.infrastructure.knowledge.chroma_vector_index import (  # noqa: E501
@@ -143,7 +159,7 @@ def test_write_failure_preserves_previous_index(vector_index):
         "add",
         side_effect=RuntimeError("Falha na gravação"),
     ):
-        with pytest.raises(RuntimeError):
+        with pytest.raises(VectorIndexError):
             vector_index.replace([make_entry("novo")])
 
     assert (
@@ -190,3 +206,41 @@ def test_empty_replacement_creates_ready_index(tmp_path):
     assert index.is_ready() is True
     assert index.count() == 0
     assert index.search([1.0, 0.0], vehicle_id=None) == []
+
+def test_service_searches_persisted_index_without_rebuilding(tmp_path):
+    path = str(tmp_path / "vector_db")
+
+    first_index = ChromaVectorIndex(
+        client=chromadb.PersistentClient(path=path),
+        collection_name="test-knowledge",
+        embedding_model="test-model",
+    )
+    first_index.replace([make_entry("persistido")])
+
+    restored_index = ChromaVectorIndex(
+        client=chromadb.PersistentClient(path=path),
+        collection_name="test-knowledge",
+        embedding_model="test-model",
+    )
+
+    reader = Mock(spec=KnowledgeReader)
+    chunker = Mock(spec=DocumentChunker)
+    generator = Mock(spec=EmbeddingGenerator)
+    generator.embed_query.return_value = [1.0, 0.0]
+
+    service = KnowledgeSearchService(
+        knowledge_reader=reader,
+        chunker=chunker,
+        embedding_generator=generator,
+        vector_index=restored_index,
+        vehicle_context=VehicleContext(),
+    )
+
+    results = service.search("Pergunta de teste")
+
+    assert results[0].chunk.id == "persistido"
+
+    reader.list_documents.assert_not_called()
+    chunker.split.assert_not_called()
+    generator.embed_documents.assert_not_called()
+    generator.embed_query.assert_called_once_with("Pergunta de teste")

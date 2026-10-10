@@ -15,3 +15,6 @@ class KnowledgeIndexNotReadyError(Exception):
 
 class RagGenerationError(Exception):
     pass
+
+class VectorIndexError(Exception):
+    pass

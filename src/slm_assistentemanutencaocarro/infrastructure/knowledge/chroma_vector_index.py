@@ -5,6 +5,7 @@ from chromadb.api import ClientAPI
 from chromadb.api.models.Collection import Collection
 from chromadb.api.types import Where
 
+from slm_assistentemanutencaocarro.application.exception import VectorIndexError
 from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
     EmbeddedChunk,
 )
@@ -59,7 +60,7 @@ class ChromaVectorIndex(VectorIndex):
                 embedding_function=None,
             )
 
-    def search(
+    def _search(
         self,
         query_vector: list[float],
         vehicle_id: VehicleId | None,
@@ -150,7 +151,7 @@ class ChromaVectorIndex(VectorIndex):
             ]
         }
 
-    def replace(self, entries: list[EmbeddedChunk]) -> None:
+    def _replace(self, entries: list[EmbeddedChunk]) -> None:
         dimension = len(entries[0].vector) if entries else 0
         known_ids: set[str] = set()
         metadatas = []
@@ -215,4 +216,39 @@ class ChromaVectorIndex(VectorIndex):
         if collection is None:
             return 0
 
-        return collection.count()
+        try:
+            return collection.count()
+        except Exception as exc:
+            raise VectorIndexError(
+                "Não foi possível consultar o tamanho do índice."
+            ) from exc
+
+    def replace(self, entries: list[EmbeddedChunk]) -> None:
+        try:
+            self._replace(entries)
+        except ValueError:
+            raise
+        except Exception as exc:
+            raise VectorIndexError(
+                "Não foi possível reconstruir o índice vetorial."
+            ) from exc
+
+
+    def search(
+        self,
+        query_vector: list[float],
+        vehicle_id: VehicleId | None,
+        top_k: int = 3,
+    ) -> list[KnowledgeSearchResult]:
+        try:
+            return self._search(
+                query_vector=query_vector,
+                vehicle_id=vehicle_id,
+                top_k=top_k,
+            )
+        except ValueError:
+            raise
+        except Exception as exc:
+            raise VectorIndexError(
+                "Não foi possível consultar o índice vetorial."
+            ) from exc

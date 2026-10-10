@@ -1,3 +1,5 @@
+import chromadb
+
 from slm_assistentemanutencaocarro.application.application import Application
 from slm_assistentemanutencaocarro.application.context.conversation_context import (  # noqa: E501
     ConversationContext,
@@ -5,6 +7,7 @@ from slm_assistentemanutencaocarro.application.context.conversation_context impo
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
+from slm_assistentemanutencaocarro.application.exception import VectorIndexError
 from slm_assistentemanutencaocarro.application.service.assistant_service import (  # noqa: E501
     AssistantService,
 )
@@ -45,8 +48,8 @@ from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_resolve
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (  # noqa: E501
     HybridResponseGenerator,
 )
-from slm_assistentemanutencaocarro.infrastructure.knowledge.in_memory_vector_index import (  # noqa: E501
-    InMemoryVectorIndex,
+from slm_assistentemanutencaocarro.infrastructure.knowledge.chroma_vector_index import (  # noqa: E501
+    ChromaVectorIndex,
 )
 from slm_assistentemanutencaocarro.infrastructure.knowledge.word_document_chunker import (  # noqa: E501
     WordDocumentChunker,
@@ -159,6 +162,21 @@ def build_application(json_file_vehicle: str) -> Application:
         vehicle_context=vehicle_context,
     )
 
+    try:
+        vector_client = chromadb.PersistentClient(
+            path=settings.vector_db_path,
+        )
+
+        vector_index = ChromaVectorIndex(
+            client=vector_client,
+            collection_name=settings.vector_collection_name,
+            embedding_model=settings.ollama_embedding_model,
+        )
+    except Exception as exc:
+        raise VectorIndexError(
+            f"Não foi possível abrir o índice vetorial: {exc}"
+        ) from exc
+
     knowledge_search_service = KnowledgeSearchService(
         knowledge_reader=knowledge_reader,
         chunker=WordDocumentChunker(
@@ -168,7 +186,7 @@ def build_application(json_file_vehicle: str) -> Application:
         embedding_generator=OllamaEmbeddingGenerator(
             model=settings.ollama_embedding_model,
         ),
-        vector_index=InMemoryVectorIndex(),
+        vector_index=vector_index,
         vehicle_context=vehicle_context,
     )
 

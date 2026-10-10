@@ -5,6 +5,7 @@ from slm_assistentemanutencaocarro.application.exception import (
     KnowledgeReadError,
     RagGenerationError,
     SessionPersistenceError,
+    VectorIndexError,
 )
 from slm_assistentemanutencaocarro.domain.exception import VehicleNotFoundError
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -105,6 +106,7 @@ def run(application: Application) -> None:
             except (
                 KnowledgeReadError, 
                 EmbeddingGenerationError, 
+                VectorIndexError,
                 ValueError
             ) as exc:
                 print(f"Não foi possível indexar os documentos: {exc}")
@@ -131,6 +133,7 @@ def run(application: Application) -> None:
             except (
                 KnowledgeIndexNotReadyError,
                 EmbeddingGenerationError,
+                VectorIndexError,
                 ValueError,
             ) as exc:
                 print(f"Não foi possível pesquisar: {exc}")
@@ -166,6 +169,7 @@ def run(application: Application) -> None:
                 KnowledgeIndexNotReadyError,
                 EmbeddingGenerationError,
                 RagGenerationError,
+                VectorIndexError,
                 ValueError,
             ) as exc:
                 print(f"Não foi possível responder com documentos: {exc}")
@@ -237,8 +241,11 @@ def run(application: Application) -> None:
             print("Histórico da conversa limpo.\n")
             continue
 
+        # Em caso de comando inválido
+        if user_input.lower().startswith("/"):
+            print(f"Comando desconhecido: {user_input.lower().split(" ")[0]}")
+            continue
         
-
         try:
             response = application.assistant.answer(user_input)
         except Exception as exc:
