@@ -11,6 +11,9 @@ from slm_assistentemanutencaocarro.application.exception import VectorIndexError
 from slm_assistentemanutencaocarro.application.service.assistant_service import (  # noqa: E501
     AssistantService,
 )
+from slm_assistentemanutencaocarro.application.service.conversation.session_service import (
+    SessionService,
+)
 from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
@@ -25,9 +28,6 @@ from slm_assistentemanutencaocarro.application.service.rag.rag_service import (
 )
 from slm_assistentemanutencaocarro.application.service.response.response_validation_service import (  # noqa: E501
     ResponseValidationService,
-)
-from slm_assistentemanutencaocarro.application.service.conversation.session_service import (
-    SessionService,
 )
 from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_query_service import (  # noqa: E501
     VehicleQueryService,

@@ -4,24 +4,25 @@ from slm_assistentemanutencaocarro.application.context.vehicle_context import (
 from slm_assistentemanutencaocarro.application.exception import (
     KnowledgeIndexNotReadyError,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge.embedded_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.embedded_chunk import (  # noqa: E501
     EmbeddedChunk,
 )
 from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
 )
-from slm_assistentemanutencaocarro.application.port.knowledge.document_chunker import (
+from slm_assistentemanutencaocarro.application.port.knowledge.document_chunker import (  # noqa: E501
     DocumentChunker,
 )
-from slm_assistentemanutencaocarro.application.port.knowledge.embedding_generator import (
+from slm_assistentemanutencaocarro.application.port.knowledge.embedding_generator import (  # noqa: E501
     EmbeddingGenerator,
 )
-from slm_assistentemanutencaocarro.application.port.knowledge.knowledge_reader import (
+from slm_assistentemanutencaocarro.application.port.knowledge.knowledge_reader import (  # noqa: E501
     KnowledgeReader,
 )
-from slm_assistentemanutencaocarro.application.port.knowledge.vector_index import (
+from slm_assistentemanutencaocarro.application.port.knowledge.vector_index import (  # noqa: E501
     VectorIndex,
 )
+from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
 
 
 class KnowledgeSearchService:
@@ -68,6 +69,8 @@ class KnowledgeSearchService:
         self,
         question: str,
         top_k: int = 3,
+        *,
+        vehicle_id: VehicleId | None = None,
     ) -> list[KnowledgeSearchResult]:
         if not question.strip():
             raise ValueError("A pergunta não pode ser vazia.")
@@ -87,6 +90,10 @@ class KnowledgeSearchService:
 
         return self.vector_index.search(
             query_vector=query_vector,
-            vehicle_id=self.vehicle_context.get_selected(),
+            vehicle_id=(
+                vehicle_id
+                if vehicle_id is not None
+                else self.vehicle_context.get_selected()
+            ),
             top_k=top_k,
         )

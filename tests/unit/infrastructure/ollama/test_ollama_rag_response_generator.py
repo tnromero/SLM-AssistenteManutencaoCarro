@@ -20,7 +20,6 @@ from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_rag_response_gen
     OllamaRagResponseGenerator,
 )
 
-
 MODULE = (
     "slm_assistentemanutencaocarro.infrastructure.ollama."
     "ollama_rag_response_generator"

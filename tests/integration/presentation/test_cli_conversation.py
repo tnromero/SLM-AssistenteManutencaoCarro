@@ -23,12 +23,17 @@ from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_documen
 from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
 )
-from slm_assistentemanutencaocarro.application.model.rag.rag_answer import RagAnswer
+from slm_assistentemanutencaocarro.application.model.rag.rag_answer import (
+    RagAnswer,
+)
 from slm_assistentemanutencaocarro.application.port.vehicle.vehicle_reader import (
     VehicleReader,
 )
 from slm_assistentemanutencaocarro.application.service.assistant_service import (  # noqa: E501
     AssistantService,
+)
+from slm_assistentemanutencaocarro.application.service.conversation.session_service import (
+    SessionService,
 )
 from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
@@ -38,9 +43,6 @@ from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_servi
 )
 from slm_assistentemanutencaocarro.application.service.rag.rag_service import (
     RagService,
-)
-from slm_assistentemanutencaocarro.application.service.conversation.session_service import (
-    SessionService,
 )
 from slm_assistentemanutencaocarro.domain.exception import (
     VehicleNotFoundError,

@@ -14,14 +14,14 @@ from slm_assistentemanutencaocarro.application.model.response.question_classific
 from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
     VehicleAnswer,
 )
+from slm_assistentemanutencaocarro.application.port.conversation.question_resolver import (
+    QuestionResolver,
+)
 from slm_assistentemanutencaocarro.application.port.response.intent_classifier import (
     IntentClassifier,
 )
 from slm_assistentemanutencaocarro.application.port.response.question_classifier import (
     QuestionClassifier,
-)
-from slm_assistentemanutencaocarro.application.port.conversation.question_resolver import (
-    QuestionResolver,
 )
 from slm_assistentemanutencaocarro.application.port.response.response_generator import (
     ResponseGenerator,
