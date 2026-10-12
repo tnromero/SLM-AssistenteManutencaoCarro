@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
+from slm_assistentemanutencaocarro.application.port.vehicle.vehicle_reader import (
     VehicleReader,
 )
 from slm_assistentemanutencaocarro.domain.exception import VehicleNotFoundError

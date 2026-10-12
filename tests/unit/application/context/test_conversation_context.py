@@ -3,7 +3,7 @@ import pytest
 from slm_assistentemanutencaocarro.application.context.conversation_context import (
     ConversationContext,
 )
-from slm_assistentemanutencaocarro.application.model.conversation_message import (
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_message import (
     ConversationMessage,
     MessageRole,
 )

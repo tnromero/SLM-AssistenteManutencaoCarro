@@ -6,19 +6,19 @@ from benchmark.model.rag_generation_case_result import (
 )
 from benchmark.model.rag_retrieved_passage import RagRetrievedPassage
 from benchmark.rag_refusal_detector import RagRefusalDetector
-from slm_assistentemanutencaocarro.application.model.rag_context import (
+from slm_assistentemanutencaocarro.application.model.rag.rag_context import (
     RagContext,
 )
-from slm_assistentemanutencaocarro.application.port.rag_response_generator import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.port.rag.rag_response_generator import (  # noqa: E501
     RagResponseGenerator,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.rag.rag_response_validation_service import (  # noqa: E501
     RagResponseValidationService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_service import (
+from slm_assistentemanutencaocarro.application.service.rag.rag_service import (
     RagService,
 )
 

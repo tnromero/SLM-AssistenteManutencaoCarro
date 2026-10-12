@@ -5,7 +5,7 @@ from benchmark.model.rag_retrieval_result import (
     RagRetrievalCaseResult,
     RagRetrievalResult,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
 

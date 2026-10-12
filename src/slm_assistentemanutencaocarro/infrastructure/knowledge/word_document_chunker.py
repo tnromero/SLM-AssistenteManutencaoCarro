@@ -1,7 +1,7 @@
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_document import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_document import (
     KnowledgeDocument,
 )
 

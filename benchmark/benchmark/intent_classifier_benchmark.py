@@ -1,7 +1,7 @@
 import time
 
 from benchmark.model.benchmark_result import BenchmarkResult
-from slm_assistentemanutencaocarro.application.port.intent_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.intent_classifier import (
     IntentClassifier,
 )
 

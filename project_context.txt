@@ -37,7 +37,8 @@
 │   ├── result
 │   │   ├── rag-generation-20261012T041234892622Z.json
 │   │   ├── rag-generation-20261012T050218383804Z.json
-│   │   └── rag-generation-20261012T051750075948Z.json
+│   │   ├── rag-generation-20261012T051750075948Z.json
+│   │   └── rag-generation-20261012T164043475553Z.json
 │   ├── runner
 │   │   ├── __init__.py
 │   │   ├── run_intent_classifier_benchmark.py
@@ -90,42 +91,75 @@
 │       │   ├── exception.py
 │       │   ├── model
 │       │   │   ├── __init__.py
-│       │   │   ├── conversation_message.py
-│       │   │   ├── conversation_session.py
-│       │   │   ├── embedded_chunk.py
-│       │   │   ├── fallback_metrics.py
-│       │   │   ├── intent_classification.py
-│       │   │   ├── knowledge_chunk.py
-│       │   │   ├── knowledge_document.py
-│       │   │   ├── knowledge_search_result.py
-│       │   │   ├── question_classification.py
-│       │   │   ├── rag_answer.py
-│       │   │   ├── rag_context.py
-│       │   │   └── vehicle_answer.py
+│       │   │   ├── conversation
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── conversation_message.py
+│       │   │   │   └── conversation_session.py
+│       │   │   ├── knowledge
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── embedded_chunk.py
+│       │   │   │   ├── knowledge_chunk.py
+│       │   │   │   ├── knowledge_document.py
+│       │   │   │   └── knowledge_search_result.py
+│       │   │   ├── rag
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── rag_answer.py
+│       │   │   │   └── rag_context.py
+│       │   │   ├── response
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── fallback_metrics.py
+│       │   │   │   ├── intent_classification.py
+│       │   │   │   └── question_classification.py
+│       │   │   └── vehicle
+│       │   │       ├── __init__.py
+│       │   │       ├── list_vehicles.py
+│       │   │       ├── vehicle_answer.py
+│       │   │       └── vehicle_summary.py
 │       │   ├── port
 │       │   │   ├── __init__.py
-│       │   │   ├── document_chunker.py
-│       │   │   ├── embedding_generator.py
-│       │   │   ├── intent_classifier.py
-│       │   │   ├── knowledge_reader.py
-│       │   │   ├── question_classifier.py
-│       │   │   ├── question_resolver.py
-│       │   │   ├── rag_response_generator.py
-│       │   │   ├── response_generator.py
-│       │   │   ├── session_repository.py
-│       │   │   ├── vector_index.py
-│       │   │   └── vehicle_reader.py
+│       │   │   ├── conversation
+│       │   │   │   ├── __init__.py
+│       │   │   │   └── session_repository.py
+│       │   │   ├── knowledge
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── document_chunker.py
+│       │   │   │   ├── embedding_generator.py
+│       │   │   │   ├── knowledge_reader.py
+│       │   │   │   └── vector_index.py
+│       │   │   ├── rag
+│       │   │   │   ├── __init__.py
+│       │   │   │   └── rag_response_generator.py
+│       │   │   ├── response
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── intent_classifier.py
+│       │   │   │   ├── question_classifier.py
+│       │   │   │   ├── question_resolver.py
+│       │   │   │   └── response_generator.py
+│       │   │   └── vehicle
+│       │   │       ├── __init__.py
+│       │   │       └── vehicle_reader.py
 │       │   └── service
 │       │       ├── __init__.py
 │       │       ├── assistant_service.py
-│       │       ├── knowledge_search_service.py
-│       │       ├── knowledge_service.py
-│       │       ├── rag_response_validation_service.py
-│       │       ├── rag_service.py
-│       │       ├── response_validation_service.py
-│       │       ├── session_service.py
-│       │       ├── vehicle_query_service.py
-│       │       └── vehicle_service.py
+│       │       ├── conversation
+│       │       │   ├── __init__.py
+│       │       │   └── session_service.py
+│       │       ├── knowledge
+│       │       │   ├── __init__.py
+│       │       │   ├── knowledge_search_service.py
+│       │       │   └── knowledge_service.py
+│       │       ├── rag
+│       │       │   ├── __init__.py
+│       │       │   ├── rag_response_validation_service.py
+│       │       │   └── rag_service.py
+│       │       ├── response
+│       │       │   ├── __init__.py
+│       │       │   └── response_validation_service.py
+│       │       └── vehicle
+│       │           ├── __init__.py
+│       │           ├── list_vehicles_service.py
+│       │           ├── vehicle_query_service.py
+│       │           └── vehicle_service.py
 │       ├── config
 │       │   ├── __init__.py
 │       │   └── settings.py
@@ -229,6 +263,7 @@
         │       ├── test_assistant_service.py
         │       ├── test_knowledge_search_service.py
         │       ├── test_knowledge_service.py
+        │       ├── test_list_vehicles_service.py
         │       ├── test_rag_response_validation_service.py
         │       ├── test_rag_service.py
         │       ├── test_response_validation_service.py
@@ -268,7 +303,7 @@
                 ├── test_rule_based_question_resolver.py
                 └── test_rule_based_response_generator.py
 
-53 directories, 215 files
+68 directories, 235 files
 
 ===== FILE CONTENT =====
 
@@ -307,11 +342,106 @@ Projeto de estudo de SLM local com Ollama: dados estruturados fornecem os fatos;
 | 11 | Embeddings e busca semântica | Chunks, embeddings e recuperação em memória | Concluída |
 | 12 | RAG | Integrar recuperação documental à geração | Concluída |
 | 13 | Banco vetorial | Persistir e consultar embeddings | Concluída |
-| 14 | Avaliação do RAG | Recall@K, relevância, chunks, latência e alucinação | Em andamento |
+| 14 | Avaliação do RAG | Recall@K, relevância, chunks, latência e alucinação | Concluída |
 | 15 | Tools e MCP | Ferramentas automotivas; contrato na aplicação e MCP na infraestrutura | Planejada |
 | 16 | Observabilidade | Logging, falhas e métricas de desempenho | Planejada |
 
 ## FASE 14 - Avaliação do RAG
+
+| Avaliação de generalização | Resultado |
+| --- | ---: |
+| Hit@1 / Recall@1 | 100% / 100% |
+| Hit@3 / Recall@3 | 100% / 100% |
+| Recuperação média — K=1 | 0,085 s |
+| Recuperação média — K=3 | 0,097 s |
+| Adequação na revisão manual | 6/6 — 100% |
+
+Recusas incorretas: `pressure-source-paraphrase` e `oil-change-interval-inference`.
+
+```json
+    {
+      "case_id": "pressure-source-paraphrase",
+      "question": "Onde encontro a calibragem recomendada?",
+      "answerable": true,
+      "expected_answer": "Consultar os dados do veículo selecionado ou a documentação do fabricante.",
+      "retrieved_document_ids": [
+        "cuidados-pneus",
+        "verificacao-oleo"
+      ],
+      "response": "Não encontrei informações suficientes nos documentos disponíveis.",
+      "refused": true,
+      "citations_valid": true,
+      "retrieval_time": 1.2874858719997064,
+      "generation_time": 4.0339131750006345,
+      "error": null,
+      "refusal_format_valid": true,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.3527369499206543
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.3314296007156372
+        }
+      ],
+      "manual_review": {
+        "verdict": "incorrect",
+        "notes": "Recusa indevida: o trecho [1] associa pressão à calibragem e indica onde consultar a pressão recomendada; não é necessário fornecer um valor."
+      }
+    },
+    {
+      "case_id": "oil-change-interval-inference",
+      "question": "Conhecer a viscosidade permite definir o intervalo de troca do óleo?",
+      "answerable": true,
+      "expected_answer": "Não. Conhecer a viscosidade não permite concluir o intervalo de troca.",
+      "retrieved_document_ids": [
+        "verificacao-oleo",
+        "cuidados-pneus"
+      ],
+      "response": "Não encontrei informações suficientes nos documentos disponíveis.",
+      "refused": true,
+      "citations_valid": true,
+      "retrieval_time": 0.9049682659997416,
+      "generation_time": 3.510652640000444,
+      "error": null,
+      "refusal_format_valid": true,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.6925121545791626
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.3944787383079529
+        }
+      ],
+      "manual_review": {
+        "verdict": "incorrect",
+        "notes": "Recusa indevida: o trecho [1] afirma explicitamente que conhecer a viscosidade não permite concluir o intervalo de troca."
+      }
+    }
+```
 
 ============================================================
 FILE: ./data/knowledge/verificacao_oleo.md
@@ -979,7 +1109,7 @@ FILE: ./src/slm_assistentemanutencaocarro/infrastructure/persistence/json_vehicl
 import json
 from pathlib import Path
 
-from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
+from slm_assistentemanutencaocarro.application.port.vehicle.vehicle_reader import (
     VehicleReader,
 )
 from slm_assistentemanutencaocarro.domain.exception import VehicleNotFoundError
@@ -1041,7 +1171,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from slm_assistentemanutencaocarro.application.exception import (
     KnowledgeReadError,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_document import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_document import (
     KnowledgeDocument,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -1140,11 +1270,11 @@ from pydantic import BaseModel, ConfigDict, ValidationError
 from slm_assistentemanutencaocarro.application.exception import (
     SessionPersistenceError,
 )
-from slm_assistentemanutencaocarro.application.model.conversation_message import (
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_message import (
     ConversationMessage,
     MessageRole,
 )
-from slm_assistentemanutencaocarro.application.model.conversation_session import (
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_session import (
     ConversationSession,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -1251,10 +1381,10 @@ FILE: ./src/slm_assistentemanutencaocarro/infrastructure/ollama/ollama_response_
 ============================================================
 import ollama
 
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
     VehicleAnswer,
 )
-from slm_assistentemanutencaocarro.application.port.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response.response_generator import (
     ResponseGenerator,
 )
 
@@ -1311,10 +1441,10 @@ FILE: ./src/slm_assistentemanutencaocarro/infrastructure/ollama/ollama_question_
 import ollama
 from pydantic import ValidationError
 
-from slm_assistentemanutencaocarro.application.model.question_classification import (
+from slm_assistentemanutencaocarro.application.model.response.question_classification import (
     QuestionClassification,
 )
-from slm_assistentemanutencaocarro.application.port.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.question_classifier import (
     QuestionClassifier,
 )
 
@@ -1399,10 +1529,10 @@ FILE: ./src/slm_assistentemanutencaocarro/infrastructure/ollama/ollama_intent_cl
 import ollama
 from pydantic import ValidationError
 
-from slm_assistentemanutencaocarro.application.model.intent_classification import (
+from slm_assistentemanutencaocarro.application.model.response.intent_classification import (
     IntentClassification,
 )
-from slm_assistentemanutencaocarro.application.port.intent_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.intent_classifier import (
     IntentClassifier,
 )
 
@@ -1504,7 +1634,7 @@ import ollama
 from slm_assistentemanutencaocarro.application.exception import (
     RagGenerationError,
 )
-from slm_assistentemanutencaocarro.application.model.rag_context import (
+from slm_assistentemanutencaocarro.application.model.rag.rag_context import (
     RagContext,
 )
 
@@ -1607,10 +1737,10 @@ import json
 import ollama
 from pydantic import BaseModel, ConfigDict, Field
 
-from slm_assistentemanutencaocarro.application.model.conversation_message import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_message import (  # noqa: E501
     ConversationMessage,
 )
-from slm_assistentemanutencaocarro.application.port.question_resolver import (
+from slm_assistentemanutencaocarro.application.port.response.question_resolver import (
     QuestionResolver,
 )
 
@@ -1716,7 +1846,7 @@ import ollama
 from slm_assistentemanutencaocarro.application.exception import (
     EmbeddingGenerationError,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
 
@@ -1789,10 +1919,10 @@ class OllamaEmbeddingGenerator:
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/infrastructure/hybrid/hybrid_question_resolver.py
 ============================================================
-from slm_assistentemanutencaocarro.application.model.conversation_message import (
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_message import (
     ConversationMessage,
 )
-from slm_assistentemanutencaocarro.application.port.question_resolver import (
+from slm_assistentemanutencaocarro.application.port.response.question_resolver import (
     QuestionResolver,
 )
 
@@ -1838,10 +1968,10 @@ FILE: ./src/slm_assistentemanutencaocarro/infrastructure/hybrid/__init__.py
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/infrastructure/hybrid/hybrid_question_classifier.py
 ============================================================
-from slm_assistentemanutencaocarro.application.model.question_classification import (
+from slm_assistentemanutencaocarro.application.model.response.question_classification import (
     QuestionClassification,
 )
-from slm_assistentemanutencaocarro.application.port.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.question_classifier import (
     QuestionClassifier,
 )
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
@@ -1877,10 +2007,10 @@ class HybridQuestionClassifier(QuestionClassifier):
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/infrastructure/hybrid/hybrid_intent_classifier.py
 ============================================================
-from slm_assistentemanutencaocarro.application.model.intent_classification import (
+from slm_assistentemanutencaocarro.application.model.response.intent_classification import (
     IntentClassification,
 )
-from slm_assistentemanutencaocarro.application.port.intent_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.intent_classifier import (
     IntentClassifier,
 )
 from slm_assistentemanutencaocarro.domain.intent import (
@@ -1909,16 +2039,16 @@ class HybridIntentClassifier(IntentClassifier):
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/infrastructure/hybrid/hybrid_response_generator.py
 ============================================================
-from slm_assistentemanutencaocarro.application.model.fallback_metrics import (
+from slm_assistentemanutencaocarro.application.model.response.fallback_metrics import (
     FallbackMetrics,
 )
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
     VehicleAnswer,
 )
-from slm_assistentemanutencaocarro.application.port.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response.response_generator import (
     ResponseGenerator,
 )
-from slm_assistentemanutencaocarro.application.service.response_validation_service import (
+from slm_assistentemanutencaocarro.application.service.response.response_validation_service import (
     ResponseValidationService,
 )
 
@@ -1977,13 +2107,13 @@ from chromadb.api.models.Collection import Collection
 from chromadb.api.types import Where
 
 from slm_assistentemanutencaocarro.application.exception import VectorIndexError
-from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.embedded_chunk import (
     EmbeddedChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
 )
-from slm_assistentemanutencaocarro.application.port.vector_index import (
+from slm_assistentemanutencaocarro.application.port.knowledge.vector_index import (
     VectorIndex,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -2266,10 +2396,10 @@ def build_index_signature(
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/infrastructure/knowledge/word_document_chunker.py
 ============================================================
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_document import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_document import (
     KnowledgeDocument,
 )
 
@@ -2331,13 +2461,13 @@ FILE: ./src/slm_assistentemanutencaocarro/infrastructure/knowledge/in_memory_vec
 ============================================================
 from math import hypot, isfinite
 
-from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.embedded_chunk import (
     EmbeddedChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
 )
-from slm_assistentemanutencaocarro.application.port.vector_index import (
+from slm_assistentemanutencaocarro.application.port.knowledge.vector_index import (
     VectorIndex,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -2444,7 +2574,7 @@ FILE: ./src/slm_assistentemanutencaocarro/infrastructure/knowledge/chroma_chunk_
 ============================================================
 from pydantic import BaseModel, ConfigDict
 
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -2514,11 +2644,11 @@ def deserialize_chunk(
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/infrastructure/rule_based/rule_based_question_resolver.py
 ============================================================
-from slm_assistentemanutencaocarro.application.model.conversation_message import (
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_message import (
     ConversationMessage,
     MessageRole,
 )
-from slm_assistentemanutencaocarro.application.port.question_resolver import (
+from slm_assistentemanutencaocarro.application.port.response.question_resolver import (
     QuestionResolver,
 )
 
@@ -2560,10 +2690,10 @@ class RuleBasedQuestionResolver(QuestionResolver):
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/infrastructure/rule_based/rule_based_question_classifier.py
 ============================================================
-from slm_assistentemanutencaocarro.application.model.question_classification import (
+from slm_assistentemanutencaocarro.application.model.response.question_classification import (
     QuestionClassification,
 )
-from slm_assistentemanutencaocarro.application.port.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.question_classifier import (
     QuestionClassifier,
 )
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
@@ -2595,10 +2725,10 @@ FILE: ./src/slm_assistentemanutencaocarro/infrastructure/rule_based/__init__.py
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/infrastructure/rule_based/rule_based_response_generator.py
 ============================================================
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
     VehicleAnswer,
 )
-from slm_assistentemanutencaocarro.application.port.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response.response_generator import (
     ResponseGenerator,
 )
 
@@ -2613,10 +2743,10 @@ class RuleBasedResponseGenerator(ResponseGenerator):
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/infrastructure/rule_based/rule_based_intent_classifier.py
 ============================================================
-from slm_assistentemanutencaocarro.application.model.intent_classification import (
+from slm_assistentemanutencaocarro.application.model.response.intent_classification import (
     IntentClassification,
 )
-from slm_assistentemanutencaocarro.application.port.intent_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.intent_classifier import (
     IntentClassifier,
 )
 from slm_assistentemanutencaocarro.domain.intent import Intent
@@ -2706,28 +2836,28 @@ from slm_assistentemanutencaocarro.application.exception import VectorIndexError
 from slm_assistentemanutencaocarro.application.service.assistant_service import (  # noqa: E501
     AssistantService,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_service import (  # noqa: E501
     KnowledgeService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.rag.rag_response_validation_service import (  # noqa: E501
     RagResponseValidationService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_service import (
+from slm_assistentemanutencaocarro.application.service.rag.rag_service import (
     RagService,
 )
-from slm_assistentemanutencaocarro.application.service.response_validation_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.response.response_validation_service import (  # noqa: E501
     ResponseValidationService,
 )
-from slm_assistentemanutencaocarro.application.service.session_service import (
+from slm_assistentemanutencaocarro.application.service.conversation.session_service import (
     SessionService,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_query_service import (  # noqa: E501
     VehicleQueryService,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_service import (
     VehicleService,
 )
 from slm_assistentemanutencaocarro.config.settings import Settings
@@ -2924,7 +3054,7 @@ FILE: ./src/slm_assistentemanutencaocarro/application/context/__init__.py
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/application/context/conversation_context.py
 ============================================================
-from slm_assistentemanutencaocarro.application.model.conversation_message import (
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_message import (
     ConversationMessage,
     MessageRole,
 )
@@ -2997,14 +3127,39 @@ class VehicleContext:
     def clear(self) -> None:
         self._vehicle_id = None
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/port/vector_index.py
+FILE: ./src/slm_assistentemanutencaocarro/application/port/conversation/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/port/conversation/session_repository.py
 ============================================================
 from typing import Protocol
 
-from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_session import (
+    ConversationSession,
+)
+
+
+class SessionRepository(Protocol):
+    def save(self, session: ConversationSession) -> None:
+        ...
+
+    def load(self) -> ConversationSession | None:
+        ...
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/port/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/port/knowledge/vector_index.py
+============================================================
+from typing import Protocol
+
+from slm_assistentemanutencaocarro.application.model.knowledge.embedded_chunk import (
     EmbeddedChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -3030,60 +3185,11 @@ class VectorIndex(Protocol):
         ...
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/port/response_generator.py
-============================================================
-from abc import ABC, abstractmethod
-
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
-    VehicleAnswer,
-)
-
-
-class ResponseGenerator(ABC):
-    @abstractmethod
-    def generate(
-        self,
-        answer: VehicleAnswer,
-    ) -> str:
-        pass
-
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/port/rag_response_generator.py
+FILE: ./src/slm_assistentemanutencaocarro/application/port/knowledge/embedding_generator.py
 ============================================================
 from typing import Protocol
 
-from slm_assistentemanutencaocarro.application.model.rag_context import (
-    RagContext,
-)
-
-
-class RagResponseGenerator(Protocol):
-    def generate(self, context: RagContext) -> str:
-        ...
-
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/port/question_resolver.py
-============================================================
-from typing import Protocol
-
-from slm_assistentemanutencaocarro.application.model.conversation_message import (
-    ConversationMessage,
-)
-
-
-class QuestionResolver(Protocol):
-    def resolve(
-        self,
-        question: str,
-        history: tuple[ConversationMessage, ...],
-    ) -> str:
-        ...
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/port/embedding_generator.py
-============================================================
-from typing import Protocol
-
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
 
@@ -3099,11 +3205,67 @@ class EmbeddingGenerator(Protocol):
         ...
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/port/__init__.py
+FILE: ./src/slm_assistentemanutencaocarro/application/port/knowledge/__init__.py
 ============================================================
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/port/vehicle_reader.py
+FILE: ./src/slm_assistentemanutencaocarro/application/port/knowledge/knowledge_reader.py
+============================================================
+from typing import Protocol
+
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_document import (
+    KnowledgeDocument,
+)
+
+
+class KnowledgeReader(Protocol):
+    def list_documents(self) -> list[KnowledgeDocument]:
+        ...
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/port/knowledge/document_chunker.py
+============================================================
+from typing import Protocol
+
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
+    KnowledgeChunk,
+)
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_document import (
+    KnowledgeDocument,
+)
+
+
+class DocumentChunker(Protocol):
+    def split(
+        self,
+        document: KnowledgeDocument,
+    ) -> list[KnowledgeChunk]:
+        ...
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/port/rag/rag_response_generator.py
+============================================================
+from typing import Protocol
+
+from slm_assistentemanutencaocarro.application.model.rag.rag_context import (
+    RagContext,
+)
+
+
+class RagResponseGenerator(Protocol):
+    def generate(self, context: RagContext) -> str:
+        ...
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/port/rag/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/port/vehicle/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/port/vehicle/vehicle_reader.py
 ============================================================
 from abc import abstractmethod
 from typing import Protocol
@@ -3125,11 +3287,50 @@ class VehicleReader(Protocol):
         pass
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/port/question_classifier.py
+FILE: ./src/slm_assistentemanutencaocarro/application/port/response/response_generator.py
 ============================================================
 from abc import ABC, abstractmethod
 
-from slm_assistentemanutencaocarro.application.model.question_classification import (
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
+    VehicleAnswer,
+)
+
+
+class ResponseGenerator(ABC):
+    @abstractmethod
+    def generate(
+        self,
+        answer: VehicleAnswer,
+    ) -> str:
+        pass
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/port/response/question_resolver.py
+============================================================
+from typing import Protocol
+
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_message import (
+    ConversationMessage,
+)
+
+
+class QuestionResolver(Protocol):
+    def resolve(
+        self,
+        question: str,
+        history: tuple[ConversationMessage, ...],
+    ) -> str:
+        ...
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/port/response/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/port/response/question_classifier.py
+============================================================
+from abc import ABC, abstractmethod
+
+from slm_assistentemanutencaocarro.application.model.response.question_classification import (
     QuestionClassification,
 )
 
@@ -3143,42 +3344,11 @@ class QuestionClassifier(ABC):
         pass
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/port/session_repository.py
-============================================================
-from typing import Protocol
-
-from slm_assistentemanutencaocarro.application.model.conversation_session import (
-    ConversationSession,
-)
-
-
-class SessionRepository(Protocol):
-    def save(self, session: ConversationSession) -> None:
-        ...
-
-    def load(self) -> ConversationSession | None:
-        ...
-
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/port/knowledge_reader.py
-============================================================
-from typing import Protocol
-
-from slm_assistentemanutencaocarro.application.model.knowledge_document import (
-    KnowledgeDocument,
-)
-
-
-class KnowledgeReader(Protocol):
-    def list_documents(self) -> list[KnowledgeDocument]:
-        ...
-
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/port/intent_classifier.py
+FILE: ./src/slm_assistentemanutencaocarro/application/port/response/intent_classifier.py
 ============================================================
 from abc import ABC, abstractmethod
 
-from slm_assistentemanutencaocarro.application.model.intent_classification import (
+from slm_assistentemanutencaocarro.application.model.response.intent_classification import (
     IntentClassification,
 )
 
@@ -3187,26 +3357,6 @@ class IntentClassifier(ABC):
     @abstractmethod
     def classify(self, text: str) -> IntentClassification:
         pass
-
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/port/document_chunker.py
-============================================================
-from typing import Protocol
-
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
-    KnowledgeChunk,
-)
-from slm_assistentemanutencaocarro.application.model.knowledge_document import (
-    KnowledgeDocument,
-)
-
-
-class DocumentChunker(Protocol):
-    def split(
-        self,
-        document: KnowledgeDocument,
-    ) -> list[KnowledgeChunk]:
-        ...
 
 ============================================================
 FILE: ./src/slm_assistentemanutencaocarro/application/__init__.py
@@ -3247,22 +3397,22 @@ from slm_assistentemanutencaocarro.application.context.conversation_context impo
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
+from slm_assistentemanutencaocarro.application.port.vehicle.vehicle_reader import (
     VehicleReader,
 )
 from slm_assistentemanutencaocarro.application.service.assistant_service import (  # noqa: E501
     AssistantService,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_service import (  # noqa: E501
     KnowledgeService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_service import (
+from slm_assistentemanutencaocarro.application.service.rag.rag_service import (
     RagService,
 )
-from slm_assistentemanutencaocarro.application.service.session_service import (
+from slm_assistentemanutencaocarro.application.service.conversation.session_service import (
     SessionService,
 )
 
@@ -3279,92 +3429,92 @@ class Application:
     rag_service: RagService
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/service/vehicle_query_service.py
+FILE: ./src/slm_assistentemanutencaocarro/application/service/conversation/__init__.py
 ============================================================
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
-    VehicleAnswer,
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/service/conversation/session_service.py
+============================================================
+from slm_assistentemanutencaocarro.application.context.conversation_context import (
+    ConversationContext,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_service import (
-    VehicleService,
+from slm_assistentemanutencaocarro.application.context.vehicle_context import (
+    VehicleContext,
+)
+from slm_assistentemanutencaocarro.application.exception import (
+    SessionPersistenceError,
+)
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_session import (
+    ConversationSession,
+)
+from slm_assistentemanutencaocarro.application.port.conversation.session_repository import (
+    SessionRepository,
+)
+from slm_assistentemanutencaocarro.application.port.vehicle.vehicle_reader import (
+    VehicleReader,
 )
 from slm_assistentemanutencaocarro.domain.exception import (
-    VehicleDataNotFoundError,
+    VehicleNotFoundError,
 )
-from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 
 
-class VehicleQueryService:
+class SessionService:
     def __init__(
         self,
-        vehicle_service: VehicleService,
+        repository: SessionRepository,
+        vehicle_reader: VehicleReader,
+        vehicle_context: VehicleContext,
+        conversation_context: ConversationContext,
     ):
-        self.vehicle_service = vehicle_service
+        self.repository = repository
+        self.vehicle_reader = vehicle_reader
+        self.vehicle_context = vehicle_context
+        self.conversation_context = conversation_context
 
-    def answer(
-        self,
-        question: str,
-        question_type: QuestionType,
-    ) -> VehicleAnswer:
-
-        if question_type == QuestionType.OLEO_MOTOR:
-            engine_oil = self.vehicle_service.get_engine_oil()
-
-            if engine_oil is None:
-                raise VehicleDataNotFoundError(
-                    "Informação não encontrada sobre: o óleo motor"
-                )
-
-            return VehicleAnswer(
-                question=question,
-                answer=f"O óleo especificado é {engine_oil}.",
-            )
-
-        if question_type == QuestionType.PRESSAO_PNEUS:
-            tire_pressure = self.vehicle_service.get_tire_pressure()
-
-            if tire_pressure is None:
-                raise VehicleDataNotFoundError(
-                    "Informação não encontrada sobre: pressão dos pneus"
-                )
-
-            
-
-            return VehicleAnswer(
-                question=question,
-                answer=(
-                    f"A pressão configurada é "
-                    f"{tire_pressure.front:.0f} PSI nos pneus dianteiros "
-                    f"e {tire_pressure.rear:.0f} PSI nos traseiros."
-                ),
-            )
-
-        if question_type == QuestionType.MEDIDA_PNEUS:
-            tire_size = self.vehicle_service.get_tire_size()
-
-            if tire_size is None:
-                raise VehicleDataNotFoundError(
-                    "Informação não encontrada sobre: medida dos pneus"
-                )
-
-            return VehicleAnswer(
-                question=question,
-                answer=f"A medida dos pneus é {tire_size}.",
-            )
-
-        raise VehicleDataNotFoundError(
-            f"Tipo de questão não suportada: {question_type}"
+    def save(self) -> None:
+        session = ConversationSession(
+            vehicle_id=self.vehicle_context.get_selected(),
+            messages=self.conversation_context.get_messages(),
         )
 
+        self.repository.save(session)
+
+    def restore(self) -> bool:
+        session = self.repository.load()
+
+        if session is None:
+            return False
+
+        try:
+            if session.vehicle_id is not None:
+                self.vehicle_reader.get_vehicle(session.vehicle_id)
+
+            self.conversation_context.restore(session.messages)
+        except (VehicleNotFoundError, ValueError) as exc:
+            raise SessionPersistenceError(
+                "A sessão contém veículo inexistente ou histórico inválido."
+            ) from exc
+
+        if session.vehicle_id is None:
+            self.vehicle_context.clear()
+        else:
+            self.vehicle_context.select(session.vehicle_id)
+
+        return True
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/service/knowledge_service.py
+FILE: ./src/slm_assistentemanutencaocarro/application/service/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/service/knowledge/knowledge_service.py
 ============================================================
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_document import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_document import (
     KnowledgeDocument,
 )
-from slm_assistentemanutencaocarro.application.port.knowledge_reader import (
+from slm_assistentemanutencaocarro.application.port.knowledge.knowledge_reader import (
     KnowledgeReader,
 )
 
@@ -3389,11 +3539,11 @@ class KnowledgeService:
         ]
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/service/__init__.py
+FILE: ./src/slm_assistentemanutencaocarro/application/service/knowledge/__init__.py
 ============================================================
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/service/knowledge_search_service.py
+FILE: ./src/slm_assistentemanutencaocarro/application/service/knowledge/knowledge_search_service.py
 ============================================================
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
@@ -3401,22 +3551,22 @@ from slm_assistentemanutencaocarro.application.context.vehicle_context import (
 from slm_assistentemanutencaocarro.application.exception import (
     KnowledgeIndexNotReadyError,
 )
-from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.embedded_chunk import (
     EmbeddedChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
 )
-from slm_assistentemanutencaocarro.application.port.document_chunker import (
+from slm_assistentemanutencaocarro.application.port.knowledge.document_chunker import (
     DocumentChunker,
 )
-from slm_assistentemanutencaocarro.application.port.embedding_generator import (
+from slm_assistentemanutencaocarro.application.port.knowledge.embedding_generator import (
     EmbeddingGenerator,
 )
-from slm_assistentemanutencaocarro.application.port.knowledge_reader import (
+from slm_assistentemanutencaocarro.application.port.knowledge.knowledge_reader import (
     KnowledgeReader,
 )
-from slm_assistentemanutencaocarro.application.port.vector_index import (
+from slm_assistentemanutencaocarro.application.port.knowledge.vector_index import (
     VectorIndex,
 )
 
@@ -3489,24 +3639,151 @@ class KnowledgeSearchService:
         )
 
 ============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/service/rag/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/service/rag/rag_response_validation_service.py
+============================================================
+import re
+
+from slm_assistentemanutencaocarro.application.model.rag.rag_context import (
+    RagContext,
+)
+
+
+class RagResponseValidationService:
+    INSUFFICIENT_INFORMATION_MESSAGE = (
+        "Não encontrei informações suficientes nos documentos disponíveis."
+    )
+
+    def validate(
+        self,
+        context: RagContext,
+        response: str,
+    ) -> bool:
+        content = response.strip()
+
+        if not content:
+            return False
+
+        if content == self.INSUFFICIENT_INFORMATION_MESSAGE:
+            return True
+
+        citation_ids = [
+            int(value)
+            for value in re.findall(r"\[([0-9]+)\]", content)
+        ]
+
+        if not citation_ids:
+            return False
+
+        return all(
+            1 <= citation_id <= len(context.results)
+            for citation_id in citation_ids
+        )
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/service/rag/rag_service.py
+============================================================
+from slm_assistentemanutencaocarro.application.exception import (
+    RagGenerationError,
+)
+from slm_assistentemanutencaocarro.application.model.rag.rag_answer import (
+    RagAnswer,
+)
+from slm_assistentemanutencaocarro.application.model.rag.rag_context import (
+    RagContext,
+)
+from slm_assistentemanutencaocarro.application.port.rag.rag_response_generator import (  # noqa: E501
+    RagResponseGenerator,
+)
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
+    KnowledgeSearchService,
+)
+from slm_assistentemanutencaocarro.application.service.rag.rag_response_validation_service import (  # noqa: E501
+    RagResponseValidationService,
+)
+
+
+class RagService:
+    NO_RESULTS_MESSAGE = (
+        "Não encontrei trechos disponíveis para responder essa pergunta."
+    )
+
+    def __init__(
+        self,
+        knowledge_search_service: KnowledgeSearchService,
+        response_generator: RagResponseGenerator,
+        response_validator: RagResponseValidationService,
+    ):
+        self.knowledge_search_service = knowledge_search_service
+        self.response_generator = response_generator
+        self.response_validator = response_validator
+
+    def answer(
+        self,
+        question: str,
+        top_k: int = 3,
+    ) -> RagAnswer:
+        if not question.strip():
+            raise ValueError("A pergunta não pode ser vazia.")
+
+        if top_k < 1:
+            raise ValueError("top_k deve ser maior que zero.")
+
+        results = tuple(
+            self.knowledge_search_service.search(
+                question=question,
+                top_k=top_k,
+            )
+        )
+
+        if not results:
+            return RagAnswer(
+                response=self.NO_RESULTS_MESSAGE,
+                results=(),
+            )
+
+        context = RagContext(
+            question=question,
+            results=results,
+        )
+
+        response = self.response_generator.generate(context)
+
+        if not self.response_validator.validate(
+            context=context,
+            response=response,
+        ):
+            raise RagGenerationError(
+                "A resposta documental contém citações inválidas ou ausentes."
+            )
+
+        return RagAnswer(
+            response=response,
+            results=results,
+        )
+
+============================================================
 FILE: ./src/slm_assistentemanutencaocarro/application/service/assistant_service.py
 ============================================================
 from slm_assistentemanutencaocarro.application.context.conversation_context import (
     ConversationContext,
 )
-from slm_assistentemanutencaocarro.application.port.intent_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.intent_classifier import (
     IntentClassifier,
 )
-from slm_assistentemanutencaocarro.application.port.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.question_classifier import (
     QuestionClassifier,
 )
-from slm_assistentemanutencaocarro.application.port.question_resolver import (
+from slm_assistentemanutencaocarro.application.port.response.question_resolver import (
     QuestionResolver,
 )
-from slm_assistentemanutencaocarro.application.port.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response.response_generator import (
     ResponseGenerator,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_query_service import (
     VehicleQueryService,
 )
 from slm_assistentemanutencaocarro.domain.exception import (
@@ -3578,7 +3855,88 @@ class AssistantService:
         return response
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/service/vehicle_service.py
+FILE: ./src/slm_assistentemanutencaocarro/application/service/vehicle/vehicle_query_service.py
+============================================================
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
+    VehicleAnswer,
+)
+from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_service import (
+    VehicleService,
+)
+from slm_assistentemanutencaocarro.domain.exception import (
+    VehicleDataNotFoundError,
+)
+from slm_assistentemanutencaocarro.domain.question_type import QuestionType
+
+
+class VehicleQueryService:
+    def __init__(
+        self,
+        vehicle_service: VehicleService,
+    ):
+        self.vehicle_service = vehicle_service
+
+    def answer(
+        self,
+        question: str,
+        question_type: QuestionType,
+    ) -> VehicleAnswer:
+
+        if question_type == QuestionType.OLEO_MOTOR:
+            engine_oil = self.vehicle_service.get_engine_oil()
+
+            if engine_oil is None:
+                raise VehicleDataNotFoundError(
+                    "Informação não encontrada sobre: o óleo motor"
+                )
+
+            return VehicleAnswer(
+                question=question,
+                answer=f"O óleo especificado é {engine_oil}.",
+            )
+
+        if question_type == QuestionType.PRESSAO_PNEUS:
+            tire_pressure = self.vehicle_service.get_tire_pressure()
+
+            if tire_pressure is None:
+                raise VehicleDataNotFoundError(
+                    "Informação não encontrada sobre: pressão dos pneus"
+                )
+
+            
+
+            return VehicleAnswer(
+                question=question,
+                answer=(
+                    f"A pressão configurada é "
+                    f"{tire_pressure.front:.0f} PSI nos pneus dianteiros "
+                    f"e {tire_pressure.rear:.0f} PSI nos traseiros."
+                ),
+            )
+
+        if question_type == QuestionType.MEDIDA_PNEUS:
+            tire_size = self.vehicle_service.get_tire_size()
+
+            if tire_size is None:
+                raise VehicleDataNotFoundError(
+                    "Informação não encontrada sobre: medida dos pneus"
+                )
+
+            return VehicleAnswer(
+                question=question,
+                answer=f"A medida dos pneus é {tire_size}.",
+            )
+
+        raise VehicleDataNotFoundError(
+            f"Tipo de questão não suportada: {question_type}"
+        )
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/service/vehicle/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/service/vehicle/vehicle_service.py
 ============================================================
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
@@ -3586,7 +3944,7 @@ from slm_assistentemanutencaocarro.application.context.vehicle_context import (
 from slm_assistentemanutencaocarro.application.exception import (
     VehicleNotSelectedError,
 )
-from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
+from slm_assistentemanutencaocarro.application.port.vehicle.vehicle_reader import (
     VehicleReader,
 )
 from slm_assistentemanutencaocarro.domain.tire_pressure import TirePressure
@@ -3619,203 +3977,51 @@ class VehicleService:
 
         return self.vehicle_reader.get_vehicle(vehicle_id)
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/service/rag_response_validation_service.py
+FILE: ./src/slm_assistentemanutencaocarro/application/service/vehicle/list_vehicles_service.py
 ============================================================
-import re
-
-from slm_assistentemanutencaocarro.application.model.rag_context import (
-    RagContext,
+from slm_assistentemanutencaocarro.application.model.vehicle.list_vehicles import (
+    ListVehiclesRequest,
+    ListVehiclesResult,
 )
-
-
-class RagResponseValidationService:
-    INSUFFICIENT_INFORMATION_MESSAGE = (
-        "Não encontrei informações suficientes nos documentos disponíveis."
-    )
-
-    def validate(
-        self,
-        context: RagContext,
-        response: str,
-    ) -> bool:
-        content = response.strip()
-
-        if not content:
-            return False
-
-        if content == self.INSUFFICIENT_INFORMATION_MESSAGE:
-            return True
-
-        citation_ids = [
-            int(value)
-            for value in re.findall(r"\[([0-9]+)\]", content)
-        ]
-
-        if not citation_ids:
-            return False
-
-        return all(
-            1 <= citation_id <= len(context.results)
-            for citation_id in citation_ids
-        )
-
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/service/session_service.py
-============================================================
-from slm_assistentemanutencaocarro.application.context.conversation_context import (
-    ConversationContext,
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_summary import (
+    VehicleSummary,
 )
-from slm_assistentemanutencaocarro.application.context.vehicle_context import (
-    VehicleContext,
-)
-from slm_assistentemanutencaocarro.application.exception import (
-    SessionPersistenceError,
-)
-from slm_assistentemanutencaocarro.application.model.conversation_session import (
-    ConversationSession,
-)
-from slm_assistentemanutencaocarro.application.port.session_repository import (
-    SessionRepository,
-)
-from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
+from slm_assistentemanutencaocarro.application.port.vehicle.vehicle_reader import (
     VehicleReader,
 )
-from slm_assistentemanutencaocarro.domain.exception import (
-    VehicleNotFoundError,
-)
 
 
-class SessionService:
-    def __init__(
-        self,
-        repository: SessionRepository,
-        vehicle_reader: VehicleReader,
-        vehicle_context: VehicleContext,
-        conversation_context: ConversationContext,
-    ):
-        self.repository = repository
+class ListVehiclesService:
+    def __init__(self, vehicle_reader: VehicleReader):
         self.vehicle_reader = vehicle_reader
-        self.vehicle_context = vehicle_context
-        self.conversation_context = conversation_context
 
-    def save(self) -> None:
-        session = ConversationSession(
-            vehicle_id=self.vehicle_context.get_selected(),
-            messages=self.conversation_context.get_messages(),
-        )
-
-        self.repository.save(session)
-
-    def restore(self) -> bool:
-        session = self.repository.load()
-
-        if session is None:
-            return False
-
-        try:
-            if session.vehicle_id is not None:
-                self.vehicle_reader.get_vehicle(session.vehicle_id)
-
-            self.conversation_context.restore(session.messages)
-        except (VehicleNotFoundError, ValueError) as exc:
-            raise SessionPersistenceError(
-                "A sessão contém veículo inexistente ou histórico inválido."
-            ) from exc
-
-        if session.vehicle_id is None:
-            self.vehicle_context.clear()
-        else:
-            self.vehicle_context.select(session.vehicle_id)
-
-        return True
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/service/rag_service.py
-============================================================
-from slm_assistentemanutencaocarro.application.exception import (
-    RagGenerationError,
-)
-from slm_assistentemanutencaocarro.application.model.rag_answer import (
-    RagAnswer,
-)
-from slm_assistentemanutencaocarro.application.model.rag_context import (
-    RagContext,
-)
-from slm_assistentemanutencaocarro.application.port.rag_response_generator import (  # noqa: E501
-    RagResponseGenerator,
-)
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
-    KnowledgeSearchService,
-)
-from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import (  # noqa: E501
-    RagResponseValidationService,
-)
-
-
-class RagService:
-    NO_RESULTS_MESSAGE = (
-        "Não encontrei trechos disponíveis para responder essa pergunta."
-    )
-
-    def __init__(
+    def execute(
         self,
-        knowledge_search_service: KnowledgeSearchService,
-        response_generator: RagResponseGenerator,
-        response_validator: RagResponseValidationService,
-    ):
-        self.knowledge_search_service = knowledge_search_service
-        self.response_generator = response_generator
-        self.response_validator = response_validator
-
-    def answer(
-        self,
-        question: str,
-        top_k: int = 3,
-    ) -> RagAnswer:
-        if not question.strip():
-            raise ValueError("A pergunta não pode ser vazia.")
-
-        if top_k < 1:
-            raise ValueError("top_k deve ser maior que zero.")
-
-        results = tuple(
-            self.knowledge_search_service.search(
-                question=question,
-                top_k=top_k,
+        request: ListVehiclesRequest,
+    ) -> ListVehiclesResult:
+        return ListVehiclesResult(
+            vehicles=tuple(
+                VehicleSummary(
+                    id=vehicle.id.value,
+                    brand=vehicle.brand,
+                    model=vehicle.model,
+                    year=vehicle.year,
+                    engine=vehicle.engine,
+                )
+                for vehicle in self.vehicle_reader.list_vehicles()
             )
-        )
-
-        if not results:
-            return RagAnswer(
-                response=self.NO_RESULTS_MESSAGE,
-                results=(),
-            )
-
-        context = RagContext(
-            question=question,
-            results=results,
-        )
-
-        response = self.response_generator.generate(context)
-
-        if not self.response_validator.validate(
-            context=context,
-            response=response,
-        ):
-            raise RagGenerationError(
-                "A resposta documental contém citações inválidas ou ausentes."
-            )
-
-        return RagAnswer(
-            response=response,
-            results=results,
         )
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/service/response_validation_service.py
+FILE: ./src/slm_assistentemanutencaocarro/application/service/response/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/service/response/response_validation_service.py
 ============================================================
 import re
 
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
     VehicleAnswer,
 )
 
@@ -3888,7 +4094,197 @@ class ResponseValidationService:
             .strip()
         )
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/model/fallback_metrics.py
+FILE: ./src/slm_assistentemanutencaocarro/application/model/conversation/conversation_message.py
+============================================================
+from dataclasses import dataclass
+from enum import StrEnum
+
+
+class MessageRole(StrEnum):
+    USER = "user"
+    ASSISTANT = "assistant"
+
+
+@dataclass(frozen=True)
+class ConversationMessage:
+    role: MessageRole
+    content: str
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/conversation/conversation_session.py
+============================================================
+from dataclasses import dataclass
+
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_message import (
+    ConversationMessage,
+)
+from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
+
+
+@dataclass(frozen=True)
+class ConversationSession:
+    vehicle_id: VehicleId | None
+    messages: tuple[ConversationMessage, ...]
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/conversation/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/knowledge/knowledge_document.py
+============================================================
+from dataclasses import dataclass
+
+from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
+
+
+@dataclass(frozen=True)
+class KnowledgeDocument:
+    id: str
+    title: str
+    content: str
+    source: str
+    vehicle_id: VehicleId | None = None
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/knowledge/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/knowledge/embedded_chunk.py
+============================================================
+from dataclasses import dataclass
+
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
+    KnowledgeChunk,
+)
+
+
+@dataclass(frozen=True)
+class EmbeddedChunk:
+    chunk: KnowledgeChunk
+    vector: tuple[float, ...]
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/knowledge/knowledge_search_result.py
+============================================================
+from dataclasses import dataclass
+
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
+    KnowledgeChunk,
+)
+
+
+@dataclass(frozen=True)
+class KnowledgeSearchResult:
+    chunk: KnowledgeChunk
+    score: float
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/knowledge/knowledge_chunk.py
+============================================================
+from dataclasses import dataclass
+
+from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
+
+
+@dataclass(frozen=True)
+class KnowledgeChunk:
+    id: str
+    document_id: str
+    title: str
+    content: str
+    source: str
+    position: int
+    vehicle_id: VehicleId | None = None
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/rag/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/rag/rag_answer.py
+============================================================
+from dataclasses import dataclass
+
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_search_result import (  # noqa: E501
+    KnowledgeSearchResult,
+)
+
+
+@dataclass(frozen=True)
+class RagAnswer:
+    response: str
+    results: tuple[KnowledgeSearchResult, ...]
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/rag/rag_context.py
+============================================================
+from dataclasses import dataclass
+
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_search_result import (  # noqa: E501
+    KnowledgeSearchResult,
+)
+
+
+@dataclass(frozen=True)
+class RagContext:
+    question: str
+    results: tuple[KnowledgeSearchResult, ...]
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/vehicle/__init__.py
+============================================================
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/vehicle/vehicle_summary.py
+============================================================
+from pydantic import BaseModel, ConfigDict
+
+
+class VehicleSummary(BaseModel):
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    id: str
+    brand: str
+    model: str
+    year: int
+    engine: str
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/vehicle/vehicle_answer.py
+============================================================
+from pydantic import BaseModel
+
+
+class VehicleAnswer(BaseModel):
+    question: str
+    answer: str
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/vehicle/list_vehicles.py
+============================================================
+from pydantic import BaseModel, ConfigDict
+
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_summary import (
+    VehicleSummary,
+)
+
+
+class ListVehiclesRequest(BaseModel):
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+
+class ListVehiclesResult(BaseModel):
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    vehicles: tuple[VehicleSummary, ...]
+
+============================================================
+FILE: ./src/slm_assistentemanutencaocarro/application/model/response/fallback_metrics.py
 ============================================================
 from pydantic import BaseModel
 
@@ -3908,59 +4304,11 @@ class FallbackMetrics(BaseModel):
 
         return self.fallback_count / self.total * 100
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/model/conversation_message.py
-============================================================
-from dataclasses import dataclass
-from enum import StrEnum
-
-
-class MessageRole(StrEnum):
-    USER = "user"
-    ASSISTANT = "assistant"
-
-
-@dataclass(frozen=True)
-class ConversationMessage:
-    role: MessageRole
-    content: str
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/model/conversation_session.py
-============================================================
-from dataclasses import dataclass
-
-from slm_assistentemanutencaocarro.application.model.conversation_message import (
-    ConversationMessage,
-)
-from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
-
-
-@dataclass(frozen=True)
-class ConversationSession:
-    vehicle_id: VehicleId | None
-    messages: tuple[ConversationMessage, ...]
-
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/model/knowledge_document.py
-============================================================
-from dataclasses import dataclass
-
-from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
-
-
-@dataclass(frozen=True)
-class KnowledgeDocument:
-    id: str
-    title: str
-    content: str
-    source: str
-    vehicle_id: VehicleId | None = None
-
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/model/__init__.py
+FILE: ./src/slm_assistentemanutencaocarro/application/model/response/__init__.py
 ============================================================
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/model/intent_classification.py
+FILE: ./src/slm_assistentemanutencaocarro/application/model/response/intent_classification.py
 ============================================================
 from pydantic import BaseModel
 
@@ -3971,62 +4319,7 @@ class IntentClassification(BaseModel):
     intent: Intent
 
 ============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/model/embedded_chunk.py
-============================================================
-from dataclasses import dataclass
-
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
-    KnowledgeChunk,
-)
-
-
-@dataclass(frozen=True)
-class EmbeddedChunk:
-    chunk: KnowledgeChunk
-    vector: tuple[float, ...]
-
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/model/rag_answer.py
-============================================================
-from dataclasses import dataclass
-
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
-    KnowledgeSearchResult,
-)
-
-
-@dataclass(frozen=True)
-class RagAnswer:
-    response: str
-    results: tuple[KnowledgeSearchResult, ...]
-
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/model/vehicle_answer.py
-============================================================
-from pydantic import BaseModel
-
-
-class VehicleAnswer(BaseModel):
-    question: str
-    answer: str
-
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/model/knowledge_search_result.py
-============================================================
-from dataclasses import dataclass
-
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
-    KnowledgeChunk,
-)
-
-
-@dataclass(frozen=True)
-class KnowledgeSearchResult:
-    chunk: KnowledgeChunk
-    score: float
-
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/model/question_classification.py
+FILE: ./src/slm_assistentemanutencaocarro/application/model/response/question_classification.py
 ============================================================
 from pydantic import BaseModel
 
@@ -4035,39 +4328,6 @@ from slm_assistentemanutencaocarro.domain.question_type import QuestionType
 
 class QuestionClassification(BaseModel):
     question_type: QuestionType
-
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/model/rag_context.py
-============================================================
-from dataclasses import dataclass
-
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
-    KnowledgeSearchResult,
-)
-
-
-@dataclass(frozen=True)
-class RagContext:
-    question: str
-    results: tuple[KnowledgeSearchResult, ...]
-
-============================================================
-FILE: ./src/slm_assistentemanutencaocarro/application/model/knowledge_chunk.py
-============================================================
-from dataclasses import dataclass
-
-from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
-
-
-@dataclass(frozen=True)
-class KnowledgeChunk:
-    id: str
-    document_id: str
-    title: str
-    content: str
-    source: str
-    position: int
-    vehicle_id: VehicleId | None = None
 
 ============================================================
 FILE: ./tests/integration/presentation/__init__.py
@@ -4092,32 +4352,32 @@ from slm_assistentemanutencaocarro.application.exception import (
     RagGenerationError,
     SessionPersistenceError,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_document import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_document import (
     KnowledgeDocument,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
 )
-from slm_assistentemanutencaocarro.application.model.rag_answer import RagAnswer
-from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
+from slm_assistentemanutencaocarro.application.model.rag.rag_answer import RagAnswer
+from slm_assistentemanutencaocarro.application.port.vehicle.vehicle_reader import (
     VehicleReader,
 )
 from slm_assistentemanutencaocarro.application.service.assistant_service import (  # noqa: E501
     AssistantService,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_service import (  # noqa: E501
     KnowledgeService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_service import (
+from slm_assistentemanutencaocarro.application.service.rag.rag_service import (
     RagService,
 )
-from slm_assistentemanutencaocarro.application.service.session_service import (
+from slm_assistentemanutencaocarro.application.service.conversation.session_service import (
     SessionService,
 )
 from slm_assistentemanutencaocarro.domain.exception import (
@@ -4491,11 +4751,11 @@ import pytest
 from slm_assistentemanutencaocarro.application.exception import (
     SessionPersistenceError,
 )
-from slm_assistentemanutencaocarro.application.model.conversation_message import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_message import (  # noqa: E501
     ConversationMessage,
     MessageRole,
 )
-from slm_assistentemanutencaocarro.application.model.conversation_session import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_session import (  # noqa: E501
     ConversationSession,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -4765,7 +5025,7 @@ FILE: ./tests/integration/infrastructure/ollama/__init__.py
 FILE: ./tests/integration/infrastructure/ollama/test_ollama_response_generator.py
 ============================================================
 
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
     VehicleAnswer,
 )
 from slm_assistentemanutencaocarro.config.settings import Settings
@@ -4836,7 +5096,7 @@ FILE: ./tests/integration/infrastructure/knowledge/test_chroma_persistence.py
 ============================================================
 import chromadb
 
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
 from slm_assistentemanutencaocarro.infrastructure.knowledge.chroma_chunk_mapper import (
@@ -4910,22 +5170,22 @@ from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
 from slm_assistentemanutencaocarro.application.exception import VectorIndexError
-from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.embedded_chunk import (
     EmbeddedChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
-from slm_assistentemanutencaocarro.application.port.document_chunker import (
+from slm_assistentemanutencaocarro.application.port.knowledge.document_chunker import (
     DocumentChunker,
 )
-from slm_assistentemanutencaocarro.application.port.embedding_generator import (
+from slm_assistentemanutencaocarro.application.port.knowledge.embedding_generator import (
     EmbeddingGenerator,
 )
-from slm_assistentemanutencaocarro.application.port.knowledge_reader import (
+from slm_assistentemanutencaocarro.application.port.knowledge.knowledge_reader import (
     KnowledgeReader,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -5206,7 +5466,7 @@ FILE: ./tests/integration/application/context/test_vehicle_context.py
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_service import (
     VehicleService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -5290,10 +5550,10 @@ from slm_assistentemanutencaocarro.application.context.conversation_context impo
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
+from slm_assistentemanutencaocarro.application.port.vehicle.vehicle_reader import (
     VehicleReader,
 )
-from slm_assistentemanutencaocarro.application.service.session_service import (
+from slm_assistentemanutencaocarro.application.service.conversation.session_service import (
     SessionService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -5361,10 +5621,10 @@ from unittest.mock import Mock
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.port.embedding_generator import (
+from slm_assistentemanutencaocarro.application.port.knowledge.embedding_generator import (
     EmbeddingGenerator,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (
     KnowledgeSearchService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -5464,31 +5724,31 @@ import pytest
 from slm_assistentemanutencaocarro.application.context.conversation_context import (
     ConversationContext,
 )
-from slm_assistentemanutencaocarro.application.model.conversation_message import (
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_message import (
     MessageRole,
 )
-from slm_assistentemanutencaocarro.application.model.intent_classification import (
+from slm_assistentemanutencaocarro.application.model.response.intent_classification import (
     IntentClassification,
 )
-from slm_assistentemanutencaocarro.application.model.question_classification import (
+from slm_assistentemanutencaocarro.application.model.response.question_classification import (
     QuestionClassification,
 )
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
     VehicleAnswer,
 )
-from slm_assistentemanutencaocarro.application.port.intent_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.intent_classifier import (
     IntentClassifier,
 )
-from slm_assistentemanutencaocarro.application.port.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.question_classifier import (
     QuestionClassifier,
 )
-from slm_assistentemanutencaocarro.application.port.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response.response_generator import (
     ResponseGenerator,
 )
 from slm_assistentemanutencaocarro.application.service.assistant_service import (
     AssistantService,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_query_service import (
     VehicleQueryService,
 )
 from slm_assistentemanutencaocarro.domain.intent import Intent
@@ -5585,22 +5845,22 @@ from slm_assistentemanutencaocarro.application.context.conversation_context impo
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.port.question_resolver import (
+from slm_assistentemanutencaocarro.application.port.response.question_resolver import (
     QuestionResolver,
 )
-from slm_assistentemanutencaocarro.application.port.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response.response_generator import (
     ResponseGenerator,
 )
 from slm_assistentemanutencaocarro.application.service.assistant_service import (
     AssistantService,
 )
-from slm_assistentemanutencaocarro.application.service.response_validation_service import (
+from slm_assistentemanutencaocarro.application.service.response.response_validation_service import (
     ResponseValidationService,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_query_service import (
     VehicleQueryService,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_service import (
     VehicleService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -5842,7 +6102,7 @@ from slm_assistentemanutencaocarro.application.context.vehicle_context import (
 from slm_assistentemanutencaocarro.application.exception import (
     VehicleNotSelectedError,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_service import (
     VehicleService,
 )
 from slm_assistentemanutencaocarro.infrastructure.persistence.json_vehicle_reader import (
@@ -5873,7 +6133,7 @@ import json
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_service import (
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_service import (
     KnowledgeService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -5951,16 +6211,16 @@ from slm_assistentemanutencaocarro.application.context.vehicle_context import (
 from slm_assistentemanutencaocarro.application.exception import (
     RagGenerationError,
 )
-from slm_assistentemanutencaocarro.application.port.embedding_generator import (
+from slm_assistentemanutencaocarro.application.port.knowledge.embedding_generator import (
     EmbeddingGenerator,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.rag.rag_response_validation_service import (  # noqa: E501
     RagResponseValidationService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_service import (
+from slm_assistentemanutencaocarro.application.service.rag.rag_service import (
     RagService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -6133,7 +6393,7 @@ FILE: ./tests/unit/domain/test_intent.py
 import pytest
 from pydantic import ValidationError
 
-from slm_assistentemanutencaocarro.application.model.intent_classification import (
+from slm_assistentemanutencaocarro.application.model.response.intent_classification import (
     IntentClassification,
 )
 from slm_assistentemanutencaocarro.domain.intent import Intent
@@ -6346,7 +6606,7 @@ FILE: ./tests/unit/infrastructure/ollama/test_ollama_question_classifier.py
 ============================================================
 from unittest.mock import Mock, patch
 
-from slm_assistentemanutencaocarro.application.model.question_classification import (
+from slm_assistentemanutencaocarro.application.model.response.question_classification import (
     QuestionClassification,
 )
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
@@ -6397,7 +6657,7 @@ import pytest
 from slm_assistentemanutencaocarro.application.exception import (
     EmbeddingGenerationError,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_embedding_generator import (
@@ -6506,13 +6766,13 @@ import pytest
 from slm_assistentemanutencaocarro.application.exception import (
     RagGenerationError,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_search_result import (
     KnowledgeSearchResult,
 )
-from slm_assistentemanutencaocarro.application.model.rag_context import (
+from slm_assistentemanutencaocarro.application.model.rag.rag_context import (
     RagContext,
 )
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_rag_response_generator import (
@@ -6612,7 +6872,7 @@ FILE: ./tests/unit/infrastructure/ollama/test_ollama_response_generator.py
 ============================================================
 from unittest.mock import Mock, patch
 
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
     VehicleAnswer,
 )
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_response_generator import (
@@ -6659,7 +6919,7 @@ FILE: ./tests/unit/infrastructure/ollama/test_ollama_intent_classifier.py
 ============================================================
 from unittest.mock import Mock, patch
 
-from slm_assistentemanutencaocarro.application.model.intent_classification import (
+from slm_assistentemanutencaocarro.application.model.response.intent_classification import (
     IntentClassification,
 )
 from slm_assistentemanutencaocarro.domain.intent import Intent
@@ -6704,10 +6964,10 @@ FILE: ./tests/unit/infrastructure/hybrid/test_hybrid_question_classifier.py
 ============================================================
 from unittest.mock import Mock
 
-from slm_assistentemanutencaocarro.application.model.question_classification import (
+from slm_assistentemanutencaocarro.application.model.response.question_classification import (
     QuestionClassification,
 )
-from slm_assistentemanutencaocarro.application.port.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.question_classifier import (
     QuestionClassifier,
 )
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType
@@ -6790,13 +7050,13 @@ from unittest.mock import Mock
 
 import pytest
 
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
     VehicleAnswer,
 )
-from slm_assistentemanutencaocarro.application.port.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response.response_generator import (
     ResponseGenerator,
 )
-from slm_assistentemanutencaocarro.application.service.response_validation_service import (
+from slm_assistentemanutencaocarro.application.service.response.response_validation_service import (
     ResponseValidationService,
 )
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
@@ -6991,7 +7251,7 @@ import pytest
 from slm_assistentemanutencaocarro.application.context.conversation_context import (
     ConversationContext,
 )
-from slm_assistentemanutencaocarro.application.port.question_resolver import (
+from slm_assistentemanutencaocarro.application.port.response.question_resolver import (
     QuestionResolver,
 )
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_resolver import (
@@ -7072,7 +7332,7 @@ FILE: ./tests/unit/infrastructure/knowledge/test_word_document_chunker.py
 ============================================================
 import pytest
 
-from slm_assistentemanutencaocarro.application.model.knowledge_document import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_document import (
     KnowledgeDocument,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -7168,7 +7428,7 @@ FILE: ./tests/unit/infrastructure/knowledge/test_chroma_chunk_mapper.py
 ============================================================
 import pytest
 
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -7233,10 +7493,10 @@ FILE: ./tests/unit/infrastructure/knowledge/test_in_memory_vector_index.py
 ============================================================
 import pytest
 
-from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.embedded_chunk import (
     EmbeddedChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -7351,7 +7611,7 @@ def test_empty_index_returns_no_results():
 ============================================================
 FILE: ./tests/unit/infrastructure/rule_based/test_rule_based_response_generator.py
 ============================================================
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
     VehicleAnswer,
 )
 from slm_assistentemanutencaocarro.infrastructure.rule_based.rule_based_response_generator import (
@@ -7543,7 +7803,7 @@ import pytest
 from slm_assistentemanutencaocarro.application.context.conversation_context import (
     ConversationContext,
 )
-from slm_assistentemanutencaocarro.application.model.conversation_message import (
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_message import (
     ConversationMessage,
     MessageRole,
 )
@@ -7693,28 +7953,28 @@ from slm_assistentemanutencaocarro.application.exception import (
     EmbeddingGenerationError,
     KnowledgeIndexNotReadyError,
 )
-from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.embedded_chunk import (
     EmbeddedChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_document import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_document import (
     KnowledgeDocument,
 )
-from slm_assistentemanutencaocarro.application.port.document_chunker import (
+from slm_assistentemanutencaocarro.application.port.knowledge.document_chunker import (
     DocumentChunker,
 )
-from slm_assistentemanutencaocarro.application.port.embedding_generator import (
+from slm_assistentemanutencaocarro.application.port.knowledge.embedding_generator import (
     EmbeddingGenerator,
 )
-from slm_assistentemanutencaocarro.application.port.knowledge_reader import (
+from slm_assistentemanutencaocarro.application.port.knowledge.knowledge_reader import (
     KnowledgeReader,
 )
-from slm_assistentemanutencaocarro.application.port.vector_index import (
+from slm_assistentemanutencaocarro.application.port.knowledge.vector_index import (
     VectorIndex,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -7861,13 +8121,13 @@ import pytest
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
     VehicleAnswer,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_query_service import (
     VehicleQueryService,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_service import (
     VehicleService,
 )
 from slm_assistentemanutencaocarro.domain.exception import (
@@ -7962,13 +8222,13 @@ from unittest.mock import Mock
 
 import pytest
 
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
 )
-from slm_assistentemanutencaocarro.application.model.rag_context import (
+from slm_assistentemanutencaocarro.application.model.rag.rag_context import (
     RagContext,
 )
-from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.rag.rag_response_validation_service import (  # noqa: E501
     RagResponseValidationService,
 )
 
@@ -8013,31 +8273,31 @@ import pytest
 from slm_assistentemanutencaocarro.application.context.conversation_context import (
     ConversationContext,
 )
-from slm_assistentemanutencaocarro.application.model.intent_classification import (
+from slm_assistentemanutencaocarro.application.model.response.intent_classification import (
     IntentClassification,
 )
-from slm_assistentemanutencaocarro.application.model.question_classification import (
+from slm_assistentemanutencaocarro.application.model.response.question_classification import (
     QuestionClassification,
 )
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
     VehicleAnswer,
 )
-from slm_assistentemanutencaocarro.application.port.intent_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.intent_classifier import (
     IntentClassifier,
 )
-from slm_assistentemanutencaocarro.application.port.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.question_classifier import (
     QuestionClassifier,
 )
-from slm_assistentemanutencaocarro.application.port.question_resolver import (
+from slm_assistentemanutencaocarro.application.port.response.question_resolver import (
     QuestionResolver,
 )
-from slm_assistentemanutencaocarro.application.port.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response.response_generator import (
     ResponseGenerator,
 )
 from slm_assistentemanutencaocarro.application.service.assistant_service import (
     AssistantService,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_query_service import (
     VehicleQueryService,
 )
 from slm_assistentemanutencaocarro.domain.exception import (
@@ -8457,7 +8717,7 @@ FILE: ./tests/unit/application/service/test_vehicle_service.py
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_service import (
     VehicleService,
 )
 from slm_assistentemanutencaocarro.domain.tire_pressure import TirePressure
@@ -8521,10 +8781,10 @@ def test_should_return_tire_pressure():
 ============================================================
 FILE: ./tests/unit/application/service/test_response_validation_service.py
 ============================================================
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
     VehicleAnswer,
 )
-from slm_assistentemanutencaocarro.application.service.response_validation_service import (
+from slm_assistentemanutencaocarro.application.service.response.response_validation_service import (
     ResponseValidationService,
 )
 
@@ -8702,13 +8962,13 @@ import pytest
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_document import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_document import (
     KnowledgeDocument,
 )
-from slm_assistentemanutencaocarro.application.port.knowledge_reader import (
+from slm_assistentemanutencaocarro.application.port.knowledge.knowledge_reader import (
     KnowledgeReader,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_service import (
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_service import (
     KnowledgeService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
@@ -8802,25 +9062,25 @@ import pytest
 from slm_assistentemanutencaocarro.application.exception import (
     RagGenerationError,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
 )
-from slm_assistentemanutencaocarro.application.model.rag_context import (
+from slm_assistentemanutencaocarro.application.model.rag.rag_context import (
     RagContext,
 )
-from slm_assistentemanutencaocarro.application.port.rag_response_generator import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.port.rag.rag_response_generator import (  # noqa: E501
     RagResponseGenerator,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.rag.rag_response_validation_service import (  # noqa: E501
     RagResponseValidationService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_service import (
+from slm_assistentemanutencaocarro.application.service.rag.rag_service import (
     RagService,
 )
 
@@ -8947,6 +9207,69 @@ def test_accepts_insufficient_information_response(rag_setup):
     )
 
 ============================================================
+FILE: ./tests/unit/application/service/test_list_vehicles_service.py
+============================================================
+from unittest.mock import Mock
+
+import pytest
+from pydantic import ValidationError
+
+from slm_assistentemanutencaocarro.application.model.vehicle.list_vehicles import (
+    ListVehiclesRequest,
+)
+from slm_assistentemanutencaocarro.application.port.vehicle.vehicle_reader import (
+    VehicleReader,
+)
+from slm_assistentemanutencaocarro.application.service.vehicle.list_vehicles_service import (
+    ListVehiclesService,
+)
+from slm_assistentemanutencaocarro.domain.vehicle import Vehicle
+from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
+
+
+def test_lists_vehicle_identity_without_maintenance_fields():
+    reader = Mock(spec=VehicleReader)
+    reader.list_vehicles.return_value = [
+        Vehicle(
+            id=VehicleId(value="t-cross-2022"),
+            brand="Volkswagen",
+            model="T-Cross",
+            year=2022,
+            engine="1.0 TSI",
+            engine_oil="5W-40",
+        )
+    ]
+
+    result = ListVehiclesService(reader).execute(ListVehiclesRequest())
+
+    assert result.model_dump(mode="json") == {
+        "vehicles": [
+            {
+                "id": "t-cross-2022",
+                "brand": "Volkswagen",
+                "model": "T-Cross",
+                "year": 2022,
+                "engine": "1.0 TSI",
+            }
+        ]
+    }
+    reader.get_vehicle.assert_not_called()
+
+
+def test_returns_empty_list_when_no_vehicles_exist():
+    reader = Mock(spec=VehicleReader)
+    reader.list_vehicles.return_value = []
+
+    result = ListVehiclesService(reader).execute(ListVehiclesRequest())
+
+    assert result.vehicles == ()
+
+
+def test_rejects_unexpected_arguments():
+    with pytest.raises(ValidationError):
+        ListVehiclesRequest.model_validate({"vehicle_id": "t-cross-2022"})
+
+============================================================
 FILE: ./tests/unit/application/service/test_session_service.py
 ============================================================
 from unittest.mock import Mock
@@ -8962,20 +9285,20 @@ from slm_assistentemanutencaocarro.application.context.vehicle_context import (
 from slm_assistentemanutencaocarro.application.exception import (
     SessionPersistenceError,
 )
-from slm_assistentemanutencaocarro.application.model.conversation_message import (
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_message import (
     ConversationMessage,
     MessageRole,
 )
-from slm_assistentemanutencaocarro.application.model.conversation_session import (
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_session import (
     ConversationSession,
 )
-from slm_assistentemanutencaocarro.application.port.session_repository import (
+from slm_assistentemanutencaocarro.application.port.conversation.session_repository import (
     SessionRepository,
 )
-from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
+from slm_assistentemanutencaocarro.application.port.vehicle.vehicle_reader import (
     VehicleReader,
 )
-from slm_assistentemanutencaocarro.application.service.session_service import (
+from slm_assistentemanutencaocarro.application.service.conversation.session_service import (
     SessionService,
 )
 from slm_assistentemanutencaocarro.domain.exception import VehicleNotFoundError
@@ -9534,6 +9857,261 @@ FILE: ./benchmark/result/rag-generation-20261012T050218383804Z.json
 }
 
 ============================================================
+FILE: ./benchmark/result/rag-generation-20261012T164043475553Z.json
+============================================================
+{
+  "model": "qwen3.5:2b",
+  "top_k": 3,
+  "cases": [
+    {
+      "case_id": "pressure-location-new",
+      "question": "Em qual fonte devo conferir a pressão indicada para os pneus?",
+      "answerable": true,
+      "expected_answer": "Nos dados do veículo selecionado ou na documentação do fabricante.",
+      "retrieved_document_ids": [
+        "cuidados-pneus",
+        "verificacao-oleo"
+      ],
+      "response": "Para conferir a pressão indicada para os pneus, você deve consultar os dados do veículo selecionado ou na documentação do fabricante [1].",
+      "refused": false,
+      "citations_valid": true,
+      "retrieval_time": 5.369479192999961,
+      "generation_time": 2.0602882960001807,
+      "error": null,
+      "refusal_format_valid": null,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.7097735404968262
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.5132072567939758
+        }
+      ],
+      "manual_review": {
+        "verdict": "adequate",
+        "notes": ""
+      }
+    },
+    {
+      "case_id": "tire-dimensions-new",
+      "question": "A medida do pneu descreve suas dimensões ou sua calibragem?",
+      "answerable": true,
+      "expected_answer": "Descreve suas dimensões; a pressão indica a calibragem.",
+      "retrieved_document_ids": [
+        "cuidados-pneus",
+        "verificacao-oleo"
+      ],
+      "response": "A medida do pneu descreve suas dimensões, e a pressão indica sua calibragem [1].",
+      "refused": false,
+      "citations_valid": true,
+      "retrieval_time": 0.8501917759999742,
+      "generation_time": 4.064556975000187,
+      "error": null,
+      "refusal_format_valid": null,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.5743500590324402
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.44068747758865356
+        }
+      ],
+      "manual_review": {
+        "verdict": "adequate",
+        "notes": ""
+      }
+    },
+    {
+      "case_id": "oil-interval-negative-new",
+      "question": "Posso descobrir quando trocar o óleo somente pela viscosidade?",
+      "answerable": true,
+      "expected_answer": "Não. Conhecer a viscosidade não permite concluir o intervalo de troca.",
+      "retrieved_document_ids": [
+        "verificacao-oleo",
+        "cuidados-pneus"
+      ],
+      "response": "Não é possível descobrir quando trocar o óleo somente pela viscosidade, pois conhecer essa informação não permite concluir o intervalo de troca nem o custo da manutenção [1].",
+      "refused": false,
+      "citations_valid": true,
+      "retrieval_time": 0.7784299649999866,
+      "generation_time": 4.232141541999908,
+      "error": null,
+      "refusal_format_valid": null,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.6395382881164551
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.37076622247695923
+        }
+      ],
+      "manual_review": {
+        "verdict": "adequate",
+        "notes": ""
+      }
+    },
+    {
+      "case_id": "oil-price-negative-new",
+      "question": "A viscosidade, sozinha, informa quanto custará a manutenção?",
+      "answerable": true,
+      "expected_answer": "Não. Conhecer a viscosidade não permite concluir o custo da manutenção.",
+      "retrieved_document_ids": [
+        "verificacao-oleo",
+        "cuidados-pneus"
+      ],
+      "response": "Não é possível concluir quanto custará a manutenção apenas com a viscosidade dos óleos, pois o documento afirma que conhecer essa especificação não permite concluir o intervalo de troca nem o custo da manutenção [1]. Além disso, o texto indica que a especificação do óleo e o custo são informações distintas [1], e o documento não define preços ou valores relacionados ao serviço [1].",
+      "refused": false,
+      "citations_valid": true,
+      "retrieval_time": 0.8197004130001915,
+      "generation_time": 5.836535961999971,
+      "error": null,
+      "refusal_format_valid": null,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.5544870495796204
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.4110372066497803
+        }
+      ],
+      "manual_review": {
+        "verdict": "adequate",
+        "notes": ""
+      }
+    },
+    {
+      "case_id": "oil-quantity-missing-new",
+      "question": "Quantos litros de óleo devo colocar no motor do meu T-Cross?",
+      "answerable": false,
+      "expected_answer": "Informação insuficiente nos documentos para fornecer a quantidade de óleo.",
+      "retrieved_document_ids": [
+        "verificacao-oleo",
+        "cuidados-pneus"
+      ],
+      "response": "Não encontrei informações suficientes nos documentos disponíveis.",
+      "refused": true,
+      "citations_valid": true,
+      "retrieval_time": 0.6814719169999535,
+      "generation_time": 3.336152817999846,
+      "error": null,
+      "refusal_format_valid": true,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.5249151587486267
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.35151970386505127
+        }
+      ],
+      "manual_review": {
+        "verdict": "adequate",
+        "notes": ""
+      }
+    },
+    {
+      "case_id": "tire-size-missing-new",
+      "question": "Qual é a medida dos pneus do meu T-Cross?",
+      "answerable": false,
+      "expected_answer": "Informação insuficiente nos documentos para fornecer a medida dos pneus.",
+      "retrieved_document_ids": [
+        "cuidados-pneus",
+        "verificacao-oleo"
+      ],
+      "response": "Não encontrei informações suficientes nos documentos disponíveis.",
+      "refused": true,
+      "citations_valid": true,
+      "retrieval_time": 0.6181581080002161,
+      "generation_time": 3.308794530999876,
+      "error": null,
+      "refusal_format_valid": true,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.45898115634918213
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.42839813232421875
+        }
+      ],
+      "manual_review": {
+        "verdict": "adequate",
+        "notes": ""
+      }
+    }
+  ]
+}
+============================================================
 FILE: ./benchmark/result/rag-generation-20261012T051750075948Z.json
 ============================================================
 {
@@ -9577,8 +10155,8 @@ FILE: ./benchmark/result/rag-generation-20261012T051750075948Z.json
         }
       ],
       "manual_review": {
-        "verdict": null,
-        "notes": ""
+        "verdict": "adequate",
+        "notes": "Indica os dados do veículo selecionado ou a documentação do fabricante, conforme o trecho [1]."
       }
     },
     {
@@ -9618,8 +10196,8 @@ FILE: ./benchmark/result/rag-generation-20261012T051750075948Z.json
         }
       ],
       "manual_review": {
-        "verdict": null,
-        "notes": ""
+        "verdict": "incorrect",
+        "notes": "Recusa indevida: o trecho [1] associa pressão à calibragem e indica onde consultar a pressão recomendada; não é necessário fornecer um valor."
       }
     },
     {
@@ -9659,8 +10237,8 @@ FILE: ./benchmark/result/rag-generation-20261012T051750075948Z.json
         }
       ],
       "manual_review": {
-        "verdict": null,
-        "notes": ""
+        "verdict": "adequate",
+        "notes": "Reproduz corretamente a orientação de consulta presente no trecho [1]."
       }
     },
     {
@@ -9700,8 +10278,8 @@ FILE: ./benchmark/result/rag-generation-20261012T051750075948Z.json
         }
       ],
       "manual_review": {
-        "verdict": null,
-        "notes": ""
+        "verdict": "adequate",
+        "notes": "Distingue dimensões e calibragem corretamente. O complemento sobre ausência de valores e consulta à fonte específica do veículo também tem suporte no trecho [1]."
       }
     },
     {
@@ -9741,8 +10319,8 @@ FILE: ./benchmark/result/rag-generation-20261012T051750075948Z.json
         }
       ],
       "manual_review": {
-        "verdict": null,
-        "notes": ""
+        "verdict": "adequate",
+        "notes": "Preserva a orientação do trecho [1] de consultar os dados do veículo selecionado e a documentação do fabricante."
       }
     },
     {
@@ -9782,8 +10360,8 @@ FILE: ./benchmark/result/rag-generation-20261012T051750075948Z.json
         }
       ],
       "manual_review": {
-        "verdict": null,
-        "notes": ""
+        "verdict": "incorrect",
+        "notes": "Recusa indevida: o trecho [1] afirma explicitamente que conhecer a viscosidade não permite concluir o intervalo de troca."
       }
     },
     {
@@ -9823,8 +10401,8 @@ FILE: ./benchmark/result/rag-generation-20261012T051750075948Z.json
         }
       ],
       "manual_review": {
-        "verdict": null,
-        "notes": ""
+        "verdict": "adequate",
+        "notes": "Informação no documento"
       }
     },
     {
@@ -9864,8 +10442,8 @@ FILE: ./benchmark/result/rag-generation-20261012T051750075948Z.json
         }
       ],
       "manual_review": {
-        "verdict": null,
-        "notes": ""
+        "verdict": "adequate",
+        "notes": "Recusa correta: os trechos recuperados não informam o torque de aperto das rodas."
       }
     },
     {
@@ -9905,8 +10483,8 @@ FILE: ./benchmark/result/rag-generation-20261012T051750075948Z.json
         }
       ],
       "manual_review": {
-        "verdict": null,
-        "notes": ""
+        "verdict": "adequate",
+        "notes": "Recusa correta: os trechos não fornecem um valor de pressão em PSI para o T-Cross; indicar onde consultar não responde ao valor solicitado."
       }
     },
     {
@@ -9946,8 +10524,8 @@ FILE: ./benchmark/result/rag-generation-20261012T051750075948Z.json
         }
       ],
       "manual_review": {
-        "verdict": null,
-        "notes": ""
+        "verdict": "adequate",
+        "notes": "Recusa correta: os trechos não informam a viscosidade específica para o T-Cross."
       }
     }
   ]
@@ -10605,6 +11183,7 @@ FILE: ./benchmark/runner/__init__.py
 ============================================================
 FILE: ./benchmark/runner/run_rag_generation_benchmark.py
 ============================================================
+import argparse
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -10616,7 +11195,7 @@ from benchmark.rag_generation_case_assessment import (
     RagGenerationCaseAssessment,
 )
 from benchmark.rag_generation_report_writer import RagGenerationReportWriter
-from slm_assistentemanutencaocarro.application.model.rag_context import (
+from slm_assistentemanutencaocarro.application.model.rag.rag_context import (
     RagContext,
 )
 from slm_assistentemanutencaocarro.config.settings import Settings
@@ -10627,12 +11206,17 @@ from slm_assistentemanutencaocarro.infrastructure.composition import (
 
 
 def main() -> None:
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset", default="rag_cases.json")
+    args = parser.parse_args()
+
     application = build_application("data/vehicle.json")
     application.vehicle_context.select(
         VehicleId(value="t-cross-2022")
     )
 
-    dataset = RagDatasetLoader().load()
+    dataset = RagDatasetLoader().load(args.dataset)
     rag_service = application.rag_service
 
     # Aquecimento fora das métricas.
@@ -10723,6 +11307,8 @@ if __name__ == "__main__":
 ============================================================
 FILE: ./benchmark/runner/run_rag_retrieval_benchmark.py
 ============================================================
+import argparse
+
 from benchmark.benchmark.rag_retrieval_benchmark import (
     RagRetrievalBenchmark,
 )
@@ -10734,12 +11320,16 @@ from slm_assistentemanutencaocarro.infrastructure.composition import (
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset", default="rag_cases.json")
+    args = parser.parse_args()
+
     application = build_application("data/vehicle.json")
     application.vehicle_context.select(
         VehicleId(value="t-cross-2022")
     )
 
-    dataset = RagDatasetLoader().load()
+    dataset = RagDatasetLoader().load(args.dataset)
     search_service = application.knowledge_search_service
 
     # Aquecimento: fora das métricas.
@@ -10843,7 +11433,7 @@ from benchmark.benchmark.response_generator_benchmark import (
 )
 from benchmark.dataset_loader import DatasetLoader
 from benchmark.model.benchmark_result import BenchmarkResult
-from slm_assistentemanutencaocarro.application.service.response_validation_service import (
+from slm_assistentemanutencaocarro.application.service.response.response_validation_service import (
     ResponseValidationService,
 )
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (
@@ -11136,7 +11726,7 @@ from benchmark.benchmark.rag_retrieval_benchmark import (
     RagRetrievalBenchmark,
 )
 from benchmark.model.rag_case import RagCase
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
 
@@ -11242,19 +11832,19 @@ import pytest
 
 from benchmark.benchmark.rag_generation_benchmark import RagGenerationBenchmark
 from benchmark.model.rag_case import RagCase
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
 )
-from slm_assistentemanutencaocarro.application.port.rag_response_generator import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.port.rag.rag_response_generator import (  # noqa: E501
     RagResponseGenerator,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.rag.rag_response_validation_service import (  # noqa: E501
     RagResponseValidationService,
 )
 
@@ -11380,7 +11970,7 @@ from benchmark.model.rag_retrieval_result import (
     RagRetrievalCaseResult,
     RagRetrievalResult,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
 
@@ -11439,13 +12029,13 @@ FILE: ./benchmark/benchmark/response_generator_benchmark.py
 import time
 
 from benchmark.model.benchmark_result import BenchmarkResult
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
     VehicleAnswer,
 )
-from slm_assistentemanutencaocarro.application.port.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response.response_generator import (
     ResponseGenerator,
 )
-from slm_assistentemanutencaocarro.application.service.response_validation_service import (
+from slm_assistentemanutencaocarro.application.service.response.response_validation_service import (
     ResponseValidationService,
 )
 
@@ -11506,7 +12096,7 @@ FILE: ./benchmark/benchmark/question_classifier_benchmark.py
 import time
 
 from benchmark.model.benchmark_result import BenchmarkResult
-from slm_assistentemanutencaocarro.application.port.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.question_classifier import (
     QuestionClassifier,
 )
 
@@ -11561,19 +12151,19 @@ from benchmark.model.rag_generation_case_result import (
 )
 from benchmark.model.rag_retrieved_passage import RagRetrievedPassage
 from benchmark.rag_refusal_detector import RagRefusalDetector
-from slm_assistentemanutencaocarro.application.model.rag_context import (
+from slm_assistentemanutencaocarro.application.model.rag.rag_context import (
     RagContext,
 )
-from slm_assistentemanutencaocarro.application.port.rag_response_generator import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.port.rag.rag_response_generator import (  # noqa: E501
     RagResponseGenerator,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.rag.rag_response_validation_service import (  # noqa: E501
     RagResponseValidationService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_service import (
+from slm_assistentemanutencaocarro.application.service.rag.rag_service import (
     RagService,
 )
 
@@ -11643,11 +12233,6 @@ class RagGenerationBenchmark:
                         else None
                     )
 
-                    citations_valid = validator.validate(
-                        context,
-                        response,
-                    )
-
                     stage = "validação"
                     citations_valid = validator.validate(
                         context=context,
@@ -11700,7 +12285,7 @@ FILE: ./benchmark/benchmark/intent_classifier_benchmark.py
 import time
 
 from benchmark.model.benchmark_result import BenchmarkResult
-from slm_assistentemanutencaocarro.application.port.intent_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.intent_classifier import (
     IntentClassifier,
 )
 

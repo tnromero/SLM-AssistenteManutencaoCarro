@@ -1,12 +1,12 @@
 from math import hypot, isfinite
 
-from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.embedded_chunk import (
     EmbeddedChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
 )
-from slm_assistentemanutencaocarro.application.port.vector_index import (
+from slm_assistentemanutencaocarro.application.port.knowledge.vector_index import (
     VectorIndex,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId

@@ -1,10 +1,10 @@
 import ollama
 from pydantic import ValidationError
 
-from slm_assistentemanutencaocarro.application.model.question_classification import (
+from slm_assistentemanutencaocarro.application.model.response.question_classification import (
     QuestionClassification,
 )
-from slm_assistentemanutencaocarro.application.port.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.question_classifier import (
     QuestionClassifier,
 )
 

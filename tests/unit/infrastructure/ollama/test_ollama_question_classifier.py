@@ -1,6 +1,6 @@
 from unittest.mock import Mock, patch
 
-from slm_assistentemanutencaocarro.application.model.question_classification import (
+from slm_assistentemanutencaocarro.application.model.response.question_classification import (
     QuestionClassification,
 )
 from slm_assistentemanutencaocarro.domain.question_type import QuestionType

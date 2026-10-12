@@ -6,22 +6,22 @@ from slm_assistentemanutencaocarro.application.context.conversation_context impo
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.port.question_resolver import (
+from slm_assistentemanutencaocarro.application.port.conversation.question_resolver import (
     QuestionResolver,
 )
-from slm_assistentemanutencaocarro.application.port.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response.response_generator import (
     ResponseGenerator,
 )
 from slm_assistentemanutencaocarro.application.service.assistant_service import (
     AssistantService,
 )
-from slm_assistentemanutencaocarro.application.service.response_validation_service import (
+from slm_assistentemanutencaocarro.application.service.response.response_validation_service import (
     ResponseValidationService,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_query_service import (
     VehicleQueryService,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_service import (
     VehicleService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId

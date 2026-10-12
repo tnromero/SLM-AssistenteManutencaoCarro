@@ -6,7 +6,7 @@ import pytest
 from slm_assistentemanutencaocarro.application.exception import (
     EmbeddingGenerationError,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_embedding_generator import (

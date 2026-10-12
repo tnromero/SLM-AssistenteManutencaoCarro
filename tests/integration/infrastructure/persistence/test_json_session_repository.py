@@ -5,11 +5,11 @@ import pytest
 from slm_assistentemanutencaocarro.application.exception import (
     SessionPersistenceError,
 )
-from slm_assistentemanutencaocarro.application.model.conversation_message import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_message import (  # noqa: E501
     ConversationMessage,
     MessageRole,
 )
-from slm_assistentemanutencaocarro.application.model.conversation_session import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_session import (  # noqa: E501
     ConversationSession,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId

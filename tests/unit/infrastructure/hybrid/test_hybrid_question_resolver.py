@@ -5,7 +5,7 @@ import pytest
 from slm_assistentemanutencaocarro.application.context.conversation_context import (
     ConversationContext,
 )
-from slm_assistentemanutencaocarro.application.port.question_resolver import (
+from slm_assistentemanutencaocarro.application.port.conversation.question_resolver import (
     QuestionResolver,
 )
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_question_resolver import (

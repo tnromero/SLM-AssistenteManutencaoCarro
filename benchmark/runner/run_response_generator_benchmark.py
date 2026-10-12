@@ -3,7 +3,7 @@ from benchmark.benchmark.response_generator_benchmark import (
 )
 from benchmark.dataset_loader import DatasetLoader
 from benchmark.model.benchmark_result import BenchmarkResult
-from slm_assistentemanutencaocarro.application.service.response_validation_service import (
+from slm_assistentemanutencaocarro.application.service.response.response_validation_service import (
     ResponseValidationService,
 )
 from slm_assistentemanutencaocarro.infrastructure.hybrid.hybrid_response_generator import (

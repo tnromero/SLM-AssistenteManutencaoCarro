@@ -1,6 +1,6 @@
 import pytest
 
-from slm_assistentemanutencaocarro.application.model.knowledge_document import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_document import (
     KnowledgeDocument,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId

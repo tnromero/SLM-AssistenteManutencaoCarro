@@ -6,10 +6,10 @@ from slm_assistentemanutencaocarro.application.context.conversation_context impo
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
+from slm_assistentemanutencaocarro.application.port.vehicle.vehicle_reader import (
     VehicleReader,
 )
-from slm_assistentemanutencaocarro.application.service.session_service import (
+from slm_assistentemanutencaocarro.application.service.conversation.session_service import (
     SessionService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId

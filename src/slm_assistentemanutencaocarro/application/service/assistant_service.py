@@ -1,19 +1,19 @@
 from slm_assistentemanutencaocarro.application.context.conversation_context import (
     ConversationContext,
 )
-from slm_assistentemanutencaocarro.application.port.intent_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.intent_classifier import (
     IntentClassifier,
 )
-from slm_assistentemanutencaocarro.application.port.question_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.question_classifier import (
     QuestionClassifier,
 )
-from slm_assistentemanutencaocarro.application.port.question_resolver import (
+from slm_assistentemanutencaocarro.application.port.conversation.question_resolver import (
     QuestionResolver,
 )
-from slm_assistentemanutencaocarro.application.port.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response.response_generator import (
     ResponseGenerator,
 )
-from slm_assistentemanutencaocarro.application.service.vehicle_query_service import (
+from slm_assistentemanutencaocarro.application.service.vehicle.vehicle_query_service import (
     VehicleQueryService,
 )
 from slm_assistentemanutencaocarro.domain.exception import (

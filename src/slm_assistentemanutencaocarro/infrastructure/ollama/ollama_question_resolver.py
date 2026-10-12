@@ -3,10 +3,10 @@ import json
 import ollama
 from pydantic import BaseModel, ConfigDict, Field
 
-from slm_assistentemanutencaocarro.application.model.conversation_message import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_message import (  # noqa: E501
     ConversationMessage,
 )
-from slm_assistentemanutencaocarro.application.port.question_resolver import (
+from slm_assistentemanutencaocarro.application.port.conversation.question_resolver import (
     QuestionResolver,
 )
 

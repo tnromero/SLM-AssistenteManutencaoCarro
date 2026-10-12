@@ -5,7 +5,7 @@ import ollama
 from slm_assistentemanutencaocarro.application.exception import (
     RagGenerationError,
 )
-from slm_assistentemanutencaocarro.application.model.rag_context import (
+from slm_assistentemanutencaocarro.application.model.rag.rag_context import (
     RagContext,
 )
 

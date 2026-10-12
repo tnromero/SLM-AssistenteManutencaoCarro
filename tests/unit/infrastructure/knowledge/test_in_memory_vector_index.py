@@ -1,9 +1,9 @@
 import pytest
 
-from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.embedded_chunk import (
     EmbeddedChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId

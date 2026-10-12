@@ -10,7 +10,7 @@ from benchmark.rag_generation_case_assessment import (
     RagGenerationCaseAssessment,
 )
 from benchmark.rag_generation_report_writer import RagGenerationReportWriter
-from slm_assistentemanutencaocarro.application.model.rag_context import (
+from slm_assistentemanutencaocarro.application.model.rag.rag_context import (
     RagContext,
 )
 from slm_assistentemanutencaocarro.config.settings import Settings

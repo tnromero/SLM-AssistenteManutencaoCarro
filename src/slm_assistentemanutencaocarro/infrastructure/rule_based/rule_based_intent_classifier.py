@@ -1,7 +1,7 @@
-from slm_assistentemanutencaocarro.application.model.intent_classification import (
+from slm_assistentemanutencaocarro.application.model.response.intent_classification import (
     IntentClassification,
 )
-from slm_assistentemanutencaocarro.application.port.intent_classifier import (
+from slm_assistentemanutencaocarro.application.port.response.intent_classifier import (
     IntentClassifier,
 )
 from slm_assistentemanutencaocarro.domain.intent import Intent

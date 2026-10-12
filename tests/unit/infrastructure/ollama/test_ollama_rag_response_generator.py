@@ -7,13 +7,13 @@ import pytest
 from slm_assistentemanutencaocarro.application.exception import (
     RagGenerationError,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_search_result import (
     KnowledgeSearchResult,
 )
-from slm_assistentemanutencaocarro.application.model.rag_context import (
+from slm_assistentemanutencaocarro.application.model.rag.rag_context import (
     RagContext,
 )
 from slm_assistentemanutencaocarro.infrastructure.ollama.ollama_rag_response_generator import (

@@ -4,10 +4,10 @@ from unittest.mock import Mock
 from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
-from slm_assistentemanutencaocarro.application.port.embedding_generator import (
+from slm_assistentemanutencaocarro.application.port.knowledge.embedding_generator import (
     EmbeddingGenerator,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (
     KnowledgeSearchService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId

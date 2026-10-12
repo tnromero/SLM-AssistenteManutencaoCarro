@@ -14,32 +14,32 @@ from slm_assistentemanutencaocarro.application.exception import (
     RagGenerationError,
     SessionPersistenceError,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_document import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_document import (
     KnowledgeDocument,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_search_result import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_search_result import (  # noqa: E501
     KnowledgeSearchResult,
 )
-from slm_assistentemanutencaocarro.application.model.rag_answer import RagAnswer
-from slm_assistentemanutencaocarro.application.port.vehicle_reader import (
+from slm_assistentemanutencaocarro.application.model.rag.rag_answer import RagAnswer
+from slm_assistentemanutencaocarro.application.port.vehicle.vehicle_reader import (
     VehicleReader,
 )
 from slm_assistentemanutencaocarro.application.service.assistant_service import (  # noqa: E501
     AssistantService,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_service import (  # noqa: E501
     KnowledgeService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_service import (
+from slm_assistentemanutencaocarro.application.service.rag.rag_service import (
     RagService,
 )
-from slm_assistentemanutencaocarro.application.service.session_service import (
+from slm_assistentemanutencaocarro.application.service.conversation.session_service import (
     SessionService,
 )
 from slm_assistentemanutencaocarro.domain.exception import (

@@ -1,4 +1,4 @@
-from slm_assistentemanutencaocarro.application.model.conversation_message import (
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_message import (
     ConversationMessage,
     MessageRole,
 )

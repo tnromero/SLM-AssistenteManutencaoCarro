@@ -8,11 +8,11 @@ from pydantic import BaseModel, ConfigDict, ValidationError
 from slm_assistentemanutencaocarro.application.exception import (
     SessionPersistenceError,
 )
-from slm_assistentemanutencaocarro.application.model.conversation_message import (
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_message import (
     ConversationMessage,
     MessageRole,
 )
-from slm_assistentemanutencaocarro.application.model.conversation_session import (
+from slm_assistentemanutencaocarro.application.model.conversation.conversation_session import (
     ConversationSession,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId

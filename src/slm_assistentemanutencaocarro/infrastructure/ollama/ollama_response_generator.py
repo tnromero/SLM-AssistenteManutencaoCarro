@@ -1,9 +1,9 @@
 import ollama
 
-from slm_assistentemanutencaocarro.application.model.vehicle_answer import (
+from slm_assistentemanutencaocarro.application.model.vehicle.vehicle_answer import (
     VehicleAnswer,
 )
-from slm_assistentemanutencaocarro.application.port.response_generator import (
+from slm_assistentemanutencaocarro.application.port.response.response_generator import (
     ResponseGenerator,
 )
 

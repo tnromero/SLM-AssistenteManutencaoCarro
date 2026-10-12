@@ -7,22 +7,22 @@ from slm_assistentemanutencaocarro.application.context.vehicle_context import (
     VehicleContext,
 )
 from slm_assistentemanutencaocarro.application.exception import VectorIndexError
-from slm_assistentemanutencaocarro.application.model.embedded_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.embedded_chunk import (
     EmbeddedChunk,
 )
-from slm_assistentemanutencaocarro.application.model.knowledge_chunk import (
+from slm_assistentemanutencaocarro.application.model.knowledge.knowledge_chunk import (
     KnowledgeChunk,
 )
-from slm_assistentemanutencaocarro.application.port.document_chunker import (
+from slm_assistentemanutencaocarro.application.port.knowledge.document_chunker import (
     DocumentChunker,
 )
-from slm_assistentemanutencaocarro.application.port.embedding_generator import (
+from slm_assistentemanutencaocarro.application.port.knowledge.embedding_generator import (
     EmbeddingGenerator,
 )
-from slm_assistentemanutencaocarro.application.port.knowledge_reader import (
+from slm_assistentemanutencaocarro.application.port.knowledge.knowledge_reader import (
     KnowledgeReader,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId

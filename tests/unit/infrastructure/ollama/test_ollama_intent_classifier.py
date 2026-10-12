@@ -1,6 +1,6 @@
 from unittest.mock import Mock, patch
 
-from slm_assistentemanutencaocarro.application.model.intent_classification import (
+from slm_assistentemanutencaocarro.application.model.response.intent_classification import (
     IntentClassification,
 )
 from slm_assistentemanutencaocarro.domain.intent import Intent

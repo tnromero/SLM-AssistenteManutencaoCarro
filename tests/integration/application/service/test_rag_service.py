@@ -10,16 +10,16 @@ from slm_assistentemanutencaocarro.application.context.vehicle_context import (
 from slm_assistentemanutencaocarro.application.exception import (
     RagGenerationError,
 )
-from slm_assistentemanutencaocarro.application.port.embedding_generator import (
+from slm_assistentemanutencaocarro.application.port.knowledge.embedding_generator import (
     EmbeddingGenerator,
 )
-from slm_assistentemanutencaocarro.application.service.knowledge_search_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.knowledge.knowledge_search_service import (  # noqa: E501
     KnowledgeSearchService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_response_validation_service import (  # noqa: E501
+from slm_assistentemanutencaocarro.application.service.rag.rag_response_validation_service import (  # noqa: E501
     RagResponseValidationService,
 )
-from slm_assistentemanutencaocarro.application.service.rag_service import (
+from slm_assistentemanutencaocarro.application.service.rag.rag_service import (
     RagService,
 )
 from slm_assistentemanutencaocarro.domain.vehicle_id import VehicleId
