@@ -1,3 +1,5 @@
+import argparse
+
 from benchmark.benchmark.rag_retrieval_benchmark import (
     RagRetrievalBenchmark,
 )
@@ -9,12 +11,16 @@ from slm_assistentemanutencaocarro.infrastructure.composition import (
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset", default="rag_cases.json")
+    args = parser.parse_args()
+
     application = build_application("data/vehicle.json")
     application.vehicle_context.select(
         VehicleId(value="t-cross-2022")
     )
 
-    dataset = RagDatasetLoader().load()
+    dataset = RagDatasetLoader().load(args.dataset)
     search_service = application.knowledge_search_service
 
     # Aquecimento: fora das métricas.

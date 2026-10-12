@@ -1,0 +1,46 @@
+{
+  "cases": [
+    {
+      "id": "pressure-location-new",
+      "question": "Em qual fonte devo conferir a pressão indicada para os pneus?",
+      "expected_document_ids": ["cuidados-pneus"],
+      "answerable": true,
+      "expected_answer": "Nos dados do veículo selecionado ou na documentação do fabricante."
+    },
+    {
+      "id": "tire-dimensions-new",
+      "question": "A medida do pneu descreve suas dimensões ou sua calibragem?",
+      "expected_document_ids": ["cuidados-pneus"],
+      "answerable": true,
+      "expected_answer": "Descreve suas dimensões; a pressão indica a calibragem."
+    },
+    {
+      "id": "oil-interval-negative-new",
+      "question": "Posso descobrir quando trocar o óleo somente pela viscosidade?",
+      "expected_document_ids": ["verificacao-oleo"],
+      "answerable": true,
+      "expected_answer": "Não. Conhecer a viscosidade não permite concluir o intervalo de troca."
+    },
+    {
+      "id": "oil-price-negative-new",
+      "question": "A viscosidade, sozinha, informa quanto custará a manutenção?",
+      "expected_document_ids": ["verificacao-oleo"],
+      "answerable": true,
+      "expected_answer": "Não. Conhecer a viscosidade não permite concluir o custo da manutenção."
+    },
+    {
+      "id": "oil-quantity-missing-new",
+      "question": "Quantos litros de óleo devo colocar no motor do meu T-Cross?",
+      "expected_document_ids": [],
+      "answerable": false,
+      "expected_answer": "Informação insuficiente nos documentos para fornecer a quantidade de óleo."
+    },
+    {
+      "id": "tire-size-missing-new",
+      "question": "Qual é a medida dos pneus do meu T-Cross?",
+      "expected_document_ids": [],
+      "answerable": false,
+      "expected_answer": "Informação insuficiente nos documentos para fornecer a medida dos pneus."
+    }
+  ]
+}

@@ -88,11 +88,6 @@ class RagGenerationBenchmark:
                         else None
                     )
 
-                    citations_valid = validator.validate(
-                        context,
-                        response,
-                    )
-
                     stage = "validação"
                     citations_valid = validator.validate(
                         context=context,
