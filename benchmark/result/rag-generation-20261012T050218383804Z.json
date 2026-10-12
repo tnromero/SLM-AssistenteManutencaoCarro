@@ -1,0 +1,416 @@
+{
+  "model": "qwen3.5:2b",
+  "top_k": 3,
+  "cases": [
+    {
+      "case_id": "pressure-source-direct",
+      "question": "Onde consultar a pressão dos pneus?",
+      "answerable": true,
+      "expected_answer": "Consultar os dados do veículo selecionado ou a documentação do fabricante.",
+      "retrieved_document_ids": [
+        "cuidados-pneus",
+        "verificacao-oleo"
+      ],
+      "response": "Para consultar a pressão dos pneus, você deve verificar os dados do veículo selecionado ou a documentação do fabricante [1].",
+      "refused": false,
+      "citations_valid": true,
+      "retrieval_time": 2.9226238569999623,
+      "generation_time": 1.9172824650004259,
+      "error": null,
+      "refusal_format_valid": null,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.6131406426429749
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.45568621158599854
+        }
+      ],
+      "manual_review": {
+        "verdict": "adequate",
+        "notes": "Indica os dados do veículo selecionado ou a documentação do fabricante, conforme o trecho [1]."
+      }
+    },
+    {
+      "case_id": "pressure-source-paraphrase",
+      "question": "Onde encontro a calibragem recomendada?",
+      "answerable": true,
+      "expected_answer": "Consultar os dados do veículo selecionado ou a documentação do fabricante.",
+      "retrieved_document_ids": [
+        "cuidados-pneus",
+        "verificacao-oleo"
+      ],
+      "response": "Não encontrei informações suficientes nos documentos disponíveis.",
+      "refused": true,
+      "citations_valid": true,
+      "retrieval_time": 0.829142911999952,
+      "generation_time": 3.4858386669993706,
+      "error": null,
+      "refusal_format_valid": true,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.3527369499206543
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.3314296007156372
+        }
+      ],
+      "manual_review": {
+        "verdict": "incorrect",
+        "notes": "Recusa indevida: o trecho [1] associa pressão à calibragem e indica onde consultar a pressão recomendada; não é necessário fornecer um valor."
+      }
+    },
+    {
+      "case_id": "pressure-source-explicit",
+      "question": "Segundo o documento, onde devo consultar a pressão indicada?",
+      "answerable": true,
+      "expected_answer": "Consultar os dados do veículo selecionado ou a documentação do fabricante.",
+      "retrieved_document_ids": [
+        "cuidados-pneus",
+        "verificacao-oleo"
+      ],
+      "response": "De acordo com o documento, a pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante [1].",
+      "refused": false,
+      "citations_valid": true,
+      "retrieval_time": 0.7255687870001566,
+      "generation_time": 3.997018639000089,
+      "error": null,
+      "refusal_format_valid": null,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.5733610391616821
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.3982146382331848
+        }
+      ],
+      "manual_review": {
+        "verdict": "adequate",
+        "notes": "Reproduz corretamente a orientação de consulta presente no trecho [1]."
+      }
+    },
+    {
+      "case_id": "pressure-versus-size",
+      "question": "Qual a diferença entre pressão e medida dos pneus?",
+      "answerable": true,
+      "expected_answer": "A medida identifica dimensões do pneu; a pressão indica sua calibragem.",
+      "retrieved_document_ids": [
+        "cuidados-pneus",
+        "verificacao-oleo"
+      ],
+      "response": "A diferença entre pressão e medida dos pneus reside na função de cada informação: a medida identifica as dimensões do pneu, enquanto a pressão indica sua calibragem [1]. Além disso, o documento não define valores específicos para essas informações, pois esses dados devem ser obtidos da fonte específica do veículo [1].",
+      "refused": false,
+      "citations_valid": true,
+      "retrieval_time": 0.7279290189999301,
+      "generation_time": 5.2748459659997025,
+      "error": null,
+      "refusal_format_valid": null,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.7058586478233337
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.4264780879020691
+        }
+      ],
+      "manual_review": {
+        "verdict": "adequate",
+        "notes": "Distingue dimensões e calibragem corretamente. O complemento sobre ausência de valores e consulta à fonte específica do veículo também tem suporte no trecho [1]."
+      }
+    },
+    {
+      "case_id": "oil-source",
+      "question": "Onde devo consultar a especificação do óleo?",
+      "answerable": true,
+      "expected_answer": "Consultar os dados do veículo selecionado e a documentação do fabricante.",
+      "retrieved_document_ids": [
+        "verificacao-oleo",
+        "cuidados-pneus"
+      ],
+      "response": "De acordo com o documento, a especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante [1].",
+      "refused": false,
+      "citations_valid": true,
+      "retrieval_time": 0.7066476949994467,
+      "generation_time": 4.024967612000182,
+      "error": null,
+      "refusal_format_valid": null,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.579706072807312
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.37190425395965576
+        }
+      ],
+      "manual_review": {
+        "verdict": "adequate",
+        "notes": "Preserva a orientação do trecho [1] de consultar os dados do veículo selecionado e a documentação do fabricante."
+      }
+    },
+    {
+      "case_id": "oil-change-interval-inference",
+      "question": "Conhecer a viscosidade permite definir o intervalo de troca do óleo?",
+      "answerable": true,
+      "expected_answer": "Não. Conhecer a viscosidade não permite concluir o intervalo de troca.",
+      "retrieved_document_ids": [
+        "verificacao-oleo",
+        "cuidados-pneus"
+      ],
+      "response": "Não encontrei informações suficientes nos documentos disponíveis.",
+      "refused": true,
+      "citations_valid": true,
+      "retrieval_time": 0.8361893259998396,
+      "generation_time": 3.256287090999649,
+      "error": null,
+      "refusal_format_valid": true,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.6925121545791626
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.3944787383079529
+        }
+      ],
+      "manual_review": {
+        "verdict": "incorrect",
+        "notes": "Recusa indevida: o trecho [1] afirma explicitamente que conhecer a viscosidade não permite concluir o intervalo de troca."
+      }
+    },
+    {
+      "case_id": "oil-cost-inference",
+      "question": "Saber a viscosidade permite concluir o custo da manutenção?",
+      "answerable": true,
+      "expected_answer": "Não. Conhecer a viscosidade não permite concluir o custo da manutenção.",
+      "retrieved_document_ids": [
+        "verificacao-oleo",
+        "cuidados-pneus"
+      ],
+      "response": "Não encontrei informações suficientes nos documentos disponíveis.",
+      "refused": true,
+      "citations_valid": true,
+      "retrieval_time": 0.7404414229995382,
+      "generation_time": 3.362860458000796,
+      "error": null,
+      "refusal_format_valid": true,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.5840151309967041
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.3995653986930847
+        }
+      ],
+      "manual_review": {
+        "verdict": "incorrect",
+        "notes": "Recusa indevida: o trecho [1] afirma explicitamente que conhecer a viscosidade não permite concluir o custo da manutenção."
+      }
+    },
+    {
+      "case_id": "wheel-torque-missing",
+      "question": "Qual é o torque de aperto das rodas?",
+      "answerable": false,
+      "expected_answer": "Informação insuficiente nos documentos.",
+      "retrieved_document_ids": [
+        "cuidados-pneus",
+        "verificacao-oleo"
+      ],
+      "response": "Não encontrei informações suficientes nos documentos disponíveis.",
+      "refused": true,
+      "citations_valid": true,
+      "retrieval_time": 0.7129881840000962,
+      "generation_time": 3.399606493000647,
+      "error": null,
+      "refusal_format_valid": true,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.44512301683425903
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.40160757303237915
+        }
+      ],
+      "manual_review": {
+        "verdict": "adequate",
+        "notes": "Recusa correta: os trechos recuperados não informam o torque de aperto das rodas."
+      }
+    },
+    {
+      "case_id": "pressure-value-missing",
+      "question": "Quantos PSI devo colocar nos pneus do meu T-Cross?",
+      "answerable": false,
+      "expected_answer": "Informação insuficiente nos documentos para fornecer um valor de pressão.",
+      "retrieved_document_ids": [
+        "cuidados-pneus",
+        "verificacao-oleo"
+      ],
+      "response": "Não encontrei informações suficientes nos documentos disponíveis.",
+      "refused": true,
+      "citations_valid": true,
+      "retrieval_time": 0.775540392000039,
+      "generation_time": 3.4480094069995175,
+      "error": null,
+      "refusal_format_valid": true,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.5324832797050476
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.400818407535553
+        }
+      ],
+      "manual_review": {
+        "verdict": "adequate",
+        "notes": "Recusa correta: os trechos não fornecem um valor de pressão em PSI para o T-Cross; indicar onde consultar não responde ao valor solicitado."
+      }
+    },
+    {
+      "case_id": "oil-value-missing",
+      "question": "Qual viscosidade de óleo meu T-Cross utiliza?",
+      "answerable": false,
+      "expected_answer": "Informação insuficiente nos documentos para fornecer a viscosidade.",
+      "retrieved_document_ids": [
+        "verificacao-oleo",
+        "cuidados-pneus"
+      ],
+      "response": "Não encontrei informações suficientes nos documentos disponíveis.",
+      "refused": true,
+      "citations_valid": true,
+      "retrieval_time": 0.7736877179995645,
+      "generation_time": 3.348970671000643,
+      "error": null,
+      "refusal_format_valid": true,
+      "retrieved_passages": [
+        {
+          "citation_id": 1,
+          "chunk_id": "verificacao-oleo:chunk:0",
+          "document_id": "verificacao-oleo",
+          "title": "Consulta de informações sobre óleo",
+          "content": "# Consulta de informações sobre óleo Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Especificação do óleo A especificação do óleo deve ser consultada nos dados do veículo selecionado e na documentação do fabricante. ## Perguntas diferentes A especificação do óleo, o intervalo de troca e o custo do serviço são informações distintas. Conhecer a viscosidade não permite concluir o intervalo de troca nem o custo da manutenção. ## Limite deste documento Este documento não define viscosidade, homologação, quantidade, intervalo de troca ou preço.",
+          "source": "Material de estudo do projeto",
+          "score": 0.538803219795227
+        },
+        {
+          "citation_id": 2,
+          "chunk_id": "cuidados-pneus:chunk:0",
+          "document_id": "cuidados-pneus",
+          "title": "Cuidados com os pneus",
+          "content": "# Cuidados com os pneus Documento de estudo do assistente automotivo. Este texto não substitui o manual do veículo. ## Consulta da pressão A pressão indicada deve ser consultada nos dados do veículo selecionado ou na documentação do fabricante. ## Informações diferentes Pressão dos pneus e medida dos pneus são informações diferentes. A medida identifica dimensões do pneu; a pressão indica sua calibragem. ## Limite deste documento Este documento não define valores de pressão nem medidas de pneus. Esses valores devem vir da fonte específica do veículo.",
+          "source": "Material de estudo do projeto",
+          "score": 0.35370951890945435
+        }
+      ],
+      "manual_review": {
+        "verdict": "adequate",
+        "notes": "Recusa correta: os trechos não informam a viscosidade específica para o T-Cross."
+      }
+    }
+  ]
+}

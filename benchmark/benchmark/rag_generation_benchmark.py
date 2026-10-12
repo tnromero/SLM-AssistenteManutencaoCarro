@@ -4,7 +4,8 @@ from benchmark.model.rag_case import RagCase
 from benchmark.model.rag_generation_case_result import (
     RagGenerationCaseResult,
 )
-from benchmark.rag_refusal_dector import RagRefusalDetector
+from benchmark.model.rag_retrieved_passage import RagRetrievedPassage
+from benchmark.rag_refusal_detector import RagRefusalDetector
 from slm_assistentemanutencaocarro.application.model.rag_context import (
     RagContext,
 )
@@ -46,6 +47,7 @@ class RagGenerationBenchmark:
             generation_time = 0.0
             error = None
             stage = "recuperação"
+            retrieved_passages: tuple[RagRetrievedPassage, ...] = ()
 
             try:
                 start = perf_counter()
@@ -100,6 +102,19 @@ class RagGenerationBenchmark:
             except Exception as exc:
                 error = f"{stage}: {type(exc).__name__}: {exc}"
 
+            retrieved_passages = tuple(
+                RagRetrievedPassage(
+                    citation_id=position,
+                    chunk_id=result.chunk.id,
+                    document_id=result.chunk.document_id,
+                    title=result.chunk.title,
+                    content=result.chunk.content,
+                    source=result.chunk.source,
+                    score=result.score,
+                )
+                for position, result in enumerate(results, start=1)
+            )
+            
             evaluations.append(
                 RagGenerationCaseResult(
                     case_id=case.id,
@@ -118,6 +133,7 @@ class RagGenerationBenchmark:
                     generation_time=generation_time,
                     error=error,
                     refusal_format_valid=refusal_format_valid,
+                    retrieved_passages=retrieved_passages,
                 )
             )
 

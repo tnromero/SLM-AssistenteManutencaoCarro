@@ -59,8 +59,15 @@ def test_records_refusals_and_citation_validation(
     search = Mock(spec=KnowledgeSearchService)
     generator = Mock(spec=RagResponseGenerator)
 
-    chunk = Mock(spec=KnowledgeChunk)
-    chunk.document_id = "pneus"
+    chunk = KnowledgeChunk(
+        id="pneus:chunk:0",
+        document_id="pneus",
+        title="Cuidados com os pneus",
+        content="Consulte a pressão na documentação do fabricante.",
+        source="Documento de teste",
+        position=0,
+        vehicle_id=None,
+    )
 
     search.search.return_value = [
         KnowledgeSearchResult(chunk=chunk, score=0.8)
@@ -86,3 +93,10 @@ def test_records_refusals_and_citation_validation(
     assert result.refused is expected_refusal
     assert result.citations_valid is expected_valid
     assert result.error is None
+
+    assert len(result.retrieved_passages) == 1
+    assert result.retrieved_passages[0].citation_id == 1
+    assert result.retrieved_passages[0].chunk_id == chunk.id
+    assert result.retrieved_passages[0].document_id == chunk.document_id
+    assert result.retrieved_passages[0].content == chunk.content
+    assert result.retrieved_passages[0].score == search.search.return_value[0].score  # noqa: E501

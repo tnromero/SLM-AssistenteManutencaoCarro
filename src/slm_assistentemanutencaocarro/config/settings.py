@@ -4,19 +4,19 @@ import os
 class Settings:
     ollama_intent_model: str = os.getenv(
         "OLLAMA_INTENT_MODEL", 
-        "qwen3:1.7b"
+        "qwen3.5:2b"
     )
     ollama_question_model: str = os.getenv(
         "OLLAMA_QUESTION_MODEL", 
-        "qwen3:1.7b"
+        "qwen3.5:2b"
     )
     ollama_response_model: str = os.getenv(
         "OLLAMA_RESPONSE_MODEL", 
-        "qwen3:1.7b"
+        "qwen3.5:2b"
     )
     ollama_resolver_model: str = os.getenv(
         "OLLAMA_RESOLVER_MODEL",
-        "qwen3:1.7b",
+        "qwen3.5:2b",
     )
     session_file: str = os.getenv(
         "SESSION_FILE",
@@ -28,11 +28,11 @@ class Settings:
     )
     ollama_embedding_model: str = os.getenv(
         "OLLAMA_EMBEDDING_MODEL",
-        "embeddinggemma:300m",
+        "qwen3-embedding:0.6b",
     )
     ollama_rag_model: str = os.getenv(
         "OLLAMA_RAG_MODEL",
-        "qwen3:1.7b",
+        "qwen3.5:2b",
     )
     vector_db_path: str = os.getenv(
         "VECTOR_DB_PATH",

@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from benchmark.model.rag_retrieved_passage import RagRetrievedPassage
+
 
 @dataclass(frozen=True)
 class RagGenerationCaseResult:
@@ -15,3 +17,4 @@ class RagGenerationCaseResult:
     generation_time: float
     error: str | None
     refusal_format_valid: bool | None
+    retrieved_passages: tuple[RagRetrievedPassage, ...]
